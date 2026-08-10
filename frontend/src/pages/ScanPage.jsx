@@ -68,6 +68,7 @@ const initialForm = {
   condition: '',
   notes: '',
   materialType: '',
+  packagingMaterial: '',
   size: '',
   hasResidue: false,
   brand: '',
@@ -154,6 +155,16 @@ const mapConditionToOption = (type, riskIndicators = []) => {
   return '';
 };
 
+const fileToBase64 = (file) => new Promise((resolve, reject) => {
+  const reader = new FileReader();
+  reader.onload = () => {
+    const result = reader.result;
+    resolve(typeof result === 'string' && result.includes(',') ? result.split(',')[1] : result);
+  };
+  reader.onerror = reject;
+  reader.readAsDataURL(file);
+});
+
 export default function ScanPage() {
   const [scanType, setScanType] = useState('');
   const [form, setForm] = useState(initialForm);
@@ -172,19 +183,21 @@ export default function ScanPage() {
     setVisionLoading(true);
 
     try {
-      const formData = new FormData();
-      formData.append('photo', file);
-      
       const toastId = toast.loading('AI is reading image...');
       const { scanApi } = await import('../utils/backendApi');
-      const data = await scanApi.vision(formData);
-      
+      const photoData = await fileToBase64(file);
+      const data = await scanApi.vision({
+        photo_data: photoData,
+        photo_mime: file.type || 'image/jpeg',
+      });
+
       toast.success('Product details auto-filled!', { id: toastId });
       
       setForm((current) => ({
         ...current,
         itemName: data.product_name || (data.brand ? `${data.brand} ${data.product_name || ''}`.trim() : current.itemName),
         brand: data.brand || current.brand,
+        packagingMaterial: data.packaging_material || current.packagingMaterial,
         category: mapCategoryToOption(scanType, data) || current.category,
         expiryDate: data.expiry_date || current.expiryDate,
         expiryType: ['best_before', 'use_by', 'expiry_date'].includes(data.expiry_type) ? data.expiry_type : current.expiryType,
@@ -210,13 +223,14 @@ export default function ScanPage() {
     setVisionLoading(true);
 
     try {
-      const formData = new FormData();
-      formData.append('photo', file);
-      
       const toastId = toast.loading('AI is detecting product category...');
       const { scanApi } = await import('../utils/backendApi');
-      const data = await scanApi.vision(formData);
-      
+      const photoData = await fileToBase64(file);
+      const data = await scanApi.vision({
+        photo_data: photoData,
+        photo_mime: file.type || 'image/jpeg',
+      });
+
       toast.success('Category detected!', { id: toastId });
       
       let detectedScanType = 'other';
@@ -241,6 +255,7 @@ export default function ScanPage() {
         ...initialForm,
         itemName: data.product_name || (data.brand ? `${data.brand} ${data.product_name || ''}`.trim() : ''),
         brand: data.brand || '',
+        packagingMaterial: data.packaging_material || '',
         category: mapCategoryToOption(detectedScanType, data),
         expiryDate: data.expiry_date || '',
         expiryType: ['best_before', 'use_by', 'expiry_date'].includes(data.expiry_type) ? data.expiry_type : 'best_before',
@@ -322,13 +337,13 @@ export default function ScanPage() {
             subtitle="Choose the closest type. You can add a photo, describe the item, and refine details before analysis."
           />
 
-          <div className="surface-card p-6 mb-8 bg-gradient-to-br from-[#f3eeff] via-white to-[#eefbf2] border-2 border-dashed border-[#c8b6e2] relative overflow-hidden flex flex-col sm:flex-row items-center justify-between gap-6 transition-all duration-300 hover:border-deep-purple">
+          <div className="surface-card p-6 mb-8 bg-gradient-to-br from-[#eefbf2] via-white to-[#eefbf2] border-2 border-dashed border-[#b8e6c1] relative overflow-hidden flex flex-col sm:flex-row items-center justify-between gap-6 transition-all duration-300 hover:border-deep-green">
             <div className="flex gap-4 items-center">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-deep-purple text-white shadow-lg shadow-purple-200">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#52b788] text-white shadow-lg shadow-green-200">
                 <Camera size={27} />
               </div>
               <div>
-                <h3 className="text-deep-purple font-bold">Quick AI Image Scan</h3>
+                <h3 className="text-deep-green font-bold">Quick AI Image Scan</h3>
                 <p className="text-sm mt-1 leading-relaxed">
                   Upload or capture a photo first. AI will auto-detect the type and fill details for you!
                 </p>

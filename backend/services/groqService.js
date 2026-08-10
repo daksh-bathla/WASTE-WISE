@@ -89,7 +89,7 @@ const analyzeProductImageFallback = async (imageBase64, mimeType, prompt) => {
     const response = await axios.post(
       GROQ_URL,
       {
-        model: 'meta-llama/llama-4-scout-17b-16e-instruct',
+        model: 'llama-3.2-11b-vision-preview',
         messages: [
           {
             role: 'user',

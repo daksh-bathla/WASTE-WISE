@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowUpDown, ExternalLink, Star, WandSparkles } from 'lucide-react';
 import AppLayout from '../components/AppLayout';
-import { Badge, Card, LoadingSpinner, PageHeader, WeatherStrip } from '../components/ui';
+import SustainabilityPanel from '../components/SustainabilityPanel';
+import { Badge, Card, PageHeader, WeatherStrip } from '../components/ui';
 import { scanApi, normalizeScanResults } from '../utils/backendApi';
 import { useAuthStore } from '../store/authStore';
 
@@ -14,6 +15,7 @@ export default function ResultsPage() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [retryCount, setRetryCount] = useState(0);
   const navigate = useNavigate();
   const { scanId } = useParams();
   const user = useAuthStore((state) => state.user);
@@ -32,6 +34,11 @@ export default function ResultsPage() {
         const raw = await scanApi.results(scanId);
         if (!cancelled) {
           const normalized = normalizeScanResults(raw);
+          const hasUsefulSuggestions = (normalized.components || []).some((component) => component.suggestions?.length);
+          if (!hasUsefulSuggestions && retryCount < 2) {
+            setRetryCount((current) => current + 1);
+            return;
+          }
           setData(normalized);
         }
       } catch (err) {
@@ -45,12 +52,12 @@ export default function ResultsPage() {
           setError(err.message);
         }
       } finally {
-        if (!cancelled) setLoading(false);
+        if (!cancelled && retryCount >= 2) setLoading(false);
       }
     };
     fetchResults();
     return () => { cancelled = true; };
-  }, [scanId, hasValidScanId, navigate]);
+  }, [scanId, hasValidScanId, navigate, retryCount]);
 
   const filteredComponents = useMemo(() => {
     if (!data?.components) return [];
@@ -69,10 +76,13 @@ export default function ResultsPage() {
   if (loading) {
     return (
       <AppLayout>
-        <div className="page-shell flex min-h-[calc(100vh-152px)] items-center justify-center">
-          <div className="text-center">
-            <LoadingSpinner size="lg" />
-            <p className="mt-4 font-bold text-text-muted">Loading results…</p>
+        <div className="page-shell section-compact">
+          <div className="grid gap-4">
+            <div className="h-24 animate-pulse rounded-3xl bg-slate-100" />
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="h-40 animate-pulse rounded-3xl bg-slate-100" />
+              <div className="h-40 animate-pulse rounded-3xl bg-slate-100" />
+            </div>
           </div>
         </div>
       </AppLayout>
@@ -192,6 +202,8 @@ export default function ResultsPage() {
             </Card>
           )}
         </div>
+
+        <SustainabilityPanel scanData={data} user={user} />
       </div>
     </AppLayout>
   );

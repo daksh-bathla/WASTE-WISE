@@ -17,6 +17,7 @@ import {
   Utensils,
 } from 'lucide-react';
 import { Badge, Button, Card, Navbar } from '../components/ui';
+import { motion } from 'framer-motion';
 
 const stats = [
   { icon: TrendingUp, label: '68M tonnes of food wasted in India yearly' },
@@ -57,6 +58,13 @@ const wisdomCards = [
   { tag: 'Folk remedy', title: 'Coconut oil as household polish', text: 'Traditional home uses are paired with modern safety checks and source context.' },
 ];
 
+const fadeUp = {
+  initial: { opacity: 0, y: 30 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: '-100px' },
+  transition: { duration: 0.6, ease: 'easeOut' },
+};
+
 export default function LandingPage() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -75,12 +83,19 @@ export default function LandingPage() {
     <div className="min-h-screen">
       <Navbar />
 
+      {/* ─── HERO ─── */}
       <section className="relative overflow-hidden pt-24">
         <div className="absolute right-[-10%] top-16 h-80 w-80 rounded-full bg-light-purple blur-3xl" />
         <div className="absolute bottom-8 left-[-8%] h-80 w-80 rounded-full bg-light-green blur-3xl" />
 
         <div className="page-shell relative grid min-h-[calc(100vh-64px)] items-center gap-12 py-14 lg:grid-cols-[1.08fr_0.92fr]">
-          <div className="max-w-3xl">
+          {/* Left: headline + CTA */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: 'easeOut' }}
+            className="max-w-3xl"
+          >
             <Badge color="green" className="mb-6">
               <Leaf size={14} /> Zero waste intelligence for India
             </Badge>
@@ -113,9 +128,15 @@ export default function LandingPage() {
                 </div>
               ))}
             </div>
-          </div>
+          </motion.div>
 
-          <div className="relative mx-auto w-full max-w-[520px]">
+          {/* Right: scan preview card */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
+            className="relative mx-auto w-full max-w-[520px]"
+          >
             <div className="absolute inset-8 rounded-[32px] bg-gradient-to-br from-primary-purple to-primary-green opacity-60 blur-3xl" />
             <Card className="relative overflow-hidden border-2 border-primary-purple p-0">
               <div className="bg-gradient-to-br from-deep-purple to-deep-green p-6 text-white">
@@ -161,12 +182,13 @@ export default function LandingPage() {
                 </div>
               </div>
             </Card>
-          </div>
+          </motion.div>
         </div>
       </section>
 
+      {/* ─── HOW IT WORKS ─── */}
       <section id="how-it-works" className="section">
-        <div className="page-shell">
+        <motion.div {...fadeUp} className="page-shell">
           <div className="mx-auto mb-12 max-w-2xl text-center">
             <h2>How WasteWise works</h2>
             <p className="mt-4 text-base leading-7">
@@ -176,7 +198,7 @@ export default function LandingPage() {
           <div className="grid gap-5 md:grid-cols-3">
             {steps.map(({ icon: Icon, title, text }, index) => (
               <Card key={title} hoverable>
-                <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-deep-purple shadow-card">
+                <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-deep-green shadow-card">
                   <Icon size={25} />
                 </div>
                 <Badge color="neutral" className="mb-4">Step {index + 1}</Badge>
@@ -185,13 +207,14 @@ export default function LandingPage() {
               </Card>
             ))}
           </div>
-        </div>
+        </motion.div>
       </section>
 
+      {/* ─── FEATURES / CATEGORIES ─── */}
       <section id="features" className="section">
-        <div className="page-shell">
+        <motion.div {...fadeUp} className="page-shell">
           <div className="mb-12 max-w-2xl">
-            <Badge color="purple" className="mb-4">What we handle</Badge>
+            <Badge color="green" className="mb-4">What we handle</Badge>
             <h2>Everything in your home has a second life</h2>
           </div>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -205,11 +228,12 @@ export default function LandingPage() {
               </Card>
             ))}
           </div>
-        </div>
+        </motion.div>
       </section>
 
+      {/* ─── WISDOM ─── */}
       <section className="section">
-        <div className="page-shell grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
+        <motion.div {...fadeUp} className="page-shell grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
           <div>
             <Badge color="green" className="mb-4">Rooted in Indian wisdom</Badge>
             <h2>Traditional knowledge, checked with modern safety thinking.</h2>
@@ -227,11 +251,12 @@ export default function LandingPage() {
               </Card>
             ))}
           </div>
-        </div>
+        </motion.div>
       </section>
 
+      {/* ─── STATS / COMMUNITY ─── */}
       <section id="community-proof" className="section">
-        <div className="page-shell">
+        <motion.div {...fadeUp} className="page-shell">
           <div className="grid gap-5 text-center sm:grid-cols-2 lg:grid-cols-4">
             {[
               ['7', 'categories of waste handled'],
@@ -245,13 +270,14 @@ export default function LandingPage() {
               </Card>
             ))}
           </div>
-        </div>
+        </motion.div>
       </section>
 
-      <section className="bg-gradient-to-br from-deep-purple to-[#7B52AF] py-20 text-white">
-        <div className="page-shell text-center">
-          <h2 className="text-white">Start turning waste into value today</h2>
-          <p className="mx-auto mt-4 max-w-xl text-lg leading-8 text-white/86">
+      {/* ─── CTA BANNER ─── */}
+      <section className="bg-gradient-to-br from-deep-green to-[#3a9b6a] py-20 text-white">
+        <div className="page-shell flex flex-col items-center text-center">
+          <h2 className="text-white text-center">Start turning waste into value today</h2>
+          <p className="mx-auto mt-4 max-w-xl text-lg leading-8 text-white/86 text-center">
             Join Indian households making zero go to waste with safer, smarter decisions.
           </p>
           <Button variant="white" size="lg" className="mt-8" onClick={() => navigate(primaryTarget)}>
@@ -260,6 +286,7 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ─── FOOTER ─── */}
       <footer className="py-12 bg-white/80 backdrop-blur-md">
         <div className="page-shell grid gap-8 md:grid-cols-3">
           <div>
@@ -271,11 +298,11 @@ export default function LandingPage() {
           <div>
             <h4 className="text-text-primary">Quick links</h4>
             <div className="mt-3 grid gap-2 text-sm font-bold text-text-secondary">
-              <button type="button" className="w-fit hover:text-deep-purple" onClick={() => scrollTo(0, 0)}>Home</button>
-              <button type="button" className="w-fit hover:text-deep-purple" onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}>
+              <button type="button" className="w-fit hover:text-deep-green" onClick={() => scrollTo(0, 0)}>Home</button>
+              <button type="button" className="w-fit hover:text-deep-green" onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}>
                 How it works
               </button>
-              <button type="button" className="w-fit hover:text-deep-purple" onClick={() => navigate(primaryTarget)}>Get started</button>
+              <button type="button" className="w-fit hover:text-deep-green" onClick={() => navigate(primaryTarget)}>Get started</button>
             </div>
           </div>
           <div>

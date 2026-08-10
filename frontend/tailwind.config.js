@@ -6,27 +6,28 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'],
+        display: ['Outfit', 'sans-serif'],
+      },
       colors: {
-        'primary-purple': '#C8B6E2',
-        'deep-purple': '#9B72CF',
-        'light-purple': '#F3EEFF',
+        'primary-purple': '#B8E6C1',
+        'deep-purple': '#52B788',
+        'light-purple': '#F6F7F6',
         'primary-green': '#B8E6C1',
         'deep-green': '#52B788',
         'light-green': '#EEFBF2',
         'bg-page': '#FAFAFA',
         'bg-card': '#FFFFFF',
         'text-primary': '#1A1A2E',
-        'text-secondary': '#4A4A6A',
-        'text-muted': '#8A8AAA',
+        'text-secondary': '#35354E',
+        'text-muted': '#5E5E7E',
         'border': '#E8E0F0',
         'border-light': '#F0ECF8',
         'success': '#52B788',
         'warning': '#F4A261',
         'danger': '#E76F51',
         'info': '#9B72CF',
-      },
-      fontFamily: {
-        sans: ['Inter', 'sans-serif'],
       },
       fontSize: {
         h1: ['48px', { fontWeight: '700', lineHeight: '1.2' }],

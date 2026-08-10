@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Download, Leaf, MapPin, Plus } from 'lucide-react';
 import toast from 'react-hot-toast';
 import AppLayout from '../components/AppLayout';
-import { Badge, Button, Card, Input, PageHeader } from '../components/ui';
+import { Badge, Button, Card, EmptyState, Input, PageHeader } from '../components/ui';
 import { scrapLogApi, userApi } from '../utils/backendApi';
 import { useAuthStore } from '../store/authStore';
 
@@ -140,7 +140,12 @@ export default function LogPage() {
           </div>
           <div className="grid gap-3">
             {entries.length === 0 ? (
-              <p className="text-center text-text-muted font-medium py-4">No log entries found. Add one above!</p>
+              <EmptyState
+                title="Your log is empty"
+                description="Start tracking what your household reuses, composts, or repurposes to see your weekly impact."
+                actionLabel="Add first entry"
+                onAction={() => document.getElementById('log-item-input')?.focus()}
+              />
             ) : entries.map((entry) => (
               <div key={entry.id} className="grid gap-3 rounded-2xl border border-border p-4 md:grid-cols-[1fr_auto] md:items-center">
                 <div>

@@ -1,13 +1,38 @@
 const axios = require('axios');
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const GEMINI_VISION_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
-const GEMINI_WEB_SEARCH_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+const GEMINI_VISION_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+const GEMINI_WEB_SEARCH_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+
+const getLocalVisionFallback = (mimeType) => {
+  const fallback = {
+    product_name: 'Scanned item',
+    brand: null,
+    category: 'unknown',
+    primary_material: 'unknown',
+    packaging_material: 'unknown',
+    ingredients: [],
+    expiry_date: null,
+    expiry_type: 'unknown',
+    quantity: '',
+    risk_indicators: [],
+    key_components: ['main body'],
+    detected_category: 'other',
+    confidence_score: 45,
+    note: 'AI vision unavailable; using local fallback',
+  };
+
+  if (mimeType && mimeType.includes('image')) {
+    return fallback;
+  }
+
+  return fallback;
+};
 
 const analyzeProductImage = async (imageBase64, mimeType) => {
   if (!GEMINI_API_KEY) {
-    console.warn('GEMINI_API_KEY not set — returning manual fallback');
-    return null;
+    console.warn('GEMINI_API_KEY not set — returning local fallback');
+    return getLocalVisionFallback(mimeType);
   }
 
   const prompt = `You are an expert computer vision model. Analyse this product image in high detail and extract the following information. Be as precise as possible. Read all visible text.
@@ -86,7 +111,7 @@ Return ONLY the JSON object. No markdown, no explanation. Ensure it is valid JSO
       throw new Error('Groq fallback returned null');
     } catch (fallbackError) {
       console.error('[GeminiService] Groq Vision fallback failed:', fallbackError.message);
-      throw new Error('Image analysis failed on both Gemini and Groq. Please check your API limits or try a clearer image.');
+      return getLocalVisionFallback(mimeType);
     }
   }
 };

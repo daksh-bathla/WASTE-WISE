@@ -9,8 +9,16 @@ const upload = multer({
   limits: { fileSize: 50 * 1024 * 1024 } // 50MB
 });
 
-router.post('/analyse', authMiddleware, upload.single('photo'), startScan);
-router.post('/vision', authMiddleware, upload.single('photo'), getVisionData);
+const maybeUploadPhoto = (req, res, next) => {
+  const contentType = req.headers['content-type'] || '';
+  if (contentType.includes('multipart/form-data')) {
+    return upload.single('photo')(req, res, next);
+  }
+  return next();
+};
+
+router.post('/analyse', authMiddleware, maybeUploadPhoto, startScan);
+router.post('/vision', authMiddleware, maybeUploadPhoto, getVisionData);
 router.get('/recent', authMiddleware, getRecentScans);
 router.get('/results/:scanId', authMiddleware, getScanResults);
 router.get('/seasonal', authMiddleware, getSeasonalSuggestion);

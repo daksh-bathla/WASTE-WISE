@@ -136,20 +136,40 @@ const getSeasonalSuggestion = async (req, res) => {
 
 const getVisionData = async (req, res) => {
   try {
-    if (!req.file) {
+    const normalizePhotoData = (value) => {
+      if (!value || typeof value !== 'string') return null;
+      if (value.startsWith('data:')) {
+        const commaIndex = value.indexOf(',');
+        return commaIndex >= 0 ? value.slice(commaIndex + 1) : null;
+      }
+      return value;
+    };
+
+    const photo_data = normalizePhotoData(req.file?.buffer?.toString('base64') || req.body?.photo_data);
+    const photo_mime = req.file?.mimetype || req.body?.photo_mime || 'image/jpeg';
+
+    console.log('[ScanController] vision payload', { hasBody: Boolean(req.body), bodyKeys: req.body && typeof req.body === 'object' ? Object.keys(req.body) : null, contentType: req.headers['content-type'], hasFile: Boolean(req.file), photoLength: photo_data?.length || 0, photoMime: photo_mime, rawBodyType: typeof req.body });
+
+    if (!photo_data) {
       return res.status(400).json({ error: 'No image file uploaded' });
     }
-    const photo_data = req.file.buffer.toString('base64');
-    const photo_mime = req.file.mimetype;
+
     console.log('[ScanController] vision endpoint called, analyzing image...');
-    
+
     const { analyzeProductImage } = require('../services/geminiService');
     const visionData = await analyzeProductImage(photo_data, photo_mime);
-    
+
     if (!visionData) {
-      return res.status(500).json({ error: 'Failed to extract information from image' });
+      return res.json({
+        product_name: 'Scanned item',
+        brand: null,
+        category: 'unknown',
+        detected_category: 'other',
+        confidence_score: 45,
+        note: 'AI vision unavailable; using local fallback',
+      });
     }
-    
+
     res.json(visionData);
   } catch (error) {
     console.error('[ScanController] vision analysis error:', error.message);

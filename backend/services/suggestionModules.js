@@ -10,6 +10,7 @@ const {
   fastDisclaimerGenerator,
   FAST_TRACK_TIMEOUT
 } = require('./fastTrackService');
+const { validateRepurposingSuggestion } = require('./suggestionValidation');
 
 const runTraditionalModule = async (component, goals, userProfile, weather, pool) => {
   const suggestions = [];
@@ -498,8 +499,17 @@ const generateAllSuggestions = async (analysisResult, goals, contextualAnswers, 
   const elapsed = Date.now() - startTime;
   console.log(`[FastTrack] Suggestion generation completed in ${elapsed}ms`);
 
+  const validatedSuggestions = [];
+
   for (const results of moduleResults) {
     for (const suggestion of results) {
+      const validation = validateRepurposingSuggestion(suggestion);
+      if (!validation.isValid) {
+        console.warn(`[SuggestionValidation] Rejected suggestion: ${suggestion.title} — ${validation.reason}`);
+        continue;
+      }
+
+      validatedSuggestions.push(suggestion);
       const [sugResult] = await pool.query(
         `INSERT INTO suggestions (item_component_id, module_type, title, steps, source_url, source_credibility, region_tag, personalisation_note, video_url)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -569,6 +579,10 @@ const generateAllSuggestions = async (analysisResult, goals, contextualAnswers, 
 
       allSuggestions.push({ id: suggestionId, ...suggestion });
     }
+  }
+
+  if (validatedSuggestions.length === 0 && safeComponents.length > 0) {
+    console.warn('[SuggestionValidation] No validated suggestions survived; using self-contained fallback suggestions.');
   }
 
   if (allSuggestions.length === 0 && safeComponents.length > 0) {

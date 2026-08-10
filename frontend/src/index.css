@@ -4,22 +4,22 @@
   --primary-purple: #c8b6e2;
   --deep-purple: #9b72cf;
   --deep-purple-hover: #7b52af;
-  --light-purple: rgba(243, 238, 255, 0.85);
+  --light-purple: rgba(246, 247, 246, 0.85);
   --primary-green: #b8e6c1;
   --deep-green: #52b788;
   --deep-green-hover: #3a9b6a;
   --light-green: rgba(238, 251, 242, 0.85);
   --page-bg: transparent;
-  --card-bg: rgba(255, 255, 255, 0.85);
+  --card-bg: rgba(255, 255, 255, 0.90);
   --text-primary: #1a1a2e;
-  --text-secondary: #4a4a6a;
-  --text-muted: #8a8aaa;
-  --border: rgba(232, 224, 240, 0.8);
-  --border-light: rgba(240, 236, 248, 0.8);
+  --text-secondary: #35354e;
+  --text-muted: #5e5e7e;
+  --border: rgba(184, 230, 193, 0.6);
+  --border-light: rgba(214, 240, 220, 0.7);
   --warning: #f4a261;
   --danger: #e76f51;
-  --shadow-card: 0 4px 16px rgba(155, 114, 207, 0.1);
-  --shadow-hover: 0 12px 34px rgba(155, 114, 207, 0.2);
+  --shadow-card: 0 4px 16px rgba(82, 183, 136, 0.10);
+  --shadow-hover: 0 12px 34px rgba(82, 183, 136, 0.18);
 }
 
 * {
@@ -72,6 +72,13 @@ p {
   margin: 0;
 }
 
+h1,
+h2,
+h3,
+h4 {
+  font-family: "Outfit", sans-serif;
+}
+
 h1 {
   color: var(--text-primary);
   font-size: clamp(2.4rem, 6vw, 4.5rem);
@@ -108,7 +115,8 @@ p {
 }
 
 .gradient-logo {
-  background: linear-gradient(135deg, var(--deep-purple), var(--deep-green));
+  font-family: "Outfit", sans-serif;
+  background: linear-gradient(135deg, var(--deep-green), var(--deep-green-hover));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -177,7 +185,7 @@ p {
 .icon-button:focus-visible,
 .choice-card:focus-visible,
 .input-field:focus-visible {
-  outline: 3px solid rgba(155, 114, 207, 0.22);
+  outline: 3px solid rgba(82, 183, 136, 0.28);
   outline-offset: 2px;
 }
 
@@ -205,18 +213,18 @@ p {
 }
 
 .btn-primary {
-  background: var(--deep-purple);
+  background: var(--deep-green);
   color: #ffffff;
 }
 
 .btn-primary:hover {
-  background: var(--deep-purple-hover);
+  background: var(--deep-green-hover);
 }
 
 .btn-secondary {
   background: transparent;
-  border: 1.5px solid var(--deep-purple);
-  color: var(--deep-purple);
+  border: 1.5px solid var(--deep-green);
+  color: var(--deep-green);
 }
 
 .btn-secondary:hover {
@@ -234,11 +242,11 @@ p {
 
 .btn-white {
   background: #ffffff;
-  color: var(--deep-purple);
+  color: var(--deep-green);
 }
 
 .btn-white:hover {
-  background: #f7f4ff;
+  background: #F6F7F6;
 }
 
 .btn-ghost {
@@ -248,7 +256,7 @@ p {
 
 .btn-ghost:hover {
   background: var(--light-purple);
-  color: var(--deep-purple);
+  color: var(--deep-green);
 }
 
 .input-label {
@@ -275,8 +283,8 @@ p {
 }
 
 .input-field:focus {
-  border-color: var(--deep-purple);
-  box-shadow: 0 0 0 3px rgba(155, 114, 207, 0.15);
+  border-color: var(--deep-green);
+  box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.15);
   outline: none;
 }
 
@@ -352,7 +360,7 @@ p {
 
 .nav-link:hover,
 .nav-link.active {
-  color: var(--deep-purple);
+  color: var(--deep-green);
 }
 
 .icon-button {
@@ -372,8 +380,8 @@ p {
 
 .icon-button:hover {
   background: var(--light-purple);
-  border-color: var(--primary-purple);
-  color: var(--deep-purple);
+  border-color: var(--primary-green);
+  color: var(--deep-green);
 }
 
 .choice-card {
@@ -390,8 +398,8 @@ p {
 
 .choice-card:hover,
 .choice-card.selected {
-  background: #fbf9ff;
-  border-color: var(--deep-purple);
+  background: #F6F7F6;
+  border-color: var(--deep-green);
   box-shadow: var(--shadow-hover);
   transform: translateY(-1px);
 }
@@ -403,7 +411,7 @@ p {
 
 .scan-frame {
   aspect-ratio: 4 / 3;
-  border: 1.5px dashed var(--primary-purple);
+  border: 1.5px dashed var(--primary-green);
   border-radius: 16px;
   background:
     radial-gradient(circle at top right, rgba(184, 230, 193, 0.38), transparent 32%),
@@ -420,7 +428,7 @@ p {
 }
 
 .progress-fill {
-  background: linear-gradient(90deg, var(--deep-purple), var(--deep-green));
+  background: linear-gradient(90deg, var(--deep-green), var(--primary-green));
   border-radius: inherit;
   height: 100%;
   transition: width 360ms ease;
@@ -428,9 +436,9 @@ p {
 
 .spinner {
   animation: spin 800ms linear infinite;
-  border: 3px solid rgba(155, 114, 207, 0.18);
+  border: 3px solid rgba(82, 183, 136, 0.18);
   border-radius: 999px;
-  border-top-color: var(--deep-purple);
+  border-top-color: var(--deep-green);
 }
 
 .spinner-sm {
@@ -451,6 +459,21 @@ p {
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+.sustainability-warning-card {
+  animation: sustainability-border-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes sustainability-border-pulse {
+  0%,
+  100% {
+    box-shadow: var(--shadow-card);
+  }
+
+  50% {
+    box-shadow: 0 0 0 3px rgba(231, 111, 81, 0.2), var(--shadow-card);
   }
 }
 

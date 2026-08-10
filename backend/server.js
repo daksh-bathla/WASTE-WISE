@@ -70,6 +70,7 @@ const suggestionRoutes = require('./routes/suggestions.routes');
 const scraplogRoutes = require('./routes/scraplog.routes');
 const communityRoutes = require('./routes/community.routes');
 const voiceRoutes = require('./routes/voice.routes');
+const sustainabilityRoutes = require('./routes/sustainability');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
@@ -78,6 +79,7 @@ app.use('/api/suggestions', suggestionRoutes);
 app.use('/api/scraplog', scraplogRoutes);
 app.use('/api/community', communityRoutes);
 app.use('/api/voice', voiceRoutes);
+app.use('/api/sustainability', sustainabilityRoutes);
 
 app.use((err, req, res, next) => {
   if (err instanceof multer.MulterError) {

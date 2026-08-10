@@ -77,6 +77,10 @@ export const suggestionsApi = {
   disposal: (scanId) => requestJson(`/suggestions/disposal/${scanId}`),
 };
 
+export const sustainabilityApi = {
+  analyse: (payload) => requestJson('/sustainability/analyse', { method: 'POST', body: payload }),
+};
+
 export const scrapLogApi = {
   add: (payload) => requestJson('/scraplog/add', { method: 'POST', body: payload }),
   list: (params = '') => requestJson(`/scraplog${params}`),
@@ -170,6 +174,8 @@ export const buildScanPayload = (scanType, form, profile = {}, photoFile = null)
       ...base,
       product_name: form.itemName || form.category || 'Item',
       category: form.category || 'expired_product',
+      brand: form.brand || '',
+      packaging_material: form.packagingMaterial || '',
       expiry_date: form.expiryDate || null,
       expiry_type: form.expiryType || 'best_before',
       ingredients,

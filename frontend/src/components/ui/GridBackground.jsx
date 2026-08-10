@@ -1,4 +1,3 @@
-import React from 'react';
 
 // 28 unique images combining our generated tiles and specific high-quality stock photos
 const gridItems = [
@@ -34,16 +33,16 @@ const gridItems = [
 
 export default function GridBackground() {
   return (
-    <div className="fixed inset-0 -z-20 overflow-hidden bg-[#f8f6ff]">
-      {/* Light frosted overlay with a slight blur for readability */}
-      <div className="absolute inset-0 z-10 bg-white/30 backdrop-blur-[3px]" />
+    <div className="fixed inset-0 -z-20 overflow-hidden bg-[#F6F7F6]">
+      {/* Soft washed overlay — low blur so images stay recognizable, enough tint for text legibility */}
+      <div className="absolute inset-0 z-10 bg-[#F6F7F6]/66 backdrop-blur-[4px]" />
 
-      {/* Grid of 28 items, sized so they cover the screen (fewer columns = larger items) */}
+      {/* Grid of waste-item tiles */}
       <div className="absolute inset-0 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3 p-3 select-none pointer-events-none overflow-hidden">
         {gridItems.map((src, i) => (
           <div
             key={i}
-            className="relative aspect-square rounded-2xl overflow-hidden shadow-md opacity-80 bg-gray-200/50"
+            className="relative aspect-square rounded-2xl overflow-hidden opacity-30 border border-purple-100/40 bg-white/40 shadow-sm"
           >
             <img
               src={src}

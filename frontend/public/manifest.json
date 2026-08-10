@@ -1,0 +1,44 @@
+{
+  "name": "WasteWise",
+  "short_name": "WasteWise",
+  "description": "Turn expired products, food scraps, and old electronics into safe, smart reuse — for every Indian household.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F6F7F6",
+  "theme_color": "#52b788",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en-IN",
+  "categories": ["lifestyle", "utilities", "sustainability"],
+  "icons": [
+    {
+      "src": "/wastewise-logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Scan an item",
+      "short_name": "Scan",
+      "description": "Quickly start a new waste scan",
+      "url": "/scan",
+      "icons": [{ "src": "/wastewise-logo.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Scrap Log",
+      "short_name": "Log",
+      "description": "View your household scrap log",
+      "url": "/log",
+      "icons": [{ "src": "/wastewise-logo.svg", "sizes": "any" }]
+    }
+  ]
+}

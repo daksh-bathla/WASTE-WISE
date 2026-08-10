@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Star, TrendingUp, Users } from 'lucide-react';
 import AppLayout from '../components/AppLayout';
-import { Badge, Card, PageHeader } from '../components/ui';
+import { Badge, Card, EmptyState, PageHeader } from '../components/ui';
 import { communityApi } from '../utils/backendApi';
 
 const filters = ['All', 'Most rated', 'This week'];
@@ -55,9 +55,17 @@ export default function CommunityPage() {
         <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
           <div className="grid gap-5">
             {loading && posts.length === 0 ? (
-              <p className="text-center text-text-muted font-medium py-10">Loading community posts...</p>
+              <EmptyState
+                icon={Users}
+                title="Loading posts…"
+                description="Fetching the latest community reuse results from across India."
+              />
             ) : posts.length === 0 ? (
-              <p className="text-center text-text-muted font-medium py-10">No community posts found.</p>
+              <EmptyState
+                icon={Users}
+                title="No posts yet"
+                description="Be the first to share a reuse result with the WasteWise community."
+              />
             ) : posts.map((post) => (
               <Card key={post.id} hoverable>
                 <div className="grid gap-5 sm:grid-cols-[112px_1fr]">
