@@ -15,15 +15,24 @@ const localOrigins = [
   'http://localhost:3000',
   'http://127.0.0.1:3000',
 ];
-const allowedOrigins = process.env.NODE_ENV === 'production'
-  ? [process.env.FRONTEND_URL].filter(Boolean)
-  : localOrigins;
+const productionOrigins = [
+  process.env.FRONTEND_URL,
+  'https://frontend-aigangsta41-9671s-projects.vercel.app',
+  'https://frontend-git-main-aigangsta41-9671s-projects.vercel.app',
+].filter(Boolean);
+const allowedOrigins = process.env.NODE_ENV === 'production' ? productionOrigins : localOrigins;
+
+const isAllowedOrigin = (origin) => {
+  if (!origin) return true;
+  if (allowedOrigins.includes(origin)) return true;
+  if (process.env.NODE_ENV === 'production' && /\.vercel\.app$/i.test(origin)) return true;
+  return false;
+};
 
 app.use(
   cors({
     origin(origin, callback) {
-      // Allow direct local access as well as browser requests from the Vite app.
-      if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+      if (isAllowedOrigin(origin)) return callback(null, true);
       return callback(new Error(`Origin not allowed by CORS: ${origin}`));
     },
     credentials: true,
