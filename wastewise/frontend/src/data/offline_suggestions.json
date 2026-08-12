@@ -1,0 +1,172 @@
+[
+  {
+    "input_keywords": ["banana peel", "banana skin"],
+    "component_breakdown": [
+      { "component_name": "banana peel", "suggestions": [
+        { "title": "Cattle feed supplement", "module_type": "animal_feed", "steps": ["Chop peels into small pieces", "Mix with dry fodder", "Feed to cattle in moderate quantities"] },
+        { "title": "Natural face pack for oily skin", "module_type": "traditional", "steps": ["Rub inner side of peel on clean face", "Leave for 15 minutes", "Rinse with lukewarm water"] },
+        { "title": "Plant fertiliser", "module_type": "modern", "steps": ["Dry peels in sun for 2-3 days", "Grind into powder", "Mix into soil around plants"] }
+      ]}
+    ],
+    "disclaimers": ["Do not feed banana peels to pets in large quantities. Patch test face pack before full application."]
+  },
+  {
+    "input_keywords": ["potato peel", "potato skin"],
+    "component_breakdown": [
+      { "component_name": "potato peel", "suggestions": [
+        { "title": "Compost enrichment", "module_type": "modern", "steps": ["Collect peels in compost bin", "Mix with dry leaves and paper", "Turn compost weekly"] },
+        { "title": "Natural garden fertiliser", "module_type": "diy", "steps": ["Boil peels in water for 15 minutes", "Cool the water completely", "Use to water plants"] },
+        { "title": "Bird feed (not for dogs)", "module_type": "animal_feed", "steps": ["Dry peels thoroughly in sun", "Break into small pieces", "Place in bird feeder away from dogs"] }
+      ]}
+    ],
+    "disclaimers": ["NEVER feed potato peels to dogs or cats — solanine toxicity risk."]
+  },
+  {
+    "input_keywords": ["expired curd", "expired yogurt", "sour curd"],
+    "component_breakdown": [
+      { "component_name": "expired curd", "suggestions": [
+        { "title": "Hair conditioning mask", "module_type": "traditional", "steps": ["Apply curd evenly to scalp and hair", "Leave for 20 minutes", "Wash with mild shampoo"] },
+        { "title": "Cooling face pack for summer", "module_type": "traditional", "steps": ["Apply thin layer on face", "Leave until dry", "Rinse with cool water"] },
+        { "title": "Cattle feed supplement", "module_type": "animal_feed", "steps": ["Mix curd with cattle feed", "Serve in moderate quantity", "Ensure fresh water is available"] },
+        { "title": "Plant fertiliser diluted", "module_type": "modern", "steps": ["Dilute curd in water 1:10 ratio", "Pour around plant base", "Apply once per week"] }
+      ]}
+    ],
+    "disclaimers": ["Do not consume expired curd. Avoid face application if you have active acne or skin infections."]
+  },
+  {
+    "input_keywords": ["expired coconut oil"],
+    "component_breakdown": [
+      { "component_name": "expired coconut oil", "suggestions": [
+        { "title": "Wood polish and conditioner", "module_type": "modern", "steps": ["Apply small amount to soft cloth", "Rub onto wooden surface", "Wipe excess with clean cloth"] },
+        { "title": "Leather conditioner", "module_type": "modern", "steps": ["Warm oil slightly", "Apply thin layer to leather", "Buff with dry cloth"] },
+        { "title": "Natural lamp oil", "module_type": "traditional", "steps": ["Pour into traditional lamp", "Insert cotton wick", "Light for prayer or decoration"] },
+        { "title": "Rust prevention for tools", "module_type": "diy", "steps": ["Clean metal surface first", "Apply thin coat of oil", "Wipe off excess"] },
+        { "title": "Cuticle and nail treatment", "module_type": "health", "steps": ["Warm oil slightly", "Massage into cuticles", "Leave overnight"] }
+      ]}
+    ],
+    "disclaimers": ["Do not consume expired coconut oil. Test on small area of leather first."]
+  },
+  {
+    "input_keywords": ["watermelon rind", "watermelon peel"],
+    "component_breakdown": [
+      { "component_name": "watermelon rind", "suggestions": [
+        { "title": "Cattle feed during summer", "module_type": "animal_feed", "steps": ["Cut rinds into small pieces", "Mix with dry fodder", "Serve fresh to cattle"] },
+        { "title": "Summer cooling face pack", "module_type": "traditional", "steps": ["Grind white part of rind into paste", "Apply on face for 15 minutes", "Rinse with cool water"] },
+        { "title": "Garden compost", "module_type": "modern", "steps": ["Chop rinds into small pieces", "Add to compost bin", "Mix with brown materials"] }
+      ]}
+    ],
+    "disclaimers": ["Rinse rinds thoroughly to remove pesticide residue before any use."]
+  },
+  {
+    "input_keywords": ["expired haldi", "expired turmeric"],
+    "component_breakdown": [
+      { "component_name": "expired turmeric", "suggestions": [
+        { "title": "Topical wound application", "module_type": "health", "steps": ["Mix with small amount of water to form paste", "Apply to minor cuts or wounds", "Cover with clean bandage"] },
+        { "title": "Plant pest repellent", "module_type": "modern", "steps": ["Mix 1 tsp turmeric in 1 litre water", "Spray on affected plants", "Repeat every 3 days"] },
+        { "title": "Natural fabric dye", "module_type": "diy", "steps": ["Boil turmeric in water", "Dip clean fabric into solution", "Let dry in shade"] }
+      ]}
+    ],
+    "disclaimers": ["Do not consume expired turmeric. Turmeric may stain skin and fabric temporarily."]
+  },
+  {
+    "input_keywords": ["old newspaper", "newspaper"],
+    "component_breakdown": [
+      { "component_name": "newspaper sheets", "suggestions": [
+        { "title": "Eco-friendly packaging material", "module_type": "modern", "steps": ["Fold into wrapping shape", "Secure with twine or tape", "Use for shipping fragile items"] },
+        { "title": "Composting material", "module_type": "modern", "steps": ["Shred newspaper into strips", "Add to compost bin as brown material", "Balance with green waste"] },
+        { "title": "Glass and window cleaner", "module_type": "diy", "steps": ["Crumple newspaper into ball", "Spray glass cleaner on glass", "Wipe with newspaper for streak-free shine"] },
+        { "title": "Seedling starter pots", "module_type": "diy", "steps": ["Roll newspaper around small cup", "Secure base with tape", "Fill with soil and plant seeds"] }
+      ]}
+    ],
+    "disclaimers": ["Avoid using coloured newspaper pages for composting or food contact."]
+  },
+  {
+    "input_keywords": ["plastic bottle", "plastic container"],
+    "component_breakdown": [
+      { "component_name": "plastic bottle body", "suggestions": [
+        { "title": "Self-watering plant pot", "module_type": "diy", "steps": ["Cut bottle in half horizontally", "Invert top half into bottom half", "Fill with soil and plant"] },
+        { "title": "Garden watering can", "module_type": "diy", "steps": ["Poke small holes in cap", "Fill bottle with water", "Use for gentle plant watering"] },
+        { "title": "Bird feeder", "module_type": "diy", "steps": ["Cut openings on sides of bottle", "Insert wooden spoons as perches", "Fill with bird seed"] }
+      ]}
+    ],
+    "disclaimers": ["Do not reuse food-grade plastic bottles for storing chemicals."]
+  },
+  {
+    "input_keywords": ["cardboard box", "cardboard"],
+    "component_breakdown": [
+      { "component_name": "cardboard material", "suggestions": [
+        { "title": "Seedling starter tray", "module_type": "diy", "steps": ["Cut cardboard into small cups", "Fill with potting soil", "Plant seeds directly — cardboard decomposes"] },
+        { "title": "Composting brown material", "module_type": "modern", "steps": ["Tear cardboard into small pieces", "Soak in water briefly", "Mix into compost bin"] },
+        { "title": "Drawer and shelf organiser", "module_type": "modern", "steps": ["Measure drawer dimensions", "Cut cardboard to create dividers", "Cover with decorative paper if desired"] }
+      ]}
+    ],
+    "disclaimers": ["Remove tape and labels before composting. Avoid waxed or coated cardboard for composting."]
+  },
+  {
+    "input_keywords": ["expired milk", "sour milk"],
+    "component_breakdown": [
+      { "component_name": "expired milk", "suggestions": [
+        { "title": "Garden fertiliser diluted", "module_type": "modern", "steps": ["Dilute milk with water 1:4 ratio", "Pour around plant base", "Apply once per week"] },
+        { "title": "Leather shoe cleaner", "module_type": "diy", "steps": ["Dip cloth in slightly sour milk", "Wipe leather shoes", "Buff with dry cloth"] },
+        { "title": "Plant calcium supplement", "module_type": "modern", "steps": ["Dilute milk in water", "Water tomato and pepper plants", "Provides calcium to prevent blossom end rot"] }
+      ]}
+    ],
+    "disclaimers": ["Do not consume expired milk. Dilute properly before garden use to avoid odour."]
+  },
+  {
+    "input_keywords": ["orange peel", "citrus peel", "lime peel", "lemon peel"],
+    "component_breakdown": [
+      { "component_name": "citrus peel", "suggestions": [
+        { "title": "Natural room freshener", "module_type": "diy", "steps": ["Dry peels in sun for 2-3 days", "Place in small cloth bags", "Keep in cupboards or drawers"] },
+        { "title": "Natural insect repellent", "module_type": "traditional", "steps": ["Boil peels in water", "Cool and strain", "Spray around entry points"] },
+        { "title": "Compost additive", "module_type": "modern", "steps": ["Chop peels into small pieces", "Add to compost in moderation", "Balance with other materials"] },
+        { "title": "Natural face scrub", "module_type": "traditional", "steps": ["Dry and grind peels into powder", "Mix with honey", "Gently scrub face in circular motion"] }
+      ]}
+    ],
+    "disclaimers": ["Citrus peels in large amounts can be harmful to some animals. Patch test face scrub before use."]
+  },
+  {
+    "input_keywords": ["expired coffee", "coffee grounds", "used coffee"],
+    "component_breakdown": [
+      { "component_name": "coffee grounds", "suggestions": [
+        { "title": "Garden fertiliser for acid-loving plants", "module_type": "modern", "steps": ["Spread grounds around rose bushes and azaleas", "Mix lightly into topsoil", "Water normally"] },
+        { "title": "Natural odour absorber", "module_type": "diy", "steps": ["Dry grounds completely", "Place in open container", "Keep in refrigerator or near garbage bin"] },
+        { "title": "Body scrub exfoliant", "module_type": "traditional", "steps": ["Mix grounds with coconut oil", "Gently scrub skin in circular motion", "Rinse thoroughly"] }
+      ]}
+    ],
+    "disclaimers": ["Coffee grounds can make soil more acidic — avoid using on alkaline-loving plants."]
+  },
+  {
+    "input_keywords": ["egg shell", "eggshell"],
+    "component_breakdown": [
+      { "component_name": "eggshell", "suggestions": [
+        { "title": "Garden calcium supplement", "module_type": "modern", "steps": ["Wash and dry shells completely", "Crush into fine powder", "Sprinkle around plants"] },
+        { "title": "Natural pest deterrent", "module_type": "diy", "steps": ["Crush shells into coarse pieces", "Scatter around plant base", "Sharp edges deter slugs and snails"] },
+        { "title": "Seed starter pots", "module_type": "diy", "steps": ["Carefully crack eggs in half", "Rinse shells and remove membrane", "Fill with soil and plant seeds"] }
+      ]}
+    ],
+    "disclaimers": ["Wash shells thoroughly to prevent bacterial growth and odour."]
+  },
+  {
+    "input_keywords": ["expired rice"],
+    "component_breakdown": [
+      { "component_name": "expired rice", "suggestions": [
+        { "title": "Bird feed", "module_type": "animal_feed", "steps": ["Spread dry rice in open area", "Place in bird feeder", "Keep dry to prevent mould"] },
+        { "title": "Phone moisture absorber", "module_type": "diy", "steps": ["Place rice in zip-lock bag", "Submerge wet phone in bag", "Leave for 24-48 hours"] },
+        { "title": "Vase filler and plant decoration", "module_type": "modern", "steps": ["Cook rice if desired", "Dye with food colouring", "Use as vase filler"] }
+      ]}
+    ],
+    "disclaimers": ["Do not consume expired rice. Do not feed mouldy rice to birds."]
+  },
+  {
+    "input_keywords": ["expired flour", "wheat flour", "atta"],
+    "component_breakdown": [
+      { "component_name": "expired flour", "suggestions": [
+        { "title": "Homemade play dough", "module_type": "diy", "steps": ["Mix flour with salt and water", "Add food colouring", "Knead until smooth"] },
+        { "title": "Natural cleaning paste", "module_type": "modern", "steps": ["Mix flour with water to form paste", "Apply to greasy surfaces", "Wipe clean with damp cloth"] },
+        { "title": "Compost material", "module_type": "modern", "steps": ["Sprinkle flour thinly in compost", "Mix well with other materials", "Avoid clumping"] }
+      ]}
+    ],
+    "disclaimers": ["Check for mould or weevils before using expired flour for any purpose."]
+  }
+]

@@ -1,0 +1,8 @@
+node_modules/
+backend/uploads/
+backend/config/fake-db-state.json
+backend/.env
+frontend/dist/
+frontend/.env
+.env
+.DS_Store

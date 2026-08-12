@@ -1,0 +1,31 @@
+.grid-background-container {
+  /* Tilt the container slightly for a more dynamic look */
+  transform: rotate(-4deg) scale(1.1);
+  transform-origin: center;
+}
+
+.animate-marquee {
+  animation: marquee 60s linear infinite;
+}
+
+.animate-marquee-reverse {
+  animation: marquee-reverse 60s linear infinite;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-33.3333%);
+  }
+}
+
+@keyframes marquee-reverse {
+  0% {
+    transform: translateY(-33.3333%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}

@@ -1,0 +1,2891 @@
+[
+  {
+    "input_keywords": [
+      "banana peel",
+      "banana skin"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "banana peel",
+        "suggestions": [
+          {
+            "title": "Cattle feed supplement",
+            "module_type": "animal_feed",
+            "steps": [
+              "Chop peels into small pieces",
+              "Mix with dry fodder",
+              "Feed to cattle in moderate quantities"
+            ],
+            "source": "verified_existing"
+          },
+          {
+            "title": "Natural face pack for oily skin",
+            "module_type": "traditional",
+            "steps": [
+              "Rub inner side of peel on clean face",
+              "Leave for 15 minutes",
+              "Rinse with lukewarm water"
+            ],
+            "source": "verified_existing"
+          },
+          {
+            "title": "Plant fertiliser",
+            "module_type": "modern",
+            "steps": [
+              "Dry peels in sun for 2-3 days",
+              "Grind into powder",
+              "Mix into soil around plants"
+            ],
+            "source": "verified_existing"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Do not feed banana peels to pets in large quantities. Patch test face pack before full application."
+    ],
+    "category": "food_peels"
+  },
+  {
+    "input_keywords": [
+      "potato peel",
+      "potato skin"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "potato peel",
+        "suggestions": [
+          {
+            "title": "Compost enrichment",
+            "module_type": "modern",
+            "steps": [
+              "Collect peels in compost bin",
+              "Mix with dry leaves and paper",
+              "Turn compost weekly"
+            ],
+            "source": "verified_existing"
+          },
+          {
+            "title": "Natural garden fertiliser",
+            "module_type": "diy",
+            "steps": [
+              "Boil peels in water for 15 minutes",
+              "Cool the water completely",
+              "Use to water plants"
+            ],
+            "source": "verified_existing"
+          },
+          {
+            "title": "Bird feed (not for dogs)",
+            "module_type": "animal_feed",
+            "steps": [
+              "Dry peels thoroughly in sun",
+              "Break into small pieces",
+              "Place in bird feeder away from dogs"
+            ],
+            "source": "verified_existing"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "NEVER feed potato peels to dogs or cats — solanine toxicity risk."
+    ],
+    "category": "food_peels"
+  },
+  {
+    "input_keywords": [
+      "expired curd",
+      "expired yogurt",
+      "sour curd"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "expired curd",
+        "suggestions": [
+          {
+            "title": "Hair conditioning mask",
+            "module_type": "traditional",
+            "steps": [
+              "Apply curd evenly to scalp and hair",
+              "Leave for 20 minutes",
+              "Wash with mild shampoo"
+            ],
+            "source": "verified_existing"
+          },
+          {
+            "title": "Cooling face pack for summer",
+            "module_type": "traditional",
+            "steps": [
+              "Apply thin layer on face",
+              "Leave until dry",
+              "Rinse with cool water"
+            ],
+            "source": "verified_existing"
+          },
+          {
+            "title": "Cattle feed supplement",
+            "module_type": "animal_feed",
+            "steps": [
+              "Mix curd with cattle feed",
+              "Serve in moderate quantity",
+              "Ensure fresh water is available"
+            ],
+            "source": "verified_existing"
+          },
+          {
+            "title": "Plant fertiliser diluted",
+            "module_type": "modern",
+            "steps": [
+              "Dilute curd in water 1:10 ratio",
+              "Pour around plant base",
+              "Apply once per week"
+            ],
+            "source": "verified_existing"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Do not consume expired curd. Avoid face application if you have active acne or skin infections."
+    ],
+    "category": "expired_products"
+  },
+  {
+    "input_keywords": [
+      "expired coconut oil"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "expired coconut oil",
+        "suggestions": [
+          {
+            "title": "Wood polish and conditioner",
+            "module_type": "modern",
+            "steps": [
+              "Apply small amount to soft cloth",
+              "Rub onto wooden surface",
+              "Wipe excess with clean cloth"
+            ],
+            "source": "verified_existing"
+          },
+          {
+            "title": "Leather conditioner",
+            "module_type": "modern",
+            "steps": [
+              "Warm oil slightly",
+              "Apply thin layer to leather",
+              "Buff with dry cloth"
+            ],
+            "source": "verified_existing"
+          },
+          {
+            "title": "Natural lamp oil",
+            "module_type": "traditional",
+            "steps": [
+              "Pour into traditional lamp",
+              "Insert cotton wick",
+              "Light for prayer or decoration"
+            ],
+            "source": "verified_existing"
+          },
+          {
+            "title": "Rust prevention for tools",
+            "module_type": "diy",
+            "steps": [
+              "Clean metal surface first",
+              "Apply thin coat of oil",
+              "Wipe off excess"
+            ],
+            "source": "verified_existing"
+          },
+          {
+            "title": "Cuticle and nail treatment",
+            "module_type": "health",
+            "steps": [
+              "Warm oil slightly",
+              "Massage into cuticles",
+              "Leave overnight"
+            ],
+            "source": "verified_existing"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Do not consume expired coconut oil. Test on small area of leather first."
+    ],
+    "category": "expired_products"
+  },
+  {
+    "input_keywords": [
+      "watermelon rind",
+      "watermelon peel"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "watermelon rind",
+        "suggestions": [
+          {
+            "title": "Cattle feed during summer",
+            "module_type": "animal_feed",
+            "steps": [
+              "Cut rinds into small pieces",
+              "Mix with dry fodder",
+              "Serve fresh to cattle"
+            ],
+            "source": "verified_existing"
+          },
+          {
+            "title": "Summer cooling face pack",
+            "module_type": "traditional",
+            "steps": [
+              "Grind white part of rind into paste",
+              "Apply on face for 15 minutes",
+              "Rinse with cool water"
+            ],
+            "source": "verified_existing"
+          },
+          {
+            "title": "Garden compost",
+            "module_type": "modern",
+            "steps": [
+              "Chop rinds into small pieces",
+              "Add to compost bin",
+              "Mix with brown materials"
+            ],
+            "source": "verified_existing"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Rinse rinds thoroughly to remove pesticide residue before any use."
+    ],
+    "category": "food_peels"
+  },
+  {
+    "input_keywords": [
+      "expired haldi",
+      "expired turmeric"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "expired turmeric",
+        "suggestions": [
+          {
+            "title": "Topical wound application",
+            "module_type": "health",
+            "steps": [
+              "Mix with small amount of water to form paste",
+              "Apply to minor cuts or wounds",
+              "Cover with clean bandage"
+            ],
+            "source": "verified_existing"
+          },
+          {
+            "title": "Plant pest repellent",
+            "module_type": "modern",
+            "steps": [
+              "Mix 1 tsp turmeric in 1 litre water",
+              "Spray on affected plants",
+              "Repeat every 3 days"
+            ],
+            "source": "verified_existing"
+          },
+          {
+            "title": "Natural fabric dye",
+            "module_type": "diy",
+            "steps": [
+              "Boil turmeric in water",
+              "Dip clean fabric into solution",
+              "Let dry in shade"
+            ],
+            "source": "verified_existing"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Do not consume expired turmeric. Turmeric may stain skin and fabric temporarily."
+    ],
+    "category": "expired_products"
+  },
+  {
+    "input_keywords": [
+      "old newspaper",
+      "newspaper"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "newspaper sheets",
+        "suggestions": [
+          {
+            "title": "Eco-friendly packaging material",
+            "module_type": "modern",
+            "steps": [
+              "Fold into wrapping shape",
+              "Secure with twine or tape",
+              "Use for shipping fragile items"
+            ],
+            "source": "verified_existing"
+          },
+          {
+            "title": "Composting material",
+            "module_type": "modern",
+            "steps": [
+              "Shred newspaper into strips",
+              "Add to compost bin as brown material",
+              "Balance with green waste"
+            ],
+            "source": "verified_existing"
+          },
+          {
+            "title": "Glass and window cleaner",
+            "module_type": "diy",
+            "steps": [
+              "Crumple newspaper into ball",
+              "Spray glass cleaner on glass",
+              "Wipe with newspaper for streak-free shine"
+            ],
+            "source": "verified_existing"
+          },
+          {
+            "title": "Seedling starter pots",
+            "module_type": "diy",
+            "steps": [
+              "Roll newspaper around small cup",
+              "Secure base with tape",
+              "Fill with soil and plant seeds"
+            ],
+            "source": "verified_existing"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Avoid using coloured newspaper pages for composting or food contact."
+    ],
+    "category": "waste_packaging"
+  },
+  {
+    "input_keywords": [
+      "plastic bottle",
+      "plastic container"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "plastic bottle body",
+        "suggestions": [
+          {
+            "title": "Self-watering plant pot",
+            "module_type": "diy",
+            "steps": [
+              "Cut bottle in half horizontally",
+              "Invert top half into bottom half",
+              "Fill with soil and plant"
+            ],
+            "source": "verified_existing"
+          },
+          {
+            "title": "Garden watering can",
+            "module_type": "diy",
+            "steps": [
+              "Poke small holes in cap",
+              "Fill bottle with water",
+              "Use for gentle plant watering"
+            ],
+            "source": "verified_existing"
+          },
+          {
+            "title": "Bird feeder",
+            "module_type": "diy",
+            "steps": [
+              "Cut openings on sides of bottle",
+              "Insert wooden spoons as perches",
+              "Fill with bird seed"
+            ],
+            "source": "verified_existing"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Do not reuse food-grade plastic bottles for storing chemicals."
+    ],
+    "category": "waste_packaging"
+  },
+  {
+    "input_keywords": [
+      "cardboard box",
+      "cardboard"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "cardboard material",
+        "suggestions": [
+          {
+            "title": "Seedling starter tray",
+            "module_type": "diy",
+            "steps": [
+              "Cut cardboard into small cups",
+              "Fill with potting soil",
+              "Plant seeds directly — cardboard decomposes"
+            ],
+            "source": "verified_existing"
+          },
+          {
+            "title": "Composting brown material",
+            "module_type": "modern",
+            "steps": [
+              "Tear cardboard into small pieces",
+              "Soak in water briefly",
+              "Mix into compost bin"
+            ],
+            "source": "verified_existing"
+          },
+          {
+            "title": "Drawer and shelf organiser",
+            "module_type": "modern",
+            "steps": [
+              "Measure drawer dimensions",
+              "Cut cardboard to create dividers",
+              "Cover with decorative paper if desired"
+            ],
+            "source": "verified_existing"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Remove tape and labels before composting. Avoid waxed or coated cardboard for composting."
+    ],
+    "category": "waste_packaging"
+  },
+  {
+    "input_keywords": [
+      "expired milk",
+      "sour milk"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "expired milk",
+        "suggestions": [
+          {
+            "title": "Garden fertiliser diluted",
+            "module_type": "modern",
+            "steps": [
+              "Dilute milk with water 1:4 ratio",
+              "Pour around plant base",
+              "Apply once per week"
+            ],
+            "source": "verified_existing"
+          },
+          {
+            "title": "Leather shoe cleaner",
+            "module_type": "diy",
+            "steps": [
+              "Dip cloth in slightly sour milk",
+              "Wipe leather shoes",
+              "Buff with dry cloth"
+            ],
+            "source": "verified_existing"
+          },
+          {
+            "title": "Plant calcium supplement",
+            "module_type": "modern",
+            "steps": [
+              "Dilute milk in water",
+              "Water tomato and pepper plants",
+              "Provides calcium to prevent blossom end rot"
+            ],
+            "source": "verified_existing"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Do not consume expired milk. Dilute properly before garden use to avoid odour."
+    ],
+    "category": "expired_products"
+  },
+  {
+    "input_keywords": [
+      "orange peel",
+      "citrus peel",
+      "lime peel",
+      "lemon peel"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "citrus peel",
+        "suggestions": [
+          {
+            "title": "Natural room freshener",
+            "module_type": "diy",
+            "steps": [
+              "Dry peels in sun for 2-3 days",
+              "Place in small cloth bags",
+              "Keep in cupboards or drawers"
+            ],
+            "source": "verified_existing"
+          },
+          {
+            "title": "Natural insect repellent",
+            "module_type": "traditional",
+            "steps": [
+              "Boil peels in water",
+              "Cool and strain",
+              "Spray around entry points"
+            ],
+            "source": "verified_existing"
+          },
+          {
+            "title": "Compost additive",
+            "module_type": "modern",
+            "steps": [
+              "Chop peels into small pieces",
+              "Add to compost in moderation",
+              "Balance with other materials"
+            ],
+            "source": "verified_existing"
+          },
+          {
+            "title": "Natural face scrub",
+            "module_type": "traditional",
+            "steps": [
+              "Dry and grind peels into powder",
+              "Mix with honey",
+              "Gently scrub face in circular motion"
+            ],
+            "source": "verified_existing"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Citrus peels in large amounts can be harmful to some animals. Patch test face scrub before use."
+    ],
+    "category": "food_peels"
+  },
+  {
+    "input_keywords": [
+      "expired coffee",
+      "coffee grounds",
+      "used coffee"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "coffee grounds",
+        "suggestions": [
+          {
+            "title": "Garden fertiliser for acid-loving plants",
+            "module_type": "modern",
+            "steps": [
+              "Spread grounds around rose bushes and azaleas",
+              "Mix lightly into topsoil",
+              "Water normally"
+            ],
+            "source": "verified_existing"
+          },
+          {
+            "title": "Natural odour absorber",
+            "module_type": "diy",
+            "steps": [
+              "Dry grounds completely",
+              "Place in open container",
+              "Keep in refrigerator or near garbage bin"
+            ],
+            "source": "verified_existing"
+          },
+          {
+            "title": "Body scrub exfoliant",
+            "module_type": "traditional",
+            "steps": [
+              "Mix grounds with coconut oil",
+              "Gently scrub skin in circular motion",
+              "Rinse thoroughly"
+            ],
+            "source": "verified_existing"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Coffee grounds can make soil more acidic — avoid using on alkaline-loving plants."
+    ],
+    "category": "food_peels"
+  },
+  {
+    "input_keywords": [
+      "egg shell",
+      "eggshell"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "eggshell",
+        "suggestions": [
+          {
+            "title": "Garden calcium supplement",
+            "module_type": "modern",
+            "steps": [
+              "Wash and dry shells completely",
+              "Crush into fine powder",
+              "Sprinkle around plants"
+            ],
+            "source": "verified_existing"
+          },
+          {
+            "title": "Natural pest deterrent",
+            "module_type": "diy",
+            "steps": [
+              "Crush shells into coarse pieces",
+              "Scatter around plant base",
+              "Sharp edges deter slugs and snails"
+            ],
+            "source": "verified_existing"
+          },
+          {
+            "title": "Seed starter pots",
+            "module_type": "diy",
+            "steps": [
+              "Carefully crack eggs in half",
+              "Rinse shells and remove membrane",
+              "Fill with soil and plant seeds"
+            ],
+            "source": "verified_existing"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Wash shells thoroughly to prevent bacterial growth and odour."
+    ],
+    "category": "food_peels"
+  },
+  {
+    "input_keywords": [
+      "expired rice"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "expired rice",
+        "suggestions": [
+          {
+            "title": "Bird feed",
+            "module_type": "animal_feed",
+            "steps": [
+              "Spread dry rice in open area",
+              "Place in bird feeder",
+              "Keep dry to prevent mould"
+            ],
+            "source": "verified_existing"
+          },
+          {
+            "title": "Phone moisture absorber",
+            "module_type": "diy",
+            "steps": [
+              "Place rice in zip-lock bag",
+              "Submerge wet phone in bag",
+              "Leave for 24-48 hours"
+            ],
+            "source": "verified_existing"
+          },
+          {
+            "title": "Vase filler and plant decoration",
+            "module_type": "modern",
+            "steps": [
+              "Cook rice if desired",
+              "Dye with food colouring",
+              "Use as vase filler"
+            ],
+            "source": "verified_existing"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Do not consume expired rice. Do not feed mouldy rice to birds."
+    ],
+    "category": "expired_products"
+  },
+  {
+    "input_keywords": [
+      "expired flour",
+      "wheat flour",
+      "atta"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "expired flour",
+        "suggestions": [
+          {
+            "title": "Homemade play dough",
+            "module_type": "diy",
+            "steps": [
+              "Mix flour with salt and water",
+              "Add food colouring",
+              "Knead until smooth"
+            ],
+            "source": "verified_existing"
+          },
+          {
+            "title": "Natural cleaning paste",
+            "module_type": "modern",
+            "steps": [
+              "Mix flour with water to form paste",
+              "Apply to greasy surfaces",
+              "Wipe clean with damp cloth"
+            ],
+            "source": "verified_existing"
+          },
+          {
+            "title": "Compost material",
+            "module_type": "modern",
+            "steps": [
+              "Sprinkle flour thinly in compost",
+              "Mix well with other materials",
+              "Avoid clumping"
+            ],
+            "source": "verified_existing"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Check for mould or weevils before using expired flour for any purpose."
+    ],
+    "category": "expired_products"
+  },
+  {
+    "category": "food_peels",
+    "input_keywords": [
+      "apple peel",
+      "apple skin",
+      "apple core"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "apple peel",
+        "suggestions": [
+          {
+            "title": "Infused apple-peel vinegar for cleaning",
+            "module_type": "modern",
+            "steps": [
+              "Pack peels from 4-5 apples into a jar",
+              "Cover completely with 2 cups white vinegar",
+              "Seal and steep for 14 days at room temperature, shaking every 2 days",
+              "Strain and dilute 1:1 with water in a spray bottle for streak-free glass cleaning"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Slow-cooked apple peel tea for digestion",
+            "module_type": "traditional",
+            "steps": [
+              "Simmer peels from 2 apples in 2 cups water for 10 minutes",
+              "Add 1 tsp cinnamon powder while simmering",
+              "Strain and drink warm after meals to aid digestion"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Pectin extract for homemade jam thickening",
+            "module_type": "diy",
+            "steps": [
+              "Boil peels and cores from 6 apples in 3 cups water for 25 minutes",
+              "Strain through muslin cloth, pressing to extract liquid",
+              "Reduce liquid by half over low heat until syrupy",
+              "Store in a sealed jar in the fridge for up to 5 days, use 2 tbsp per jam batch"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Wash apples thoroughly before peeling to remove pesticide residue if not organic."
+    ]
+  },
+  {
+    "category": "food_peels",
+    "input_keywords": [
+      "pomegranate peel",
+      "anar chilka",
+      "pomegranate rind"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "pomegranate peel",
+        "suggestions": [
+          {
+            "title": "Sun-dried powder for face pack against acne",
+            "module_type": "traditional",
+            "steps": [
+              "Sun-dry peels from 2 pomegranates for 3-4 days until brittle",
+              "Grind into fine powder using a dry mixer",
+              "Mix 1 tbsp powder with 1 tsp rosewater to form a paste",
+              "Apply to acne-prone areas for 15 minutes then rinse with lukewarm water"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Natural dye for cotton fabric",
+            "module_type": "diy",
+            "steps": [
+              "Boil peels from 4 pomegranates in 4 cups water for 30 minutes",
+              "Strain the dye liquid into a large pot",
+              "Soak pre-washed cotton fabric in the dye for 45 minutes, stirring occasionally",
+              "Rinse in cold water and air-dry away from direct sunlight"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Tooth powder for gum strengthening",
+            "module_type": "traditional",
+            "steps": [
+              "Dry and grind peel from 1 pomegranate into fine powder",
+              "Mix 1/2 tsp powder with a pinch of rock salt",
+              "Rub gently on gums and teeth for 2 minutes twice a week, then rinse"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Patch test any peel-based paste on the inner arm 24 hours before facial use."
+    ]
+  },
+  {
+    "category": "food_peels",
+    "input_keywords": [
+      "mango peel",
+      "mango skin"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "mango peel",
+        "suggestions": [
+          {
+            "title": "Mango peel chutney for a tangy side dish",
+            "module_type": "diy",
+            "steps": [
+              "Chop peels from 3 raw or ripe mangoes into small pieces",
+              "Sauté with 1 tsp mustard seeds and 2 dried red chillies in 1 tbsp oil for 3 minutes",
+              "Add 1 tbsp jaggery and 1/2 cup water, simmer for 10 minutes until thick",
+              "Cool completely before storing in an airtight jar for up to 4 days"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Compost accelerator for garden beds",
+            "module_type": "modern",
+            "steps": [
+              "Chop peels from 4-5 mangoes into 1-inch pieces",
+              "Layer into compost bin with equal parts dry leaves",
+              "Turn the pile every 5 days for 3 weeks to speed up decomposition"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Raw mango peel can be tart on skin; avoid direct facial application without dilution."
+    ]
+  },
+  {
+    "category": "food_peels",
+    "input_keywords": [
+      "pineapple peel",
+      "pineapple skin",
+      "pineapple core"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "pineapple peel",
+        "suggestions": [
+          {
+            "title": "Fermented enzyme cleaner (bio-enzyme) for floors",
+            "module_type": "modern",
+            "steps": [
+              "Fill a 2-litre bottle with peels from 1 pineapple, 200g jaggery, and 600ml water",
+              "Leave 1/3 of the bottle empty to allow gas expansion",
+              "Seal loosely and ferment for 3 months, releasing gas every 3 days",
+              "Strain and dilute 1 part enzyme to 20 parts water for floor cleaning"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Meat tenderiser marinade using peel extract",
+            "module_type": "diy",
+            "steps": [
+              "Blend peel and core from 1 pineapple with 1/4 cup water",
+              "Strain to collect the enzyme-rich juice",
+              "Marinate 250g meat in 2 tbsp juice for 20 minutes maximum before cooking",
+              "Rinse briefly before cooking to avoid over-softening"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Do not marinate meat in pineapple enzyme for more than 30 minutes as it can turn the texture mushy."
+    ]
+  },
+  {
+    "category": "food_peels",
+    "input_keywords": [
+      "papaya peel",
+      "papaya skin"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "papaya peel",
+        "suggestions": [
+          {
+            "title": "Exfoliating scrub for rough elbows and heels",
+            "module_type": "traditional",
+            "steps": [
+              "Rub the inner side of fresh papaya peel directly on elbows and heels for 5 minutes",
+              "Leave the residue on for 10 minutes",
+              "Rinse with lukewarm water and pat dry"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Natural fertiliser tea for flowering plants",
+            "module_type": "modern",
+            "steps": [
+              "Soak peels from 1 papaya in 1 litre water for 48 hours",
+              "Strain the liquid and dilute 1:3 with fresh water",
+              "Water flowering plants with 200ml of the mixture once a week"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Papain enzyme in raw papaya peel can irritate sensitive skin; limit contact time to under 10 minutes."
+    ]
+  },
+  {
+    "category": "food_peels",
+    "input_keywords": [
+      "cucumber peel",
+      "cucumber skin"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "cucumber peel",
+        "suggestions": [
+          {
+            "title": "Cooling under-eye compress for puffiness",
+            "module_type": "traditional",
+            "steps": [
+              "Chill peels from 1 cucumber in the fridge for 30 minutes",
+              "Place a strip over each closed eye for 10 minutes",
+              "Discard after single use"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Odour-absorbing fridge freshener",
+            "module_type": "diy",
+            "steps": [
+              "Place peels from 2 cucumbers in an open small bowl",
+              "Set the bowl on the middle fridge shelf",
+              "Replace with fresh peels every 2 days to keep absorbing odours"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Discard used peels after skin contact; do not reuse on eyes twice."
+    ]
+  },
+  {
+    "category": "food_peels",
+    "input_keywords": [
+      "carrot peel",
+      "carrot skin"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "carrot peel",
+        "suggestions": [
+          {
+            "title": "Vegetable stock base for soups",
+            "module_type": "diy",
+            "steps": [
+              "Collect peels from 5-6 carrots along with onion skins",
+              "Simmer in 1.5 litres water for 40 minutes with 1 bay leaf",
+              "Strain and use the stock within 3 days, refrigerated, as a soup base"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Crunchy roasted peel snack",
+            "module_type": "modern",
+            "steps": [
+              "Toss peels from 6 carrots with 1 tsp oil and a pinch of salt",
+              "Spread on a baking tray and roast at 180°C for 12 minutes until crisp",
+              "Cool for 5 minutes before eating as a fibre-rich snack"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Wash carrots thoroughly before peeling to remove soil residue."
+    ]
+  },
+  {
+    "category": "food_peels",
+    "input_keywords": [
+      "onion skin",
+      "onion peel"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "onion skin",
+        "suggestions": [
+          {
+            "title": "Natural dye for Easter-style eggs and wool",
+            "module_type": "diy",
+            "steps": [
+              "Simmer skins from 8-10 onions in 2 cups water for 20 minutes",
+              "Strain the golden-brown dye liquid",
+              "Simmer boiled eggs or wet wool in the dye for 15 minutes to absorb colour"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Antioxidant-rich broth booster",
+            "module_type": "traditional",
+            "steps": [
+              "Add skins from 4-5 onions to a simmering pot of vegetable stock",
+              "Simmer together for 20 minutes",
+              "Strain out skins before serving the broth"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Onion skin dye can stain hands and fabric; wear gloves when straining."
+    ]
+  },
+  {
+    "category": "food_peels",
+    "input_keywords": [
+      "pumpkin peel",
+      "pumpkin seeds"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "pumpkin seeds",
+        "suggestions": [
+          {
+            "title": "Roasted protein-rich snack",
+            "module_type": "modern",
+            "steps": [
+              "Rinse seeds from 1 pumpkin and pat dry with a cloth",
+              "Toss with 1 tsp oil and a pinch of salt",
+              "Roast at 170°C for 15 minutes, stirring halfway, until golden"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      },
+      {
+        "component_name": "pumpkin peel",
+        "suggestions": [
+          {
+            "title": "Compost booster for nitrogen balance",
+            "module_type": "modern",
+            "steps": [
+              "Chop peel from 1 pumpkin into small pieces",
+              "Mix into compost bin with dry carbon material like dried leaves in equal parts",
+              "Turn weekly for 3 weeks to fully break down"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Ensure pumpkin seeds are fully dry before storing to prevent mould."
+    ]
+  },
+  {
+    "category": "food_peels",
+    "input_keywords": [
+      "corn husk",
+      "corn cob"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "corn husk",
+        "suggestions": [
+          {
+            "title": "Woven eco-friendly wrapping for tamales-style steaming",
+            "module_type": "traditional",
+            "steps": [
+              "Soak husks from 4 corn cobs in warm water for 20 minutes to soften",
+              "Pat dry and use to wrap fillings before steaming for 25 minutes",
+              "Discard after single use if visibly soiled"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Dried craft material for handmade dolls",
+            "module_type": "diy",
+            "steps": [
+              "Sun-dry husks from 6 corn cobs for 2 days until pale and flexible",
+              "Braid 3-4 strips together to form doll limbs and body",
+              "Secure with cotton thread at joints"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      },
+      {
+        "component_name": "corn cob",
+        "suggestions": [
+          {
+            "title": "Smoker chips substitute for grilling flavour",
+            "module_type": "modern",
+            "steps": [
+              "Dry 3-4 corn cobs completely for 5 days",
+              "Break into 2-inch pieces",
+              "Soak in water for 30 minutes before placing on hot coals to add smoky aroma while grilling"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Ensure husks are fully dried before storage to avoid mould growth."
+    ]
+  },
+  {
+    "category": "food_peels",
+    "input_keywords": [
+      "tea bag",
+      "used tea leaves",
+      "tea leaves"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "used tea leaves",
+        "suggestions": [
+          {
+            "title": "Iron-boosting soil amendment for acid-loving plants",
+            "module_type": "modern",
+            "steps": [
+              "Collect 1 cup of cooled, used tea leaves",
+              "Spread evenly over soil around rose or hibiscus plants",
+              "Water lightly to help nutrients absorb into the soil"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Deodorising sachet for shoes and drawers",
+            "module_type": "traditional",
+            "steps": [
+              "Dry used tea bags for 24 hours until no moisture remains",
+              "Place 2-3 dried bags inside a small cloth pouch",
+              "Tuck into shoes or drawers to absorb odour for up to 2 weeks"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Do not reuse tea leaves that show any mould growth."
+    ]
+  },
+  {
+    "category": "food_peels",
+    "input_keywords": [
+      "bottle gourd peel",
+      "lauki peel",
+      "opo squash peel"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "bottle gourd peel",
+        "suggestions": [
+          {
+            "title": "Skin-soothing chutney for cooling summer meals",
+            "module_type": "traditional",
+            "steps": [
+              "Chop peel from 1 bottle gourd finely",
+              "Sauté with 1 tsp cumin seeds and a pinch of salt in 1 tsp oil for 5 minutes",
+              "Blend with 2 tbsp yogurt into a smooth chutney once cooled"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Cook bottle gourd peel thoroughly before consumption; raw peel can taste bitter and irritate the throat if the gourd is bitter-variant."
+    ]
+  },
+  {
+    "category": "food_peels",
+    "input_keywords": [
+      "ginger peel",
+      "ginger skin"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "ginger peel",
+        "suggestions": [
+          {
+            "title": "Warming digestive tea concentrate",
+            "module_type": "traditional",
+            "steps": [
+              "Simmer peel from 3-4 inches of ginger in 2 cups water for 15 minutes",
+              "Add 1 tsp honey after straining and cooling slightly",
+              "Drink 1 cup warm after meals to ease bloating"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Infused oil for joint massage",
+            "module_type": "traditional",
+            "steps": [
+              "Dry ginger peel from 4 inches of ginger for 2 days",
+              "Warm 100ml sesame oil with the dried peel over low heat for 10 minutes",
+              "Strain and massage 1 tsp warm oil onto joints for relief"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Test infused oil on a small skin patch first to rule out irritation."
+    ]
+  },
+  {
+    "category": "food_peels",
+    "input_keywords": [
+      "green pea pods",
+      "pea shells"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "pea pods",
+        "suggestions": [
+          {
+            "title": "Pureed pod soup rich in fibre",
+            "module_type": "diy",
+            "steps": [
+              "Boil pods from 500g peas in 2 cups water for 15 minutes until soft",
+              "Blend with 1/2 cup milk and a pinch of pepper until smooth",
+              "Strain fibrous bits and serve warm"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Only use pods that are free from pesticide spotting or mould."
+    ]
+  },
+  {
+    "category": "food_peels",
+    "input_keywords": [
+      "cauliflower stalk",
+      "broccoli stalk",
+      "cauliflower stem"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "cauliflower stalk",
+        "suggestions": [
+          {
+            "title": "Crunchy pickled stalk relish",
+            "module_type": "diy",
+            "steps": [
+              "Chop stalks from 1 cauliflower into thin coins",
+              "Mix with 2 tbsp vinegar, 1 tsp salt, and 1/2 tsp mustard seeds",
+              "Refrigerate in a sealed jar for 3 days before eating, keeps for 2 weeks"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Refrigerate pickled stalks at all times and discard if any off smell develops."
+    ]
+  },
+  {
+    "category": "expired_products",
+    "input_keywords": [
+      "expired honey",
+      "crystallised honey"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "expired honey",
+        "suggestions": [
+          {
+            "title": "Wood furniture polish and scratch filler",
+            "module_type": "modern",
+            "steps": [
+              "Warm 2 tbsp expired honey until it turns liquid again",
+              "Rub into wood scratches with a soft cloth in circular motions",
+              "Buff with a dry cloth after 10 minutes for a subtle shine"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Overnight lip and heel softening balm",
+            "module_type": "traditional",
+            "steps": [
+              "Mix 1 tsp honey with 1 tsp coconut oil",
+              "Apply a thin layer to lips or cracked heels before bed",
+              "Rinse off in the morning with lukewarm water"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Honey rarely spoils but may crystallise; only discard if it smells fermented or shows mould."
+    ]
+  },
+  {
+    "category": "expired_products",
+    "input_keywords": [
+      "expired vinegar"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "expired vinegar",
+        "suggestions": [
+          {
+            "title": "Multi-surface descaling cleaner",
+            "module_type": "modern",
+            "steps": [
+              "Mix 1 cup expired vinegar with 1 cup water in a spray bottle",
+              "Spray onto hard water stains on taps or tiles",
+              "Let sit for 10 minutes then scrub with a soft brush and rinse"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Weed suppressant for garden pathways",
+            "module_type": "diy",
+            "steps": [
+              "Pour undiluted expired vinegar directly onto weed leaves and stems",
+              "Apply on a sunny day for best absorption",
+              "Reapply every 3 days until weeds wither"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Avoid using vinegar spray near plants you want to keep, as it can damage nearby foliage."
+    ]
+  },
+  {
+    "category": "expired_products",
+    "input_keywords": [
+      "expired bread",
+      "stale bread"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "expired bread",
+        "suggestions": [
+          {
+            "title": "Homemade breadcrumbs for coating and thickening",
+            "module_type": "diy",
+            "steps": [
+              "Toast 4 slices of stale bread in a dry pan until crisp, about 8 minutes",
+              "Cool completely, then grind into fine crumbs using a mixer",
+              "Store in an airtight container for up to 2 weeks to use in cooking"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Bird feed for garden visitors",
+            "module_type": "animal_feed",
+            "steps": [
+              "Break 3-4 slices of stale bread into small 1-inch pieces",
+              "Scatter in a clean, dry outdoor feeding tray",
+              "Refresh daily and avoid mouldy bread, safe for common garden birds like sparrows"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Never use bread with visible mould for any purpose, including bird feed."
+    ]
+  },
+  {
+    "category": "expired_products",
+    "input_keywords": [
+      "expired sugar",
+      "clumped sugar"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "expired sugar",
+        "suggestions": [
+          {
+            "title": "DIY exfoliating body scrub",
+            "module_type": "diy",
+            "steps": [
+              "Mix 3 tbsp clumped sugar with 2 tbsp olive oil",
+              "Massage onto damp skin in circular motions for 3 minutes",
+              "Rinse thoroughly with warm water"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Ant-trap bait for kitchen pest control",
+            "module_type": "traditional",
+            "steps": [
+              "Mix 1 tbsp sugar with 1 tbsp borax powder and 3 tbsp water",
+              "Soak cotton balls in the mixture and place in small containers",
+              "Position containers near ant trails away from children and pets"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Keep the borax-sugar bait strictly out of reach of children and pets as borax is toxic if ingested."
+    ]
+  },
+  {
+    "category": "expired_products",
+    "input_keywords": [
+      "expired salt",
+      "old salt"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "expired salt",
+        "suggestions": [
+          {
+            "title": "Cast-iron pan rust scrub",
+            "module_type": "modern",
+            "steps": [
+              "Sprinkle 2 tbsp coarse salt over the rusted area of the pan",
+              "Scrub with half a cut potato or a stiff brush for 5 minutes",
+              "Rinse and dry the pan thoroughly to prevent new rust"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Soothing warm foot soak",
+            "module_type": "traditional",
+            "steps": [
+              "Dissolve 3 tbsp salt in a basin of warm water",
+              "Soak feet for 15 minutes to relieve tiredness",
+              "Pat dry and moisturise afterward"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Salt technically does not expire; discard only if visibly contaminated."
+    ]
+  },
+  {
+    "category": "expired_products",
+    "input_keywords": [
+      "expired ghee",
+      "rancid ghee"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "expired ghee",
+        "suggestions": [
+          {
+            "title": "Leather shoe conditioner",
+            "module_type": "modern",
+            "steps": [
+              "Warm 1 tbsp ghee until soft but not liquid",
+              "Rub onto leather shoes with a soft cloth in small circles",
+              "Buff with a dry cloth after 15 minutes to restore shine"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Diya (oil lamp) fuel for décor use",
+            "module_type": "religious",
+            "steps": [
+              "Melt 2 tbsp expired ghee gently in a small pan",
+              "Pour into a clay diya and insert a cotton wick",
+              "Light in a ventilated space for decorative or ritual use only, not for cooking"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Do not consume rancid ghee; use only for external or non-food purposes."
+    ]
+  },
+  {
+    "category": "expired_products",
+    "input_keywords": [
+      "expired mustard oil",
+      "rancid mustard oil"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "expired mustard oil",
+        "suggestions": [
+          {
+            "title": "Hinge and lock lubricant",
+            "module_type": "modern",
+            "steps": [
+              "Apply 2-3 drops of expired mustard oil to squeaky door hinges",
+              "Work the hinge back and forth 5-6 times to spread the oil",
+              "Wipe away excess with a cloth"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Traditional wood furniture conditioner",
+            "module_type": "traditional",
+            "steps": [
+              "Apply 1 tbsp oil to a soft cloth",
+              "Rub onto wooden furniture surfaces in the direction of the grain",
+              "Buff after 20 minutes for a natural sheen"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Do not use rancid mustard oil for cooking or skin application; external hard-surface use only."
+    ]
+  },
+  {
+    "category": "expired_products",
+    "input_keywords": [
+      "expired baking soda"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "expired baking soda",
+        "suggestions": [
+          {
+            "title": "Deodorising carpet freshener",
+            "module_type": "modern",
+            "steps": [
+              "Sprinkle 4 tbsp baking soda evenly over the carpet",
+              "Let sit for 20 minutes to absorb odours",
+              "Vacuum thoroughly to remove all residue"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Silver jewellery cleaner",
+            "module_type": "diy",
+            "steps": [
+              "Mix 2 tbsp baking soda with 1 tbsp water into a paste",
+              "Rub gently onto tarnished silver with a soft cloth for 2 minutes",
+              "Rinse with water and dry immediately"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Expired baking soda loses leavening power but remains fine for cleaning purposes."
+    ]
+  },
+  {
+    "category": "expired_products",
+    "input_keywords": [
+      "expired lipstick",
+      "old lipstick"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "expired lipstick",
+        "suggestions": [
+          {
+            "title": "DIY cream blush for cheeks",
+            "module_type": "diy",
+            "steps": [
+              "Scrape out 1/4 tsp of lipstick with a clean spatula",
+              "Dab onto cheeks and blend with fingertips in circular motions",
+              "Perform a patch test on the inner wrist 24 hours before facial use"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Fabric-safe marking tool for tailoring",
+            "module_type": "modern",
+            "steps": [
+              "Use the lipstick tip to mark fabric hemlines lightly",
+              "Draw along the seam line for visibility while cutting",
+              "Wash the marked area with soap before wearing the garment"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Discard lipstick that smells rancid or shows colour separation; do not apply near eyes or on broken skin."
+    ]
+  },
+  {
+    "category": "expired_products",
+    "input_keywords": [
+      "expired sunscreen"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "expired sunscreen",
+        "suggestions": [
+          {
+            "title": "Rust-prevention coating for garden tools",
+            "module_type": "modern",
+            "steps": [
+              "Apply a thin layer of expired sunscreen to clean, dry metal tool surfaces",
+              "Rub in with a cloth to form a protective film",
+              "Wipe off and reapply every 2 months in humid storage"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Do not use expired sunscreen on skin as UV protection is no longer reliable."
+    ]
+  },
+  {
+    "category": "expired_products",
+    "input_keywords": [
+      "expired shampoo"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "expired shampoo",
+        "suggestions": [
+          {
+            "title": "Hand-wash detergent for delicate fabrics",
+            "module_type": "diy",
+            "steps": [
+              "Dilute 2 tbsp expired shampoo in 2 litres of water",
+              "Soak delicate garments for 20 minutes",
+              "Rinse thoroughly twice with clean water"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Bubble solution for outdoor kids' play",
+            "module_type": "modern",
+            "steps": [
+              "Mix 3 tbsp shampoo with 1 cup water and 1 tsp sugar",
+              "Stir gently to avoid excess foam",
+              "Use with a bubble wand outdoors for children's play"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Avoid using expired shampoo on scalp or hair if it shows separation or an off smell."
+    ]
+  },
+  {
+    "category": "expired_products",
+    "input_keywords": [
+      "expired hair oil"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "expired hair oil",
+        "suggestions": [
+          {
+            "title": "Squeak-free lubricant for bicycle chains",
+            "module_type": "modern",
+            "steps": [
+              "Apply 4-5 drops of hair oil directly onto the bicycle chain links",
+              "Rotate pedals to work the oil evenly through the chain",
+              "Wipe off excess with a rag to prevent dust build-up"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Cuticle softening treatment",
+            "module_type": "traditional",
+            "steps": [
+              "Warm 1 tsp hair oil slightly between palms",
+              "Massage into nail cuticles for 2 minutes",
+              "Leave for 10 minutes before washing hands"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Discontinue use on skin if any irritation, redness, or unusual smell is noticed."
+    ]
+  },
+  {
+    "category": "expired_products",
+    "input_keywords": [
+      "expired toothpaste"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "expired toothpaste",
+        "suggestions": [
+          {
+            "title": "Silver and jewellery polish",
+            "module_type": "diy",
+            "steps": [
+              "Apply a pea-sized amount of expired toothpaste to a soft cloth",
+              "Rub gently onto tarnished silver jewellery for 2 minutes",
+              "Rinse with water and buff dry"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Scuff-mark remover for sneakers",
+            "module_type": "modern",
+            "steps": [
+              "Apply 1/2 tsp toothpaste to scuff marks on white sneakers",
+              "Scrub gently with an old toothbrush for 1 minute",
+              "Wipe clean with a damp cloth"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Do not use expired toothpaste for brushing teeth; fluoride effectiveness may be reduced."
+    ]
+  },
+  {
+    "category": "expired_products",
+    "input_keywords": [
+      "expired jam",
+      "expired fruit preserve"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "expired jam",
+        "suggestions": [
+          {
+            "title": "Natural furniture wood stain fixer",
+            "module_type": "diy",
+            "steps": [
+              "Warm 2 tbsp expired jam until slightly runny",
+              "Rub into light wood scratches with a cloth",
+              "Wipe excess after 5 minutes and buff dry"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Discard jam entirely if mould is visible; do not use mouldy jam for any household purpose."
+    ]
+  },
+  {
+    "category": "expired_products",
+    "input_keywords": [
+      "expired pickle",
+      "expired achaar"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "expired pickle",
+        "suggestions": [
+          {
+            "title": "Oil-rich seasoning base for stir-fries",
+            "module_type": "diy",
+            "steps": [
+              "Strain 2 tbsp oil from the expired pickle jar, discarding the solid pieces",
+              "Heat the oil briefly in a pan for 1 minute to use as a spiced tempering base",
+              "Use only if the oil shows no cloudiness or off smell"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Discard the pickle entirely, including the oil, if any mould or fermented smell is present."
+    ]
+  },
+  {
+    "category": "expired_products",
+    "input_keywords": [
+      "expired biscuits",
+      "expired cookies"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "expired biscuits",
+        "suggestions": [
+          {
+            "title": "Crushed base for no-bake dessert crusts",
+            "module_type": "diy",
+            "steps": [
+              "Crush 10-12 expired biscuits into fine crumbs using a rolling pin",
+              "Mix with 2 tbsp melted butter until it resembles wet sand",
+              "Press into a dish and refrigerate for 30 minutes to set as a dessert base"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Only use biscuits that show no mould, dampness, or rancid smell."
+    ]
+  },
+  {
+    "category": "expired_products",
+    "input_keywords": [
+      "expired soap bar",
+      "old soap bar"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "expired soap bar",
+        "suggestions": [
+          {
+            "title": "Drawer and wardrobe fragrance sachet",
+            "module_type": "diy",
+            "steps": [
+              "Grate 1 bar of soap into small shavings",
+              "Fill a breathable cloth pouch with 2 tbsp shavings",
+              "Place in drawers to keep clothes fresh for up to a month"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Sticky zipper and drawer-slide lubricant",
+            "module_type": "modern",
+            "steps": [
+              "Rub a dry soap bar directly along a sticky zipper track once",
+              "Move the zipper up and down 5 times to distribute",
+              "Wipe away excess soap residue with a dry cloth"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Discontinue skin-adjacent use of soap that appears cracked or discoloured beyond normal aging."
+    ]
+  },
+  {
+    "category": "expired_products",
+    "input_keywords": [
+      "expired hand sanitizer"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "expired hand sanitizer",
+        "suggestions": [
+          {
+            "title": "Ink and marker stain remover",
+            "module_type": "modern",
+            "steps": [
+              "Apply a few drops of expired sanitizer to a cotton pad",
+              "Dab onto ink stains on hard surfaces for 30 seconds",
+              "Wipe clean with a damp cloth"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Fire-starter aid for outdoor bonfires",
+            "module_type": "modern",
+            "steps": [
+              "Soak a cotton ball with 1 tsp expired sanitizer",
+              "Place under kindling in a safe, ventilated outdoor fire pit",
+              "Light carefully and keep water nearby as a safety precaution"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Expired sanitizer has reduced alcohol content and should not be relied on for hand disinfection. Never use fire-starter method indoors."
+    ]
+  },
+  {
+    "category": "expired_products",
+    "input_keywords": [
+      "expired nail polish",
+      "old nail polish"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "expired nail polish",
+        "suggestions": [
+          {
+            "title": "Rust-prevention seal for metal screw heads",
+            "module_type": "modern",
+            "steps": [
+              "Paint a thin layer of nail polish over exposed metal screw heads on outdoor furniture",
+              "Let dry for 20 minutes before reassembly",
+              "Reapply every 6 months for continued protection"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Loose button thread-end sealant",
+            "module_type": "diy",
+            "steps": [
+              "Dab a small drop of clear or matching nail polish onto a stitched thread knot",
+              "Let dry for 10 minutes",
+              "This prevents the thread from unravelling on shirts and school uniforms"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Use nail polish for hard-surface projects only; do not apply expired polish to nails or skin."
+    ]
+  },
+  {
+    "category": "expired_products",
+    "input_keywords": [
+      "expired perfume",
+      "old cologne"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "expired perfume",
+        "suggestions": [
+          {
+            "title": "Linen and wardrobe freshener spray",
+            "module_type": "diy",
+            "steps": [
+              "Spray 2-3 pumps of expired perfume onto a cotton sachet",
+              "Place the sachet inside a wardrobe or linen closet",
+              "Refresh every 2 weeks as the scent fades"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Do not spray expired perfume directly on skin as the altered chemical composition may cause irritation."
+    ]
+  },
+  {
+    "category": "waste_packaging",
+    "input_keywords": [
+      "glass jar",
+      "empty glass jar"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "glass jar",
+        "suggestions": [
+          {
+            "title": "Self-watering planter for herbs",
+            "module_type": "modern",
+            "steps": [
+              "Wash 1 glass jar and poke a small hole in the lid",
+              "Thread a cotton wick through the hole into a water reservoir below",
+              "Fill the jar with soil, plant herb seeds, and refill water weekly"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Sealed spice storage container",
+            "module_type": "diy",
+            "steps": [
+              "Sterilise 1 glass jar by boiling for 5 minutes and drying fully",
+              "Fill with 100g of dried spices or grains",
+              "Label and store in a cool, dry place away from direct sunlight"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Ensure jars are completely dry before storing dry goods to prevent mould."
+    ]
+  },
+  {
+    "category": "waste_packaging",
+    "input_keywords": [
+      "tetra pack",
+      "juice carton",
+      "milk carton"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "tetra pack",
+        "suggestions": [
+          {
+            "title": "Waterproof seedling starter pots",
+            "module_type": "modern",
+            "steps": [
+              "Cut the top off 1 tetra pack and poke 3-4 drainage holes in the base",
+              "Fill with 200g potting soil and plant seeds",
+              "Peel away the carton once seedlings are ready to transplant outdoors"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Compact fire-starter block",
+            "module_type": "diy",
+            "steps": [
+              "Fill an empty tetra pack with dry twigs and 2 tbsp wax shavings",
+              "Fold the top shut and seal with tape",
+              "Use as a single fire-starter block in an outdoor pit, lighting the corner"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Rinse tetra packs thoroughly to remove residual liquid before reuse."
+    ]
+  },
+  {
+    "category": "waste_packaging",
+    "input_keywords": [
+      "aluminium can",
+      "aluminum can",
+      "soda can"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "aluminium can",
+        "suggestions": [
+          {
+            "title": "Pen and stationery organiser",
+            "module_type": "diy",
+            "steps": [
+              "Wash 1 can and smooth any sharp edges with sandpaper",
+              "Cover the outer surface with fabric or paper using craft glue",
+              "Let dry for 2 hours before using it to hold pens and pencils"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Reflective heat shield for camping stoves",
+            "module_type": "modern",
+            "steps": [
+              "Cut open 2 clean cans lengthwise and flatten them",
+              "Wrap the flattened aluminium around a portable stove base",
+              "Secure with wire to reflect heat and improve fuel efficiency"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Sand or tape over cut edges to avoid sharp cuts during handling."
+    ]
+  },
+  {
+    "category": "waste_packaging",
+    "input_keywords": [
+      "bubble wrap",
+      "packing bubble wrap"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "bubble wrap",
+        "suggestions": [
+          {
+            "title": "Insulating layer for winter window drafts",
+            "module_type": "modern",
+            "steps": [
+              "Cut bubble wrap to match the size of a window pane",
+              "Lightly mist the window with water and press the wrap on, bubble-side in",
+              "Leave in place through winter for added insulation, remove by peeling gently"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Cushioned knee pads for gardening",
+            "module_type": "diy",
+            "steps": [
+              "Fold 2 layers of bubble wrap into a 12x12 inch pad",
+              "Secure edges with fabric tape",
+              "Kneel on the pad while gardening to reduce joint strain"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Bubble wrap window insulation slightly reduces natural light; remove before spring."
+    ]
+  },
+  {
+    "category": "waste_packaging",
+    "input_keywords": [
+      "plastic carry bag",
+      "plastic bag"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "plastic carry bag",
+        "suggestions": [
+          {
+            "title": "Woven floor mat from plastic strips",
+            "module_type": "diy",
+            "steps": [
+              "Cut 15-20 plastic bags into 1-inch wide strips",
+              "Braid 3 strips together into a long strand, repeating to make several strands",
+              "Coil and stitch the strands together into a circular or rectangular mat"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Waterproof liner for small trash bins",
+            "module_type": "modern",
+            "steps": [
+              "Reuse 1 clean plastic bag by tying off any holes with a knot",
+              "Line the inside of a small bin, folding the edge over the rim",
+              "Replace when torn to keep the bin surface dry"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Avoid burning plastic bags for disposal as this releases toxic fumes."
+    ]
+  },
+  {
+    "category": "waste_packaging",
+    "input_keywords": [
+      "egg carton",
+      "egg box"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "egg carton",
+        "suggestions": [
+          {
+            "title": "Seed-starting tray for saplings",
+            "module_type": "modern",
+            "steps": [
+              "Fill each cup of 1 egg carton with 2 tbsp potting soil",
+              "Plant 2-3 seeds per cup and water lightly",
+              "Cut apart individual cups to transplant seedlings once they sprout"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Compact jewellery and button organiser",
+            "module_type": "diy",
+            "steps": [
+              "Line each compartment of the carton with a small fabric scrap",
+              "Sort small jewellery, buttons, or beads by compartment",
+              "Store the lid closed to prevent items from spilling"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Use only clean, undamaged cartons without visible egg residue for seed-starting."
+    ]
+  },
+  {
+    "category": "waste_packaging",
+    "input_keywords": [
+      "tin can",
+      "food can",
+      "empty tin"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "tin can",
+        "suggestions": [
+          {
+            "title": "Herb planter with drainage",
+            "module_type": "modern",
+            "steps": [
+              "Wash 1 tin can thoroughly and remove the label",
+              "Punch 3-4 drainage holes in the base using a nail and hammer",
+              "Fill with soil and plant herb seedlings, watering when the top inch feels dry"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Wind chime component for garden décor",
+            "module_type": "diy",
+            "steps": [
+              "Punch a hole near the rim of 3-4 clean cans",
+              "String each can at a different height using fishing line from a central hook",
+              "Hang outdoors where the cans can gently clink together in breeze"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Sand down sharp cut edges on tin cans before handling to avoid cuts."
+    ]
+  },
+  {
+    "category": "waste_packaging",
+    "input_keywords": [
+      "plastic bottle cap",
+      "bottle cap"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "plastic bottle cap",
+        "suggestions": [
+          {
+            "title": "Non-slip furniture floor protector",
+            "module_type": "diy",
+            "steps": [
+              "Glue a small felt pad inside 4 clean bottle caps",
+              "Place one cap under each furniture leg, felt-side down",
+              "Replace felt padding every 6 months as it wears"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Keep small bottle caps away from young children due to choking hazard."
+    ]
+  },
+  {
+    "category": "waste_packaging",
+    "input_keywords": [
+      "thermocol",
+      "styrofoam",
+      "packaging foam"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "thermocol",
+        "suggestions": [
+          {
+            "title": "Lightweight seed tray filler for drainage",
+            "module_type": "modern",
+            "steps": [
+              "Break thermocol pieces into small 1cm chunks",
+              "Layer 2cm of chunks at the base of a planting pot before adding soil",
+              "This improves drainage and reduces pot weight for balcony gardens"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Avoid burning thermocol as it releases harmful fumes; prefer reuse over disposal."
+    ]
+  },
+  {
+    "category": "waste_packaging",
+    "input_keywords": [
+      "wine cork",
+      "bottle cork"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "wine cork",
+        "suggestions": [
+          {
+            "title": "Pincushion base for sewing kits",
+            "module_type": "diy",
+            "steps": [
+              "Glue 1 wine cork flat-side down onto a small wooden base",
+              "Wrap the top half in fabric, securing with glue",
+              "Use the fabric-covered cork top to hold sewing pins"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Non-slip knife handle grip",
+            "module_type": "modern",
+            "steps": [
+              "Slice 1 cork in half lengthwise",
+              "Glue the flat side onto the end of a thin knife or tool handle",
+              "Let dry for 2 hours before use to improve grip"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Ensure adhesive is fully cured before using cork-modified kitchen tools."
+    ]
+  },
+  {
+    "category": "waste_packaging",
+    "input_keywords": [
+      "plastic straw",
+      "used straw"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "plastic straw",
+        "suggestions": [
+          {
+            "title": "Cable organiser sleeve for charging wires",
+            "module_type": "diy",
+            "steps": [
+              "Slit 1 clean straw lengthwise with scissors",
+              "Wrap it around a bundled charging cable",
+              "Secure with a small piece of tape to keep wires tangle-free"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Rinse straws thoroughly before reuse to remove residue."
+    ]
+  },
+  {
+    "category": "waste_packaging",
+    "input_keywords": [
+      "chip packet",
+      "foil pouch",
+      "snack packet"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "chip packet",
+        "suggestions": [
+          {
+            "title": "Reflective bookmark and craft material",
+            "module_type": "diy",
+            "steps": [
+              "Cut the foil packet into a bookmark-sized rectangle",
+              "Trim edges neatly and reinforce with a strip of clear tape",
+              "Use the reflective inner side as a decorative front"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Wash food residue off packets before reuse for craft purposes."
+    ]
+  },
+  {
+    "category": "waste_packaging",
+    "input_keywords": [
+      "ice cream tub",
+      "empty tub"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "ice cream tub",
+        "suggestions": [
+          {
+            "title": "Airtight dry-food storage container",
+            "module_type": "modern",
+            "steps": [
+              "Wash 1 tub thoroughly with soap and hot water",
+              "Dry completely for 2 hours before filling with 500g of dry snacks or flour",
+              "Store with the lid sealed in a cool, dry cabinet"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Compost collection bin for kitchen scraps",
+            "module_type": "modern",
+            "steps": [
+              "Punch 4-5 small air holes in the lid of the tub",
+              "Collect daily vegetable scraps inside, up to 1kg",
+              "Empty into an outdoor compost pile every 2-3 days"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Wash tubs thoroughly to remove sugary residue before using for storage."
+    ]
+  },
+  {
+    "category": "waste_packaging",
+    "input_keywords": [
+      "shoe box",
+      "cardboard shoe box"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "shoe box",
+        "suggestions": [
+          {
+            "title": "Drawer divider organiser for accessories",
+            "module_type": "diy",
+            "steps": [
+              "Cut 1 shoe box into 2-inch tall strips",
+              "Arrange the strips inside a drawer to form separate compartments",
+              "Use compartments to sort socks, accessories, or stationery"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Ensure the box is dry and free of pests before repurposing indoors."
+    ]
+  },
+  {
+    "category": "electronics",
+    "input_keywords": [
+      "old smartphone",
+      "old phone",
+      "unused phone"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "old smartphone",
+        "suggestions": [
+          {
+            "title": "Repurposed home security camera",
+            "module_type": "modern",
+            "steps": [
+              "Install a free IP-webcam app on the old phone",
+              "Mount the phone facing the entryway using a small stand",
+              "Connect to home Wi-Fi and view the live feed from your current phone"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Dedicated offline music and podcast player",
+            "module_type": "modern",
+            "steps": [
+              "Reset the phone to factory settings and disable mobile data",
+              "Download 5-10 offline playlists or podcast episodes via Wi-Fi",
+              "Use the device screen-off for extended battery life during workouts"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Always factory-reset and remove the SIM/personal accounts before repurposing an old phone to protect your data."
+    ]
+  },
+  {
+    "category": "electronics",
+    "input_keywords": [
+      "old laptop",
+      "unused laptop",
+      "broken laptop"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "old laptop",
+        "suggestions": [
+          {
+            "title": "Dedicated home media server",
+            "module_type": "modern",
+            "steps": [
+              "Install a lightweight Linux OS on the old laptop, taking about 30 minutes",
+              "Set up free media server software to stream stored movies or music",
+              "Connect the laptop to your router via Ethernet for stable streaming"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Digital photo frame display",
+            "module_type": "diy",
+            "steps": [
+              "Remove the keyboard if damaged and keep only the screen functional",
+              "Set up a slideshow app to cycle through 100+ family photos",
+              "Mount the laptop screen-up on a shelf as a permanent photo display"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Securely wipe the hard drive using disk-erasing software before repurposing or donating."
+    ]
+  },
+  {
+    "category": "electronics",
+    "input_keywords": [
+      "old keyboard",
+      "broken keyboard"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "old keyboard",
+        "suggestions": [
+          {
+            "title": "Individual keycap fridge magnets",
+            "module_type": "diy",
+            "steps": [
+              "Pop off 8-10 keycaps from the old keyboard using a flathead tool",
+              "Glue a small magnet strip to the back of each keycap",
+              "Let the glue cure for 2 hours before using as decorative fridge magnets"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Circuit board art piece for wall décor",
+            "module_type": "diy",
+            "steps": [
+              "Remove the internal circuit board from the keyboard casing",
+              "Mount the board onto a wooden frame using small screws",
+              "Hang the framed board as industrial-style wall art"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Disconnect the keyboard from any power source before disassembly."
+    ]
+  },
+  {
+    "category": "electronics",
+    "input_keywords": [
+      "old computer mouse",
+      "broken mouse"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "old computer mouse",
+        "suggestions": [
+          {
+            "title": "Salvaged micro-motor for small DIY fans",
+            "module_type": "diy",
+            "steps": [
+              "Open the mouse casing carefully with a small screwdriver",
+              "Extract the internal scroll-wheel motor, handling with care",
+              "Attach small blades to build a simple battery-powered desk fan for a school project"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Electronic disassembly should be supervised for children; avoid contact with any small internal batteries."
+    ]
+  },
+  {
+    "category": "electronics",
+    "input_keywords": [
+      "old charger cable",
+      "usb cable",
+      "unused charging cable"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "old charger cable",
+        "suggestions": [
+          {
+            "title": "Labelled cable set for travel organisation",
+            "module_type": "diy",
+            "steps": [
+              "Test 3-4 old cables to confirm which still charge properly",
+              "Wrap each cable and secure with a reusable velcro tie",
+              "Label each with masking tape indicating device type for easy travel packing"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Discard any cable with exposed or frayed wiring rather than reusing it, as this is a fire and shock hazard."
+    ]
+  },
+  {
+    "category": "electronics",
+    "input_keywords": [
+      "old remote control",
+      "broken remote"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "old remote control",
+        "suggestions": [
+          {
+            "title": "Salvaged rubber buttons for craft projects",
+            "module_type": "diy",
+            "steps": [
+              "Pop off the rubber button pad from the remote's internal casing",
+              "Cut individual buttons apart with scissors",
+              "Use as small stamps for painting patterns onto paper or fabric"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Remove and separately recycle any batteries before disassembling the remote."
+    ]
+  },
+  {
+    "category": "electronics",
+    "input_keywords": [
+      "old cd",
+      "old dvd",
+      "scratched disc"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "old cd",
+        "suggestions": [
+          {
+            "title": "Reflective bird deterrent for gardens",
+            "module_type": "diy",
+            "steps": [
+              "Thread 4-5 old CDs onto a string, spacing them 6 inches apart",
+              "Hang the string between two poles near vegetable patches",
+              "The spinning reflections deter birds from disturbing crops"
+            ],
+            "source": "ai_generated"
+          },
+          {
+            "title": "Mosaic coaster set",
+            "module_type": "diy",
+            "steps": [
+              "Break 2 old CDs into small shard-sized pieces using pliers, wearing gloves",
+              "Arrange shards in a pattern on a round cardboard base with strong glue",
+              "Seal the surface with a thin layer of clear varnish once dry"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Wear gloves when breaking CDs into shards to avoid sharp-edge cuts."
+    ]
+  },
+  {
+    "category": "electronics",
+    "input_keywords": [
+      "dead power bank",
+      "old power bank"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "dead power bank",
+        "suggestions": [
+          {
+            "title": "Salvaged battery cells for LED garden lights",
+            "module_type": "diy",
+            "steps": [
+              "Have a technician safely extract functional lithium cells from the power bank",
+              "Pair extracted cells with a small solar LED garden light circuit",
+              "Use only if the cells show no swelling or damage"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Never attempt to open lithium battery packs yourself due to fire risk; have a qualified technician handle extraction."
+    ]
+  },
+  {
+    "category": "electronics",
+    "input_keywords": [
+      "old earphones",
+      "broken headphones"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "old earphones",
+        "suggestions": [
+          {
+            "title": "Salvaged wire for small craft projects",
+            "module_type": "diy",
+            "steps": [
+              "Strip the outer casing from 1 pair of earphones using wire strippers",
+              "Bend the thin internal wire into small decorative shapes",
+              "Use for jewellery-wire crafts like miniature wire sculptures"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Dispose of any earphone with a swollen or damaged battery pack at an e-waste centre instead of reusing."
+    ]
+  },
+  {
+    "category": "electronics",
+    "input_keywords": [
+      "old router",
+      "old modem"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "old router",
+        "suggestions": [
+          {
+            "title": "Dedicated Wi-Fi extender for a second floor",
+            "module_type": "modern",
+            "steps": [
+              "Reset the old router to factory settings",
+              "Configure it in 'repeater' or 'access point' mode following the manual",
+              "Place it at a mid-point between the main router and weak-signal areas"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Ensure firmware is updated before reuse to avoid known security vulnerabilities."
+    ]
+  },
+  {
+    "category": "electronics",
+    "input_keywords": [
+      "old dry battery",
+      "aa battery",
+      "aaa battery",
+      "non rechargeable battery"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "old dry battery",
+        "suggestions": [
+          {
+            "title": "Voltage tester for continuity checks",
+            "module_type": "diy",
+            "steps": [
+              "Confirm the battery still has partial charge using a multimeter",
+              "Use it with a simple LED-and-wire tester circuit to check small electronic continuity",
+              "Discard permanently at an e-waste bin once fully drained"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Never puncture, burn, or throw batteries in regular household trash; drop off at a designated e-waste or battery collection point."
+    ]
+  },
+  {
+    "category": "electronics",
+    "input_keywords": [
+      "old led bulb",
+      "broken led bulb"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "old led bulb",
+        "suggestions": [
+          {
+            "title": "Salvaged LED chips for a mini nightlight project",
+            "module_type": "diy",
+            "steps": [
+              "Carefully open the bulb casing to access the internal LED chip strip",
+              "Wire the strip to a small battery pack with a resistor, ideally with electronics guidance",
+              "Mount inside a small jar as a low-power nightlight"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "LED bulb disassembly involves small electrical components; adult supervision is recommended for craft projects."
+    ]
+  },
+  {
+    "category": "electronics",
+    "input_keywords": [
+      "old speaker",
+      "broken speaker"
+    ],
+    "component_breakdown": [
+      {
+        "component_name": "old speaker",
+        "suggestions": [
+          {
+            "title": "Passive phone sound amplifier stand",
+            "module_type": "diy",
+            "steps": [
+              "Cut a phone-sized slot into the top of the speaker's outer casing shell",
+              "Sand the edges of the slot smooth",
+              "Rest a phone in the slot with the speaker facing the open cavity to naturally amplify sound"
+            ],
+            "source": "ai_generated"
+          }
+        ]
+      }
+    ],
+    "disclaimers": [
+      "Disconnect any speaker from a power source completely before cutting or modifying its casing."
+    ]
+  }
+]
