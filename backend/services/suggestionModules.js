@@ -1011,7 +1011,7 @@ const generateAllSuggestions = async (analysisResult, goals, contextualAnswers, 
         continue;
       }
 
-      const suggestionKey = `${suggestion.suggestion_source || 'unknown'}:${suggestion.item_component_id}:${String(suggestion.title || '').trim().toLowerCase()}`;
+      const suggestionKey = `${suggestion.item_component_id}:${String(suggestion.title || '').trim().toLowerCase()}`;
       if (savedSuggestionKeys.has(suggestionKey)) continue;
       savedSuggestionKeys.add(suggestionKey);
 
