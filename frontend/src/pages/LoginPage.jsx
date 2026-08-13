@@ -18,8 +18,9 @@ export default function LoginPage() {
 
   const validateForm = () => {
     const nextErrors = {};
-    if (!formData.email.trim()) nextErrors.email = 'Email is required';
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) nextErrors.email = 'Enter a valid email address';
+    const email = formData.email.trim();
+    if (!email) nextErrors.email = 'Email is required';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) nextErrors.email = 'Enter a valid email address';
     if (!formData.password) nextErrors.password = 'Password is required';
     return nextErrors;
   };
@@ -41,11 +42,12 @@ export default function LoginPage() {
 
     setLoading(true);
     try {
+      const emailTrimmed = formData.email.trim();
       const result = await authApi.login({
-        email: formData.email,
+        email: emailTrimmed,
         password: formData.password,
       });
-      const user = result.user || { id: result.userId, name: result.name || 'WasteWise User', email: formData.email, city: result.city || '' };
+      const user = result.user || { id: result.userId, name: result.name || 'WasteWise User', email: emailTrimmed, city: result.city || '' };
       finishLogin(user, result.token);
     } catch (error) {
       toast.error(error.message || 'Login failed');

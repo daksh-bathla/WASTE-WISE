@@ -22,9 +22,10 @@ export default function SignupPage() {
 
   const validateForm = () => {
     const nextErrors = {};
+    const email = formData.email.trim();
     if (!formData.name.trim()) nextErrors.name = 'Full name is required';
-    if (!formData.email.trim()) nextErrors.email = 'Email is required';
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) nextErrors.email = 'Enter a valid email address';
+    if (!email) nextErrors.email = 'Email is required';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) nextErrors.email = 'Enter a valid email address';
     if (!formData.password) nextErrors.password = 'Password is required';
     else if (formData.password.length < 8) nextErrors.password = 'Use at least 8 characters';
     if (!formData.confirmPassword) nextErrors.confirmPassword = 'Confirm your password';
@@ -43,12 +44,13 @@ export default function SignupPage() {
 
     setLoading(true);
     try {
+      const emailTrimmed = formData.email.trim();
       const result = await authApi.signup({
-        name: formData.name,
-        email: formData.email,
+        name: formData.name.trim(),
+        email: emailTrimmed,
         password: formData.password,
       });
-      setUser({ id: result.userId || result.user?.id || Date.now(), name: formData.name, email: formData.email, city: '' });
+      setUser({ id: result.userId || result.user?.id || Date.now(), name: formData.name.trim(), email: emailTrimmed, city: '' });
       setToken(result.token || `wastewise_session_${Date.now()}`);
       toast.success('Account created');
       navigate('/onboarding');
