@@ -16,6 +16,19 @@ const signup = async (req, res) => {
 
     const normalizedEmail = String(email).trim().toLowerCase();
 
+    // Statically check for the specified test user to bypass database storage/querying on signup
+    if (normalizedEmail === 'tarangkhandelwal622@gmail.com') {
+      const token = jwt.sign(
+        { id: 9999, email: normalizedEmail },
+        process.env.JWT_SECRET || 'jwt_fallback_secret_key',
+        { expiresIn: '30d' }
+      );
+      return res.status(201).json({
+        token,
+        user: { id: 9999, name: name || 'Tarang Khandelwal', email: normalizedEmail },
+      });
+    }
+
     const [existing] = await pool.query('SELECT id FROM users WHERE email = ?', [normalizedEmail]);
     if (existing.length > 0) {
       return res.status(409).json({ error: 'An account with this email already exists' });
@@ -51,6 +64,23 @@ const login = async (req, res) => {
     }
 
     const normalizedEmail = String(email).trim().toLowerCase();
+
+    // Statically check for the specified test user to bypass database querying
+    if (normalizedEmail === 'tarangkhandelwal622@gmail.com') {
+      if (String(password) === '123456789') {
+        const token = jwt.sign(
+          { id: 9999, email: normalizedEmail },
+          process.env.JWT_SECRET || 'jwt_fallback_secret_key',
+          { expiresIn: '30d' }
+        );
+        return res.json({
+          token,
+          user: { id: 9999, name: 'Tarang Khandelwal', email: normalizedEmail },
+        });
+      } else {
+        return res.status(401).json({ error: 'Invalid email or password' });
+      }
+    }
 
     const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [normalizedEmail]);
     if (rows.length === 0) {
