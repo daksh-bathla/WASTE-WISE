@@ -3,6 +3,12 @@ const { getNearbyGaushalas } = require('../utils/haversine');
 const { getSeasonalSuggestion: getSeasonalTip } = require('../utils/seasonHelper');
 const pool = require('../config/db');
 
+const isDisposalSuggestion = (suggestion = {}) => {
+  const text = `${suggestion.title || ''} ${suggestion.personalisation_note || ''}`.toLowerCase();
+  return suggestion.module_type === 'disposal'
+    || /safe disposal plan|sort .* before disposal|could not be confirmed safely|before disposal/i.test(text);
+};
+
 const startScan = async (req, res) => {
   const startTime = Date.now();
   console.log(`[ScanController] Starting scan for user ${req.user?.id || 'unknown'}`);
@@ -83,6 +89,8 @@ const getScanResults = async (req, res) => {
         );
 
         for (const sug of suggestions) {
+          if (isDisposalSuggestion(sug)) continue;
+
           const [disclaimers] = await pool.query(
             'SELECT * FROM disclaimers WHERE suggestion_id = ?',
             [sug.id]
@@ -161,12 +169,14 @@ const getVisionData = async (req, res) => {
 
     if (!visionData) {
       return res.json({
-        product_name: 'Scanned item',
+        product_name: null,
         brand: null,
         category: 'unknown',
         detected_category: 'other',
-        confidence_score: 45,
-        note: 'AI vision unavailable; using local fallback',
+        confidence_score: 0,
+        requires_manual_review: true,
+        vision_failed: true,
+        note: 'AI vision unavailable — enter details manually or retry with a clearer photo',
       });
     }
 

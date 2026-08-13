@@ -33,8 +33,16 @@ const runSafetyGate = async (components, productInfo, userMedical, weather, pool
 
     const userSafety = checkUserSafety(component, userMedical, expiryInfo);
 
+    const isElectronicComponent = /electronic|electronics|phone|laptop|tablet|battery|circuit|screen|charger|cable|ewaste|e-waste/i.test(
+      `${component.component_type || ''} ${component.component_name || ''} ${productInfo.category || ''}`
+    );
+
     let aiAssessment = null;
     try {
+      if (isElectronicComponent) {
+        console.log(`[SafetyGate] Fast-track electronics safety for ${component.component_name}`);
+        aiAssessment = fastSafetyCheck(component, productInfo);
+      } else {
       // Race AI assessment against timeout
       const timeoutPromise = new Promise((resolve) => {
         setTimeout(() => {
@@ -59,6 +67,7 @@ const runSafetyGate = async (components, productInfo, userMedical, weather, pool
       if (!aiAssessment) {
         console.log(`[SafetyGate] Using fast-track safety check for ${component.component_name}`);
         aiAssessment = fastSafetyCheck(component, productInfo);
+      }
       }
     } catch (error) {
       console.error('Safety gate AI assessment error:', error.message);

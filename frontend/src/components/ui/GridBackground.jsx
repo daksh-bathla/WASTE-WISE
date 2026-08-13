@@ -34,8 +34,8 @@ const gridItems = [
 export default function GridBackground() {
   return (
     <div className="fixed inset-0 -z-20 overflow-hidden bg-[#F6F7F6]">
-      {/* Soft washed overlay — low blur so images stay recognizable, enough tint for text legibility */}
-      <div className="absolute inset-0 z-10 bg-[#F6F7F6]/66 backdrop-blur-[4px]" />
+      {/* Soft washed overlay — no blur so images stay 100% sharp, enough tint for text legibility */}
+      <div className="absolute inset-0 z-10 bg-[#F6F7F6]/66" />
 
       {/* Grid of waste-item tiles */}
       <div className="absolute inset-0 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3 p-3 select-none pointer-events-none overflow-hidden">

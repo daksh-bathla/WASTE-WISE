@@ -39,7 +39,8 @@ export default function ProcessingPage() {
         setProgress(15);
 
         const photoFile = location.state?.photoFile || null;
-        const payload = buildScanPayload(scanType, form, profile || {}, photoFile);
+        const visionData = location.state?.visionData || null;
+        const payload = buildScanPayload(scanType, form, profile || {}, photoFile, visionData);
         const scanResult = await scanApi.analyse(payload);
         const scanId = scanResult.scanId;
 
@@ -50,7 +51,7 @@ export default function ProcessingPage() {
         setCurrentStep(2);
         setProgress(55);
 
-        const contextual = buildContextualAnswers(profile || {});
+        const contextual = buildContextualAnswers(profile || {}, form, scanType);
         await suggestionsApi.generate({
           scan_id: scanId,
           selected_goals: ['all'],
@@ -66,16 +67,12 @@ export default function ProcessingPage() {
 
         await new Promise((resolve) => setTimeout(resolve, 400));
 
-        // Navigate to results
-        const targetPath = scanType === 'electronics'
-          ? `/results/${scanId}/ewaste`
-          : `/results/${scanId}`;
-
-        navigate(targetPath, { replace: true, state: { ...location.state, scanId } });
+        // Show verified reuse ideas first; e-waste repair/recycle pathways are linked from results.
+        navigate(`/results/${scanId}`, { replace: true, state: { ...location.state, scanId } });
       } catch (err) {
         console.error('Processing pipeline error:', err);
         if (isMounted) {
-          setError(err.message || 'Something went wrong during analysis');
+          setError(err.payload?.details || err.message || 'Something went wrong during analysis');
           toast.error('Analysis failed — you can retry');
         }
       }
@@ -142,7 +139,7 @@ export default function ProcessingPage() {
               const complete = index < currentStep;
               const active = index === currentStep;
               return (
-                <div key={label} className={`rounded-2xl border p-4 ${active ? 'border-deep-purple bg-light-purple' : 'border-border bg-white'}`}>
+                <div key={label} className={`rounded-2xl border p-4 ${active ? 'border-deep-purple bg-light-purple' : 'border-border bg-[var(--card-bg)]'}`}>
                   <div className="mb-3 flex items-center gap-3">
                     <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${complete ? 'bg-light-green text-deep-green' : active ? 'bg-deep-purple text-white' : 'bg-light-purple text-deep-purple'}`}>
                       {complete ? <CheckCircle2 size={20} /> : <Icon size={20} />}

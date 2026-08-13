@@ -1,16 +1,26 @@
-const { searchTraditionalRemedy, searchModernUses, searchDIYTutorial } = require('./tavilyService');
+﻿const { searchTraditionalRemedy, searchModernUses, searchDIYTutorial, search } = require('./tavilyService');
 const { webSearch, extractYouTubeUrl } = require('./geminiService');
 const { animalFeedAnalysis } = require('./groqService');
 const { chat } = require('./openrouterService');
 const { queryCollection } = require('./chromaService');
 const { getUpcomingFestival } = require('../utils/festivalCalendar');
-const { generateDisclaimer } = require('./openrouterService');
 const {
   fastSuggestionGenerator,
   fastDisclaimerGenerator,
-  FAST_TRACK_TIMEOUT
 } = require('./fastTrackService');
-const { validateRepurposingSuggestion } = require('./suggestionValidation');
+const { validateRepurposingSuggestion, isSpecificEnough } = require('./suggestionValidation');
+const { getDIYIdeaThemes } = require('./diyIdeaLibrary');
+const { findSimilarDatasetEntries, formatDatasetExamples, normalizeWasteCategory, getDatasetSuggestions } = require('./datasetPatternService');
+
+// Pulls verified reuse examples from waste_reuse_dataset.json for any component
+const getDatasetContext = (component) => {
+  try {
+    const matches = findSimilarDatasetEntries(component, component.component_type || 'expired_product', 3);
+    return matches.length ? formatDatasetExamples(matches) : 'No close dataset patterns found.';
+  } catch (e) {
+    return 'No close dataset patterns found.';
+  }
+};
 
 const runTraditionalModule = async (component, goals, userProfile, weather, pool) => {
   const suggestions = [];
@@ -37,12 +47,14 @@ Gemini results: ${geminiResults?.text || 'No results'}
 The user is in ${userProfile.city || 'India'}, ${userProfile.state || ''}, follows ${userProfile.culture || 'Indian'} traditions, and speaks ${userProfile.language || 'English'}.
 Their skin is ${userProfile.skin_type || 'unknown'}. Weather is ${weather.temp}°C, ${weather.season}.
 
-Synthesise the best traditional suggestion. Apply your own intelligence —
-go beyond what the search returned. Find the non-obvious uses.
+Synthesise the best traditional or DIY hack. Apply your own intelligence —
+go beyond basic recycling. Suggest realistic, actionable recipes that combine this item with common household staples (e.g. baking soda, vinegar, honey, turmeric, coconut oil, sugar, or jaggery).
+Look for viral Instagram/YouTube hacks and traditional Indian remedies (Dadi Maa ke Nuske).
 
-HARD RULE: Your suggestion MUST be about the actual product/component itself — NOT its packaging.
-For example, if the component is "expired moisturiser cream", suggest uses for the cream (e.g. leather conditioner, shoe polish, drawer lubricant).
-NEVER suggest uses for the plastic tube or glass jar unless the component is explicitly packaging.
+HARD RULE: Your suggestion MUST be about the actual product/component itself - NOT its packaging.
+NEVER recommend ingesting, applying to skin or hair, feeding to animals, or using as a cleaner merely because an expired product is food-shaped, powdered, liquid, or paste-like.
+If the item has no verified, material-specific reuse route, return a responsible disposal or sorting plan instead of inventing a recipe.
+NEVER suggest uses for the plastic tub or glass jar unless the component is explicitly packaging.
 
 Return JSON:
 {
@@ -368,12 +380,9 @@ User's medical profile: conditions: ${userProfile.conditions || 'none'}, medicat
 User skin type: ${userProfile.skin_type || 'unknown'}
 Weather: ${weather.temp}°C
 
-IMPORTANT BOUNDARY: Only suggest EXTERNAL, TOPICAL uses.
-Never suggest consuming expired products for health treatment.
+IMPORTANT BOUNDARY: Do not suggest consuming or applying expired products to the body for health treatment.
+For expired or unknown materials, prefer a no-use recommendation with safe disposal guidance over a topical remedy.
 This is general wellness information only, not medical advice.
-
-Good examples: expired haldi paste on a minor wound,
-expired neem oil for skin inflammation, expired mustard oil massage.
 
 Return JSON:
 {
@@ -419,6 +428,407 @@ Return ONLY the JSON object.`;
   return suggestions;
 };
 
+const extractJsonArray = (value) => {
+  if (!value || typeof value !== 'string') return [];
+  const cleaned = value.replace(/```json\s*|\s*```/g, '').trim();
+
+  try {
+    const parsed = JSON.parse(cleaned);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    const match = cleaned.match(/\[[\s\S]*\]/);
+    if (!match) return [];
+    try {
+      const parsed = JSON.parse(match[0]);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+};
+
+const timeoutAfter = (promise, timeoutMs, fallback) => Promise.race([
+  promise,
+  new Promise((resolve) => setTimeout(() => resolve(fallback), timeoutMs)),
+]);
+
+const getWasteCategory = (component = {}, suppliedCategory = '') => {
+  const supplied = normalizeWasteCategory(suppliedCategory);
+  const text = `${component.component_name || ''} ${component.item_name || ''} ${component.component_type || ''} ${component.material || ''}`.toLowerCase();
+
+  const inferFromText = () => {
+    if (/electronic|battery|circuit|phone|laptop|charger|cable|screen|ewaste|e-waste|cpu|monitor|keyboard|mouse|tablet|headphone|speaker/.test(text)) return 'electronics';
+    if (/packaging|bottle|container|carton|wrapper|cardboard|paper|plastic|glass|tin|jar|tube|pouch|sachet|box|bag|can\b|cap\b|label/.test(text)) return 'waste_packaging';
+    if (/peel|rind|shell|scrap|leftover|citrus|orange|lemon|lime|banana|mango|apple|potato|watermelon|coconut|mosambi/.test(text)) return 'food_peels';
+    if (/expired|spice|cosmetic|lotion|cream|shampoo|soap|dairy|curd|milk|oil|ghee|butter|masala|powder|paste/.test(text)) return 'expired_products';
+    return null;
+  };
+
+  // Scan type "other" is often a vision fallback — prefer component text when it is more specific.
+  if (supplied === 'other') {
+    return inferFromText() || 'other';
+  }
+
+  if (['food_peels', 'expired_products', 'waste_packaging', 'electronics'].includes(supplied)) {
+    return supplied;
+  }
+
+  return inferFromText() || supplied || 'other';
+};
+
+const extractJsonObject = (value) => {
+  if (!value || typeof value !== 'string') return null;
+  const cleaned = value.replace(/```json\s*|\s*```/g, '').trim();
+
+  try {
+    return JSON.parse(cleaned);
+  } catch {
+    const match = cleaned.match(/\{[\s\S]*\}/);
+    if (!match) return null;
+    try {
+      return JSON.parse(match[0]);
+    } catch {
+      return null;
+    }
+  }
+};
+
+const getGroundedWebSources = (result) => {
+  const chunks = result?.groundingMetadata?.groundingChunks || result?.groundingMetadata?.grounding_chunks || [];
+  return chunks.map((chunk) => ({
+    title: chunk?.web?.title || chunk?.title || '',
+    url: chunk?.web?.uri || chunk?.url || '',
+    content: chunk?.web?.snippet || chunk?.snippet || '',
+  })).filter((source) => source.url);
+};
+
+const formatWebSearchResults = (tavilyResults = [], geminiResult = {}) => {
+  const sources = [
+    ...tavilyResults.map((result) => ({
+      title: result.title || 'Search result',
+      url: result.url || '',
+      content: result.content || result.snippet || '',
+    })),
+    ...getGroundedWebSources(geminiResult),
+  ].filter((source, index, all) => source.url && all.findIndex((item) => item.url === source.url) === index).slice(0, 5);
+
+  const formatted = sources.map((source, index) => (
+    `[${index + 1}] ${source.title} — ${String(source.content || '').replace(/\s+/g, ' ').slice(0, 500)} (${source.url})`
+  ));
+
+  if (!formatted.length && geminiResult?.text) {
+    formatted.push(`Gemini web-search summary — ${String(geminiResult.text).replace(/\s+/g, ' ').slice(0, 1200)}`);
+  }
+
+  return {
+    text: formatted.length ? formatted.join('\n') : 'No usable web search results returned.',
+    sources,
+  };
+};
+
+const searchLiveReuseEvidence = async (component, category, userProfile) => {
+  const query = `${component.component_name} ${component.material || ''} safe non-edible reuse ${category} ${userProfile.state || 'India'}`.trim();
+  const [tavilyResults, geminiResult] = await Promise.all([
+    timeoutAfter(search(query, { search_depth: 'basic', max_results: 3 }), 4000, []),
+    timeoutAfter(webSearch(query, 3), 4000, { text: '', groundingMetadata: null }),
+  ]);
+
+  return formatWebSearchResults(
+    Array.isArray(tavilyResults) ? tavilyResults : [],
+    geminiResult && !Array.isArray(geminiResult) ? geminiResult : {}
+  );
+};
+
+const buildReuseSynthesisPrompt = ({ component, category, goal, userProfile, weather, examples, webSearchResults }) => {
+  const condition = component.condition_status || component.condition || 'unknown';
+  const profile = {
+    city: userProfile.city || 'India',
+    state: userProfile.state || '',
+    culture: userProfile.culture || 'Indian',
+    language: userProfile.language || 'English',
+    skinType: userProfile.skin_type || 'unknown',
+  };
+  const diyIdeaThemes = getDIYIdeaThemes(component).map((idea) => idea.title);
+
+  return `You are the reuse-suggestion engine for WasteWise, an Indian household zero-waste app.
+
+## THE ITEM
+Component: "${component.component_name}"
+Material/condition: ${component.material || 'unknown'}, ${condition}
+Waste category: ${category}
+User goal: ${goal}
+User context: ${profile.city}, ${profile.state}, follows ${profile.culture} traditions, speaks ${profile.language}. Skin type: ${profile.skinType}.
+Weather: ${weather.temp ?? 'unknown'}°C, ${weather.season || 'current season'}.
+
+## SOURCE 1 — DATASET PATTERNS (for inspiration only — shown separately to the user)
+These verified dataset ideas will be returned to the user as-is. Your job is to ADD 2 to 4 NEW complementary reuse ideas that are NOT duplicates of these titles. Learn the material reasoning from these examples, then propose fresh routes tailored to this exact component.
+
+${examples}
+
+## SOURCE 2 — LIVE WEB SEARCH RESULTS
+Fresh, possibly more specific or current information:
+
+${webSearchResults}
+
+## SOURCE 3 — YOUR OWN REASONING
+Where the dataset examples and web results are thin, use careful knowledge of chemistry, traditional Indian household practice, gardening, and material science. Do not invent a use whose mechanism this exact component cannot support.
+
+## CURATED DIY ROUTE THEMES
+Use these as additional inspiration only when they physically fit this exact component: ${diyIdeaThemes.length ? diyIdeaThemes.join('; ') : 'No close catalogue theme; use verified material-specific reasoning only.'}
+
+## HOW TO COMBINE THE THREE SOURCES
+1. Use the dataset pattern to identify a plausible reuse category.
+2. Use live sources only to confirm, correct, or make that route more specific.
+3. Adapt the route to this component and this user's weather, location, culture, language, and skin profile.
+4. If sources disagree, choose the safest interpretation.
+
+## HARD RULES
+- The suggestion must use the actual component, not its packaging, unless this component is packaging.
+- module_type must be exactly one of: traditional, modern, diy, health, religious, ewaste, disposal.
+- Return 2 to 4 suggestions that are meaningfully different from the dataset titles in SOURCE 1.
+- Every individual step must include a specific quantity, duration, ratio, count, size, or interval and a clear action or mechanism.
+- Never use vague recommendations or these phrases: "use it around the home", "use it for anything", "do whatever feels useful", "useful for your home", "any animal", "feed it to animals", "for your pets", "safe for everyone", "good for all", "just mix with water", "do this as needed", "it depends", or "whatever".
+- Never recommend animal feed. Animal routes are disabled in WasteWise.
+- State any toxicity, allergy, pregnancy, pet, fire, electrical, or contamination risk explicitly in disclaimers.
+- Never recommend ingesting, medical treatment, animal feed, or skin/hair application for expired, mouldy, contaminated, chemical, unknown, or electronic components.
+- Never suggest opening batteries, burning electronics, acid extraction, or home dismantling of hazardous components.
+- Do not fabricate source_url or source_name. Include them only when they came directly from the live web results above.
+
+Return only this JSON object, with no Markdown fence or commentary:
+{
+  "component_name": "${component.component_name}",
+  "suggestions": [
+    {
+      "title": "specific, descriptive title",
+      "module_type": "one of: traditional/modern/diy/health/religious/ewaste/disposal",
+      "steps": ["step with quantity and clear action", "step with quantity and clear action", "..."],
+      "source_url": "only if genuinely from Source 2, else omit this key",
+      "source_name": "only if genuinely from Source 2, else omit this key",
+      "why_now": "why this fits the current weather or season",
+      "personalisation": "why this suits this user's profile",
+      "confidence": "high, medium, or low"
+    }
+  ],
+  "disclaimers": ["specific safety warning for this component and user"]
+}`;
+};
+
+const normaliseSynthesisSuggestions = (payload, component, userProfile, webSources) => {
+  const allowedModules = new Set(['traditional', 'modern', 'diy', 'health', 'religious', 'ewaste', 'disposal']);
+  const trustedUrls = new Map((webSources || []).map((source) => [source.url, source]));
+  const seenTitles = new Set();
+  const disclaimers = Array.isArray(payload?.disclaimers) ? payload.disclaimers.filter(Boolean).slice(0, 6) : [];
+  const componentText = `${component.component_name || ''} ${component.item_name || ''} ${component.component_type || ''} ${component.material || ''} ${component.condition_status || component.condition || ''}`.toLowerCase();
+  const needsSensitiveUseBlock = /expired|degraded|mould|mold|contaminated|chemical|unknown|electronic|battery|circuit/.test(componentText);
+
+  return (Array.isArray(payload?.suggestions) ? payload.suggestions : [])
+    .slice(0, 4)
+    .map((candidate) => {
+      const moduleType = String(candidate?.module_type || '').toLowerCase();
+      const source = trustedUrls.get(candidate?.source_url);
+      const title = String(candidate?.title || '').trim();
+      const context = [candidate?.why_now, candidate?.personalisation].filter(Boolean).join(' ');
+      const candidateText = `${title} ${(candidate?.steps || []).join(' ')}`.toLowerCase();
+
+      if (!allowedModules.has(moduleType) || !title || seenTitles.has(title.toLowerCase())) return null;
+      if (moduleType === 'disposal') return null;
+      seenTitles.add(title.toLowerCase());
+      if (needsSensitiveUseBlock && (moduleType === 'health' || /skin|hair|scalp|face|body|ingest|eat|drink|consume|animal feed|feed to/.test(candidateText))) return null;
+      if (/electronic|battery|circuit/.test(componentText) && /open|dismantle|disassemble|burn|acid extraction|puncture/.test(candidateText)) return null;
+
+      return {
+        item_component_id: component.id,
+        module_type: moduleType,
+        title,
+        steps: Array.isArray(candidate?.steps) ? candidate.steps.map((step) => String(step || '').trim()).filter(Boolean) : [],
+        source_url: source ? source.url : null,
+        source_name: source ? (candidate.source_name || source.title) : null,
+        source_credibility: source ? 'Live web evidence' : 'AI synthesis',
+        suggestion_source: 'ai',
+        region_tag: userProfile.city || userProfile.state || 'India',
+        personalisation_note: context || 'Tailored to the component, local season, and user profile.',
+        video_url: null,
+        disclaimers,
+        synthesis_contract: true,
+      };
+    })
+    .filter(Boolean)
+    // The current WasteWise UI deliberately suppresses animal-feed advice; do not
+    // persist it until the product enables species-specific veterinary review.
+    .filter((suggestion) => suggestion.module_type !== 'animal_feed')
+    .filter((suggestion) => isSpecificEnough(suggestion) && validateRepurposingSuggestion(suggestion).isValid);
+};
+
+const runDeepReusePlanner = async (component, questionnaireContext, userProfile, weather, suppliedCategory = '') => {
+  if (process.env.DISABLE_AI_SUGGESTIONS === 'true') {
+    return [];
+  }
+
+  const selectedGoals = Array.isArray(questionnaireContext.reuseGoals) && questionnaireContext.reuseGoals.length
+    ? questionnaireContext.reuseGoals
+    : [questionnaireContext.reuseGoal || 'safe household reuse'];
+  const category = getWasteCategory(component, suppliedCategory);
+  const datasetExamples = formatDatasetExamples(findSimilarDatasetEntries(component, category, 4));
+
+  try {
+    const liveEvidence = await searchLiveReuseEvidence(component, category, userProfile);
+    const prompt = buildReuseSynthesisPrompt({
+      component,
+      category,
+      goal: selectedGoals.join(', '),
+      userProfile,
+      weather,
+      examples: datasetExamples,
+      webSearchResults: liveEvidence.text,
+    });
+    const result = await timeoutAfter(chat([{ role: 'user', content: prompt }], 2600, 0.15), 15000, null);
+    const payload = extractJsonObject(result);
+    const synthesized = normaliseSynthesisSuggestions(payload, component, userProfile, liveEvidence.sources);
+
+    if (synthesized.length > 0) {
+      return synthesized;
+    }
+
+    console.warn(`[DeepReusePlanner] AI synthesis empty for ${component.component_name}`);
+    return [];
+  } catch (error) {
+    console.error('Dataset-guided reuse planner error:', error.message);
+    return [];
+  }
+};
+
+const extractQuestionnaireContext = (rawInput, contextualAnswers = {}) => {
+  let parsedContext = {};
+
+  if (rawInput) {
+    try {
+      const parsed = typeof rawInput === 'string' ? JSON.parse(rawInput) : rawInput;
+      const source = parsed?.form || parsed?.questionnaire || parsed || {};
+      parsedContext = {
+        scanType: parsed?.scanType || parsed?.input_type || '',
+        productForm: source.productForm || '',
+        reuseGoal: source.reuseGoal || '',
+        reuseGoals: Array.isArray(source.reuseGoals) ? source.reuseGoals : [],
+        availableItems: Array.isArray(source.availableItems) ? source.availableItems : [],
+      };
+    } catch (error) {
+      console.warn('Failed to parse questionnaire context:', error.message);
+    }
+  }
+
+  const questionnaire = contextualAnswers?.questionnaire || {};
+  return {
+    scanType: parsedContext.scanType || contextualAnswers?.scanType || '',
+    wasteCategory: contextualAnswers?.wasteCategory || parsedContext.scanType || contextualAnswers?.scanType || '',
+    productForm: questionnaire.productForm || parsedContext.productForm || '',
+    reuseGoal: questionnaire.reuseGoal || parsedContext.reuseGoal || '',
+    reuseGoals: questionnaire.reuseGoals?.length ? questionnaire.reuseGoals : parsedContext.reuseGoals,
+    availableItems: questionnaire.availableItems?.length ? questionnaire.availableItems : parsedContext.availableItems,
+  };
+};
+
+const hasQuestionnaireContext = (context = {}) => Boolean(
+  context.productForm || context.reuseGoal || context.reuseGoals?.length || context.availableItems?.length
+);
+
+const runSupplementalAiModules = async () => [];
+
+const buildNotFoundSuggestion = (component, userProfile = {}) => ({
+  item_component_id: component.id,
+  module_type: 'diy',
+  title: 'Not found in dataset',
+  steps: [
+    `"${component.component_name}" is not in the WasteWise verified reuse dataset.`,
+    'AI reuse analysis is unavailable or could not confirm a safe reuse route for this item.',
+    'Try again later, pick a closer item type, or enter details manually on the scan form.',
+  ],
+  source_url: null,
+  source_credibility: 'WasteWise',
+  suggestion_source: 'not_found',
+  region_tag: userProfile.state || userProfile.city || 'India',
+  personalisation_note: `No verified dataset match and no AI reuse ideas for ${component.component_name}.`,
+  video_url: null,
+});
+
+const saveSuggestionToDb = async (suggestion, userProfile, pool) => {
+  const [sugResult] = await pool.query(
+    `INSERT INTO suggestions (item_component_id, module_type, title, steps, source_url, source_credibility, region_tag, personalisation_note, video_url)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [
+      suggestion.item_component_id,
+      suggestion.module_type,
+      suggestion.title,
+      JSON.stringify(suggestion.steps),
+      suggestion.source_url,
+      suggestion.source_credibility,
+      suggestion.region_tag,
+      suggestion.personalisation_note,
+      suggestion.video_url,
+    ]
+  );
+
+  const suggestionId = sugResult.insertId;
+
+  let disclaimer;
+  if (Array.isArray(suggestion.disclaimers) && suggestion.disclaimers.length) {
+    disclaimer = {
+      who_should_not_use: suggestion.disclaimers.join(' '),
+      when_to_stop: 'Stop immediately if irritation, odour, leakage, heating, mould, or other unexpected change appears.',
+      patch_test_required: /skin|hair|scalp|face|body/i.test(`${suggestion.title} ${(suggestion.steps || []).join(' ')}`),
+      medical_boundary: 'This is a reuse suggestion, not medical or veterinary advice.',
+      animal_safety_note: null,
+      quantity_ceiling: null,
+    };
+  } else {
+    disclaimer = fastDisclaimerGenerator(suggestion.title, suggestion.module_type, userProfile);
+  }
+
+  await pool.query(
+    `INSERT INTO disclaimers (suggestion_id, who_should_not_use, when_to_stop, patch_test_required, medical_boundary, animal_safety_note, quantity_ceiling)
+     VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    [
+      suggestionId,
+      disclaimer.who_should_not_use,
+      disclaimer.when_to_stop,
+      disclaimer.patch_test_required || false,
+      disclaimer.medical_boundary,
+      disclaimer.animal_safety_note,
+      disclaimer.quantity_ceiling,
+    ]
+  );
+
+  return { id: suggestionId, ...suggestion };
+};
+
+const tagSuggestionSource = (suggestions, source) => (
+  Array.isArray(suggestions) ? suggestions.map((suggestion) => ({
+    ...suggestion,
+    suggestion_source: suggestion.suggestion_source || source,
+  })) : []
+);
+
+const isDisposalSuggestion = (suggestion = {}) => {
+  const text = `${suggestion.title || ''} ${suggestion.personalisation_note || ''} ${suggestion.personalisation || ''}`.toLowerCase();
+  return suggestion.module_type === 'disposal'
+    || /safe disposal plan|sort .* before disposal|could not be confirmed safely|before disposal/i.test(text);
+};
+
+const clearComponentSuggestions = async (componentIds, pool) => {
+  if (!componentIds.length) return;
+
+  const placeholders = componentIds.map(() => '?').join(', ');
+  const [existing] = await pool.query(
+    `SELECT id FROM suggestions WHERE item_component_id IN (${placeholders})`,
+    componentIds
+  );
+  const suggestionIds = existing.map((row) => row.id);
+  if (!suggestionIds.length) return;
+
+  const idPlaceholders = suggestionIds.map(() => '?').join(', ');
+  await pool.query(`DELETE FROM disclaimers WHERE suggestion_id IN (${idPlaceholders})`, suggestionIds);
+  await pool.query(`DELETE FROM suggestions WHERE id IN (${idPlaceholders})`, suggestionIds);
+};
+
 const generateAllSuggestions = async (analysisResult, goals, contextualAnswers, pool) => {
   const { scanId, components, safetyResults, weather, userProfile, productName } = analysisResult;
   const allSuggestions = [];
@@ -428,78 +838,102 @@ const generateAllSuggestions = async (analysisResult, goals, contextualAnswers, 
     return safety && safety.is_safe;
   });
 
+  await clearComponentSuggestions(safeComponents.map((comp) => comp.id), pool);
+
   const animalList = contextualAnswers?.animals || [];
   const healthConcern = contextualAnswers?.healthConcern || '';
 
   const startTime = Date.now();
   console.log(`[FastTrack] Starting suggestion generation for scan ${scanId}`);
 
-  // Wrap each module promise with timeout tracking
-  const modulePromises = [];
-  let useFastTrack = false;
-
-  for (const component of safeComponents) {
-    if (goals.includes('body_skin') || goals.includes('all')) {
-      modulePromises.push(runTraditionalModule(component, goals, userProfile, weather, pool));
-    }
-    if (goals.includes('animal_feed') || goals.includes('all')) {
-      modulePromises.push(runAnimalFeedModule(component, animalList, weather, pool));
-    }
-    if (goals.includes('diy') || goals.includes('all')) {
-      modulePromises.push(runDIYModule(component, userProfile, weather, pool));
-    }
-    if (goals.includes('modern') || goals.includes('all')) {
-      modulePromises.push(runModernModule(component, userProfile, weather, pool));
-    }
-    if (goals.includes('cultural') || goals.includes('all')) {
-      modulePromises.push(runReligiousModule(component, userProfile, weather, pool));
-    }
-    if (goals.includes('health') || goals.includes('all')) {
-      modulePromises.push(runHealthModule(component, healthConcern, userProfile, weather, pool));
-    }
-  }
-
-  // Race against timeout - if AI services take too long, use fast-track
+  const questionnaireContext = extractQuestionnaireContext(analysisResult.rawInput, contextualAnswers);
+  const wasteCategory = normalizeWasteCategory(analysisResult.category || questionnaireContext.scanType);
   let moduleResults;
-  const timeoutPromise = new Promise((resolve) => {
-    setTimeout(() => {
-      console.log(`[FastTrack] Timeout reached (${FAST_TRACK_TIMEOUT}ms), using fast-track fallback`);
-      useFastTrack = true;
-      resolve(null);
-    }, FAST_TRACK_TIMEOUT);
-  });
 
-  try {
-    moduleResults = await Promise.race([
-      Promise.all(modulePromises),
-      timeoutPromise
-    ]);
+  // Always seed with verified dataset patterns first — peels, packaging, electronics, etc.
+  const enrichedComponents = safeComponents.map((comp) => ({
+    ...comp,
+    item_name: comp.item_name || productName,
+  }));
 
-    // If timeout occurred, use fast-track fallback
-    if (useFastTrack || !moduleResults) {
-      console.log(`[FastTrack] Generating fast-track suggestions for ${safeComponents.length} components`);
-      const fastSuggestions = [];
-      for (const component of safeComponents) {
-        const suggestions = fastSuggestionGenerator(component, userProfile, weather);
-        fastSuggestions.push(...suggestions);
-      }
-      moduleResults = [fastSuggestions];
+  const datasetFirstResults = enrichedComponents.map((component) =>
+    tagSuggestionSource(
+      getDatasetSuggestions(component, getWasteCategory(component, wasteCategory), userProfile),
+      'dataset'
+    )
+  );
+
+  if (wasteCategory === 'electronics' && enrichedComponents.length > 1) {
+    const productLevel = {
+      ...enrichedComponents[0],
+      component_name: productName || enrichedComponents[0].component_name,
+      item_name: productName || enrichedComponents[0].item_name,
+    };
+    const sharedDataset = tagSuggestionSource(
+      getDatasetSuggestions(productLevel, 'electronics', userProfile),
+      'dataset'
+    ).map((suggestion) => ({
+      ...suggestion,
+      item_component_id: enrichedComponents[0].id,
+    }));
+    for (let index = 0; index < datasetFirstResults.length; index += 1) {
+      datasetFirstResults[index] = index === 0 ? sharedDataset : [];
     }
-  } catch (error) {
-    console.error('[FastTrack] Error in suggestion generation:', error.message);
-    // Fallback to fast-track on error
-    const fastSuggestions = [];
-    for (const component of safeComponents) {
-      const suggestions = fastSuggestionGenerator(component, userProfile, weather);
-      fastSuggestions.push(...suggestions);
-    }
-    moduleResults = [fastSuggestions];
   }
+
+  const needsAiReuse = wasteCategory === 'electronics'
+    ? !(datasetFirstResults[0] || []).length
+    : enrichedComponents.some((_component, index) => !(datasetFirstResults[index] || []).length);
+  let deepReuseResults = enrichedComponents.map(() => []);
+
+  if (needsAiReuse) {
+    console.log(`[Suggestions] Running AI deep reuse for components missing dataset matches (${wasteCategory})`);
+    deepReuseResults = await Promise.all(
+      enrichedComponents.map((component, index) => {
+        if ((datasetFirstResults[index] || []).length > 0) return Promise.resolve([]);
+        return runDeepReusePlanner(
+          component,
+          { ...questionnaireContext, wasteCategory, scanType: analysisResult.category || questionnaireContext.scanType },
+          userProfile,
+          weather,
+          wasteCategory
+        );
+      })
+    );
+  } else {
+    console.log(`[Suggestions] Dataset covers all components — skipping AI deep reuse (${wasteCategory})`);
+  }
+
+  const fastSuggestions = [];
+  const requiresQuestionnaireFallback = hasQuestionnaireContext(questionnaireContext);
+
+  if (requiresQuestionnaireFallback && process.env.DISABLE_AI_SUGGESTIONS !== 'true') {
+    console.log(`[Suggestions] Adding questionnaire-aware contextual suggestions (${wasteCategory})`);
+    for (const component of safeComponents) {
+      fastSuggestions.push(...tagSuggestionSource(
+        fastSuggestionGenerator(component, userProfile, weather, {
+          ...questionnaireContext,
+          scanType: analysisResult.category || questionnaireContext.scanType,
+          wasteCategory,
+          skipDataset: true,
+          pipelineMode: true,
+        }),
+        'contextual'
+      ));
+    }
+  }
+
+  moduleResults = [
+    ...datasetFirstResults,
+    ...deepReuseResults.map((results) => tagSuggestionSource(results, 'ai')),
+    fastSuggestions,
+  ];
 
   const elapsed = Date.now() - startTime;
   console.log(`[FastTrack] Suggestion generation completed in ${elapsed}ms`);
 
   const validatedSuggestions = [];
+  const savedSuggestionKeys = new Set();
 
   for (const results of moduleResults) {
     for (const suggestion of results) {
@@ -509,141 +943,53 @@ const generateAllSuggestions = async (analysisResult, goals, contextualAnswers, 
         continue;
       }
 
+      // Never show generic disposal cards — use dataset or "Not found" instead.
+      if (isDisposalSuggestion(suggestion)) {
+        console.warn(`[SuggestionValidation] Blocked disposal suggestion: ${suggestion.title}`);
+        continue;
+      }
+
+      const suggestionKey = `${suggestion.suggestion_source || 'unknown'}:${suggestion.item_component_id}:${String(suggestion.title || '').trim().toLowerCase()}`;
+      if (savedSuggestionKeys.has(suggestionKey)) continue;
+      savedSuggestionKeys.add(suggestionKey);
+
       validatedSuggestions.push(suggestion);
-      const [sugResult] = await pool.query(
-        `INSERT INTO suggestions (item_component_id, module_type, title, steps, source_url, source_credibility, region_tag, personalisation_note, video_url)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [
-          suggestion.item_component_id,
-          suggestion.module_type,
-          suggestion.title,
-          JSON.stringify(suggestion.steps),
-          suggestion.source_url,
-          suggestion.source_credibility,
-          suggestion.region_tag,
-          suggestion.personalisation_note,
-          suggestion.video_url,
-        ]
-      );
-
-      const suggestionId = sugResult.insertId;
-
-      const userProfileSummary = {
-        name: userProfile.name,
-        city: userProfile.city,
-        state: userProfile.state,
-        skin_type: userProfile.skin_type,
-        is_pregnant: userProfile.is_pregnant,
-        allergies: userProfile.allergies,
-        culture: userProfile.culture,
-      };
-
-      // Generate disclaimer with timeout
-      let disclaimer = null;
-      try {
-        const disclaimerTimeout = new Promise((resolve) => {
-          setTimeout(() => {
-            console.log('[FastTrack] Disclaimer timeout, using fast-track');
-            resolve(null);
-          }, 3000);
-        });
-
-        disclaimer = await Promise.race([
-          generateDisclaimer(suggestion.title, suggestion.module_type, userProfileSummary),
-          disclaimerTimeout
-        ]);
-
-        if (!disclaimer) {
-          disclaimer = fastDisclaimerGenerator(suggestion.title, suggestion.module_type, userProfile);
-        }
-      } catch (error) {
-        console.error('Disclaimer generation error:', error.message);
-        disclaimer = fastDisclaimerGenerator(suggestion.title, suggestion.module_type, userProfile);
-      }
-
-      if (disclaimer) {
-        await pool.query(
-          `INSERT INTO disclaimers (suggestion_id, who_should_not_use, when_to_stop, patch_test_required, medical_boundary, animal_safety_note, quantity_ceiling)
-           VALUES (?, ?, ?, ?, ?, ?, ?)`,
-          [
-            suggestionId,
-            disclaimer.who_should_not_use,
-            disclaimer.when_to_stop,
-            disclaimer.patch_test_required || false,
-            disclaimer.medical_boundary,
-            disclaimer.animal_safety_note,
-            disclaimer.quantity_ceiling,
-          ]
-        );
-      }
-
-      allSuggestions.push({ id: suggestionId, ...suggestion });
+      const saved = await saveSuggestionToDb(suggestion, userProfile, pool);
+      allSuggestions.push(saved);
     }
   }
 
-  if (validatedSuggestions.length === 0 && safeComponents.length > 0) {
-    console.warn('[SuggestionValidation] No validated suggestions survived; using self-contained fallback suggestions.');
+  // Simple rule: no dataset + no AI → show "Not found in dataset"
+  for (let index = 0; index < safeComponents.length; index += 1) {
+    const component = safeComponents[index];
+    const alreadySaved = allSuggestions.some((s) => s.item_component_id === component.id);
+    const scanHasReuse = allSuggestions.some((s) => s.suggestion_source !== 'not_found');
+    if (alreadySaved || (wasteCategory === 'electronics' && scanHasReuse)) continue;
+
+    console.log(`[Suggestions] Not found — no saved reuse ideas for ${component.component_name}`);
+    const notFound = buildNotFoundSuggestion(component, userProfile);
+    const saved = await saveSuggestionToDb(notFound, userProfile, pool);
+    allSuggestions.push(saved);
   }
 
-  if (allSuggestions.length === 0 && safeComponents.length > 0) {
-    for (const component of safeComponents) {
-      const fallbackSuggestion = {
-        item_component_id: component.id,
-        module_type: 'diy',
-        title: `Repurpose ${component.component_name}`,
-        steps: [
-          `Clean ${component.component_name} thoroughly`,
-          'Dry it completely before reuse',
-          'Turn it into a simple household or craft project',
-        ],
-        source_url: null,
-        source_credibility: 'Community',
-        region_tag: userProfile.state || userProfile.city || null,
-        personalisation_note: 'Fallback suggestion generated locally because external synthesis was unavailable.',
-        video_url: null,
-      };
-
-      const [sugResult] = await pool.query(
-        `INSERT INTO suggestions (item_component_id, module_type, title, steps, source_url, source_credibility, region_tag, personalisation_note, video_url)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [
-          fallbackSuggestion.item_component_id,
-          fallbackSuggestion.module_type,
-          fallbackSuggestion.title,
-          JSON.stringify(fallbackSuggestion.steps),
-          fallbackSuggestion.source_url,
-          fallbackSuggestion.source_credibility,
-          fallbackSuggestion.region_tag,
-          fallbackSuggestion.personalisation_note,
-          fallbackSuggestion.video_url,
-        ]
-      );
-
-      const suggestionId = sugResult.insertId;
-      await pool.query(
-        `INSERT INTO disclaimers (suggestion_id, who_should_not_use, when_to_stop, patch_test_required, medical_boundary, animal_safety_note, quantity_ceiling)
-         VALUES (?, ?, ?, ?, ?, ?, ?)`,
-        [
-          suggestionId,
-          'Anyone with sensitivity to this material',
-          'Stop if irritation, odor, or spoilage appears',
-          false,
-          'General reuse only; not medical advice',
-          'Keep away from pets if uncertain',
-          'Small household quantities only',
-        ]
-      );
-
-      allSuggestions.push({ id: suggestionId, ...fallbackSuggestion });
-    }
-  }
+  const datasetCount = allSuggestions.filter((s) => s.suggestion_source === 'dataset').length;
+  const aiCount = allSuggestions.filter((s) => s.suggestion_source === 'ai' || s.suggestion_source === 'contextual').length;
+  const notFoundCount = allSuggestions.filter((s) => s.suggestion_source === 'not_found').length;
 
   return {
     scanId,
     suggestions_count: allSuggestions.length,
+    dataset_count: datasetCount,
+    ai_count: aiCount,
+    not_found_count: notFoundCount,
     suggestions: allSuggestions,
     redirect: `/results/${scanId}`,
   };
 };
 
-module.exports = { generateAllSuggestions };
+module.exports = {
+  generateAllSuggestions,
+  buildReuseSynthesisPrompt,
+  formatWebSearchResults,
+  normaliseSynthesisSuggestions,
+};

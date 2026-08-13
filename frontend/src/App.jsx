@@ -25,8 +25,8 @@ import ProfilePage from './pages/ProfilePage';
 import ProtectedRoute from './components/ProtectedRoute';
 import { GridBackground, ScrollProgressBar } from './components/ui';
 
-// Register service worker for PWA
-if ('serviceWorker' in navigator) {
+// Register service worker for PWA (production only — SW breaks Vite dev)
+if ('serviceWorker' in navigator && import.meta.env.PROD) {
   window.addEventListener('load', () => {
     navigator.serviceWorker
       .register('/sw.js')
@@ -51,11 +51,11 @@ function AnimatedRoutes() {
   const location = useLocation();
 
   return (
-    <AnimatePresence mode="wait">
+    <AnimatePresence initial={false}>
       <motion.div
         key={location.pathname}
         variants={pageVariants}
-        initial="initial"
+        initial={false}
         animate="animate"
         exit="exit"
         style={{ minHeight: '100vh' }}

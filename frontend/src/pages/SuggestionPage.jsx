@@ -200,7 +200,7 @@ export default function SuggestionPage() {
             <Card className="p-7">
               <Badge color={suggestion.tagColor} className="mb-5">{suggestion.moduleType}</Badge>
               <h1 className="text-[clamp(2rem,5vw,3.6rem)]">{suggestion.title}</h1>
-              <div className="mt-5 rounded-2xl border border-primary-green bg-light-green p-4">
+              <div className="mt-5 rounded-2xl border border-primary-green bg-white p-4 shadow-sm">
                 <p className="text-sm font-bold text-deep-green">Why this suits you right now</p>
                 <p className="mt-1 leading-7">{suggestion.personalisation}</p>
               </div>

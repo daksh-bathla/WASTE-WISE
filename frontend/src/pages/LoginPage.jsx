@@ -142,7 +142,7 @@ export default function LoginPage() {
 
 function BadgePanel() {
   return (
-    <div className="relative overflow-hidden rounded-[28px] border border-primary-purple bg-white p-8 shadow-hover">
+    <div className="relative overflow-hidden rounded-[28px] border border-primary-purple bg-[var(--card-bg)] p-8 shadow-hover">
       <div className="absolute right-[-80px] top-[-80px] h-56 w-56 rounded-full bg-light-purple blur-2xl" />
       <div className="absolute bottom-[-80px] left-[-80px] h-56 w-56 rounded-full bg-light-green blur-2xl" />
       <div className="relative">

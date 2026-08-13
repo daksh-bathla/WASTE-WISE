@@ -136,7 +136,7 @@ export default function HomePage() {
                     <button
                       key={scan.id}
                       type="button"
-                      onClick={() => navigate(scan.input_type === 'electronics' ? `/results/${scan.id}/ewaste` : `/results/${scan.id}`)}
+                      onClick={() => navigate(`/results/${scan.id}`)}
                       className="choice-card grid gap-4 p-4 text-left sm:grid-cols-[1fr_auto] sm:items-center"
                     >
                       <div>

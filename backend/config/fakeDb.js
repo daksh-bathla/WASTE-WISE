@@ -569,6 +569,16 @@ const handlers = [
     },
   },
   {
+    test: (sql) => sql.includes('select * from scans where id = ? and (user_id = ? or user_id is null)'),
+    run: ([scanId, userId]) => {
+      const scan = state.tables.scans.find((row) =>
+        String(row.id) === String(scanId) &&
+        (row.user_id === null || String(row.user_id) === String(userId))
+      );
+      return [scan ? [deepClone(scan)] : []];
+    },
+  },
+  {
     test: (sql) => sql === 'select * from items where scan_id = ?',
     run: ([scanId]) => [state.tables.items.filter((row) => String(row.scan_id) === String(scanId)).map(deepClone)],
   },
@@ -744,6 +754,36 @@ const handlers = [
       };
       pushRow('disclaimers', row);
       return [{ insertId: row.id, affectedRows: 1 }];
+    },
+  },
+  {
+    test: (sql) => sql.startsWith('select id from suggestions where item_component_id in ('),
+    run: (params) => {
+      const ids = params.map(String);
+      const rows = state.tables.suggestions
+        .filter((row) => ids.includes(String(row.item_component_id)))
+        .map((row) => ({ id: row.id }));
+      return [rows];
+    },
+  },
+  {
+    test: (sql) => sql.startsWith('delete from disclaimers where suggestion_id in ('),
+    run: (params) => {
+      const ids = new Set(params.map(String));
+      const before = state.tables.disclaimers.length;
+      state.tables.disclaimers = state.tables.disclaimers.filter((row) => !ids.has(String(row.suggestion_id)));
+      save();
+      return [{ affectedRows: before - state.tables.disclaimers.length }];
+    },
+  },
+  {
+    test: (sql) => sql.startsWith('delete from suggestions where id in ('),
+    run: (params) => {
+      const ids = new Set(params.map(String));
+      const before = state.tables.suggestions.length;
+      state.tables.suggestions = state.tables.suggestions.filter((row) => !ids.has(String(row.id)));
+      save();
+      return [{ affectedRows: before - state.tables.suggestions.length }];
     },
   },
   {

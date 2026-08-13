@@ -8,4 +8,8 @@ import os from 'node:os'
 export default defineConfig({
   plugins: [react()],
   cacheDir: process.env.VITE_CACHE_DIR || path.join(os.tmpdir(), 'wastewise-vite-cache'),
+  server: {
+    host: true,
+    port: 5173,
+  },
 })

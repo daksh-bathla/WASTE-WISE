@@ -10,7 +10,7 @@
   --deep-green-hover: #3a9b6a;
   --light-green: rgba(238, 251, 242, 0.85);
   --page-bg: transparent;
-  --card-bg: rgba(255, 255, 255, 0.90);
+  --card-bg: #E2F9E8;
   --text-primary: #1a1a2e;
   --text-secondary: #35354e;
   --text-muted: #5e5e7e;
@@ -385,7 +385,7 @@ p {
 }
 
 .choice-card {
-  background: rgba(255, 255, 255, 0.85);
+  background: var(--card-bg);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1.5px solid var(--border);

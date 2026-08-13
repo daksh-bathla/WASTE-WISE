@@ -6,6 +6,28 @@ const { getWeather } = require('../utils/weather');
 const { getSeason } = require('../utils/seasonHelper');
 const { fastDecompose, FAST_TRACK_TIMEOUT } = require('./fastTrackService');
 
+const PEEL_NAME_PATTERN = /peel|peels|rind|shell|scrap|citrus|orange|lemon|lime|banana|mango|apple|potato|watermelon|coconut|mosambi/i;
+
+const isPeelLikeName = (name = '') => PEEL_NAME_PATTERN.test(String(name).toLowerCase());
+
+const cleanPeelName = (name = '') => String(name || '')
+  .replace(/\s*\([^)]*\)\s*/gi, ' ')
+  .replace(/\b(main body|product layer|packaging layer|organic)\b/gi, ' ')
+  .replace(/\s+/g, ' ')
+  .trim();
+
+const buildPeelComponents = (name) => {
+  const clean = cleanPeelName(name);
+  if (!clean || !isPeelLikeName(clean)) return null;
+  return [{
+    component_name: clean,
+    component_type: 'organic',
+    material: 'organic',
+    condition: 'good',
+    estimated_percentage: 100,
+  }];
+};
+
 const runAnalysisPipeline = async (req, pool) => {
   const pipelineStartTime = Date.now();
   console.log(`[AnalysisPipeline] Starting analysis for user ${req.user?.id || req.body.user_id}`);
@@ -51,60 +73,87 @@ const runAnalysisPipeline = async (req, pool) => {
     const weather = await getWeather(location_lat || 28.6139, location_lng || 77.209);
     const season = getSeason(new Date().getMonth() + 1);
 
-    const [scanResult] = await pool.query(
-      `INSERT INTO scans (user_id, input_type, location_lat, location_lng, weather_temp, weather_humidity, weather_uv, season)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-      [effectiveUserId || null, input_type, location_lat, location_lng, weather.temp, weather.humidity, weather.uv, season]
-    );
-    const scanId = scanResult.insertId;
-
     let visionData = null;
-    if (photo_data && photo_mime && !pipelineTimedOut) {
-      console.log(`[AnalysisPipeline] Image file received (MIME: ${photo_mime})`);
-      try {
-        console.log('[AnalysisPipeline] Initiating Gemini Vision API call...');
-        // Timeout for vision analysis - 15 seconds to allow Gemini + Groq fallback
-        const visionTimeout = new Promise((resolve) => {
-          setTimeout(() => {
-            console.log('[AnalysisPipeline] Vision analysis timeout');
-            resolve(null);
-          }, 15000);
-        });
-        visionData = await Promise.race([
-          analyzeProductImage(photo_data, photo_mime),
-          visionTimeout
-        ]);
-        
-        if (visionData) {
-          console.log('[AnalysisPipeline] Gemini Vision API response returned successfully:', JSON.stringify(visionData));
-        } else {
-          console.log('[AnalysisPipeline] Gemini Vision API returned null or timed out');
-          throw new Error('Image analysis failed: Could not process the uploaded photo. Please try a clearer image.');
+    const userSelectedType = input_type;
+    const prefillVision = safeParse(req.body.vision_data);
+    if (prefillVision && typeof prefillVision === 'object' && !prefillVision.vision_failed) {
+      visionData = prefillVision;
+      console.log('[AnalysisPipeline] Using vision data from scan page (skipping duplicate API call)');
+    } else if (photo_data && photo_mime && !pipelineTimedOut) {
+      const skipVision = Boolean(userSelectedType && userSelectedType !== 'other');
+      if (skipVision) {
+        console.log(`[AnalysisPipeline] Skipping vision — user selected ${userSelectedType}`);
+      } else {
+        console.log(`[AnalysisPipeline] Image file received (MIME: ${photo_mime})`);
+        try {
+          console.log('[AnalysisPipeline] Running vision analysis...');
+          const visionTimeout = new Promise((resolve) => {
+            setTimeout(() => {
+              console.log('[AnalysisPipeline] Vision analysis timeout');
+              resolve(null);
+            }, 12000);
+          });
+          visionData = await Promise.race([
+            analyzeProductImage(photo_data, photo_mime),
+            visionTimeout,
+          ]);
+
+          if (visionData && !visionData.vision_failed) {
+            console.log('[AnalysisPipeline] Vision succeeded:', visionData.product_name || visionData.detected_category);
+          } else {
+            console.log('[AnalysisPipeline] Vision unavailable, continuing with form values');
+          }
+        } catch (error) {
+          console.warn('[AnalysisPipeline] Vision failed, continuing with form values:', error.message);
         }
-      } catch (error) {
-        console.error('[AnalysisPipeline] Gemini Vision analysis error:', error.message);
-        throw new Error(`Image analysis failed: ${error.message}`);
       }
     }
 
-    let finalProductName = product_name || (visionData?.product_name) || raw_input || 'Unknown Item';
+    let effectiveInputType = userSelectedType;
+
+    // User-selected category beats vision — avoids misclassifying phones as "other".
+    if (userSelectedType && userSelectedType !== 'other') {
+      effectiveInputType = userSelectedType;
+    } else if (visionData?.detected_category && !visionData?.vision_failed) {
+      effectiveInputType = visionData.detected_category;
+    }
+
+    const inferredName = product_name || (Array.isArray(peels) ? peels.join(', ') : peels) || '';
+    if (userSelectedType === 'food_peels' || isPeelLikeName(inferredName)) {
+      effectiveInputType = 'food_peels';
+    }
+    if (device_info?.device_category || input_type === 'electronics') {
+      effectiveInputType = 'electronics';
+    }
+
+    const [scanResult] = await pool.query(
+      `INSERT INTO scans (user_id, input_type, location_lat, location_lng, weather_temp, weather_humidity, weather_uv, season)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [effectiveUserId || null, effectiveInputType, location_lat, location_lng, weather.temp, weather.humidity, weather.uv, season]
+    );
+    const scanId = scanResult.insertId;
+
+    let finalProductName = product_name
+      || (visionData?.product_name && !/^(scanned item|unknown|item)$/i.test(String(visionData.product_name)) ? visionData.product_name : null)
+      || raw_input
+      || 'Unknown Item';
     let finalCategory = category || (visionData?.category) || input_type;
     let finalExpiryDate = expiry_date || (visionData?.expiry_date);
     let finalExpiryType = expiry_type || (visionData?.expiry_type) || 'none';
     let finalIngredients = ingredients || (visionData?.ingredients) || [];
     let riskIndicators = visionData?.risk_indicators || [];
 
-    if (input_type === 'food_peels' && peels) {
+    if (effectiveInputType === 'food_peels' && peels) {
       finalProductName = Array.isArray(peels) ? peels.join(', ') : peels;
       finalCategory = 'peels';
     }
 
-    if (input_type === 'waste_packaging' && packaging_materials) {
+    if (effectiveInputType === 'waste_packaging' && packaging_materials) {
       finalProductName = `Waste packaging: ${Array.isArray(packaging_materials) ? packaging_materials.join(', ') : packaging_materials}`;
       finalCategory = 'packaging';
     }
 
-    if (input_type === 'electronics' && device_info) {
+    if (effectiveInputType === 'electronics' && device_info) {
       finalProductName = `${device_info.brand || ''} ${device_info.device_category}`.trim();
       finalCategory = 'electronics';
     }
@@ -115,7 +164,7 @@ const runAnalysisPipeline = async (req, pool) => {
     if (photo_data) {
       const uploadDir = path.join(__dirname, '../uploads');
       if (!require('fs').existsSync(uploadDir)) require('fs').mkdirSync(uploadDir, { recursive: true });
-      const fileName = `scan_${scanId}.${photo_mime.split('/')[1] || 'jpg'}`;
+      const fileName = `scan_${scanId}.${(photo_mime || 'image/jpeg').split('/')[1] || 'jpg'}`;
       require('fs').writeFileSync(require('path').join(uploadDir, fileName), Buffer.from(photo_data, 'base64'));
       photoUrl = `/uploads/${fileName}`;
     }
@@ -128,16 +177,21 @@ const runAnalysisPipeline = async (req, pool) => {
     const itemId = itemResult.insertId;
 
     let components = [];
-    if (input_type === 'food_peels' && peels) {
-      const peelList = Array.isArray(peels) ? peels : [peels];
-      components = peelList.map((peel) => ({
-        component_name: peel,
+    if (effectiveInputType === 'food_peels') {
+      const peelSource = peels || product_name || finalProductName;
+      const peelList = Array.isArray(peelSource)
+        ? peelSource.filter(Boolean)
+        : String(peelSource || '').split(/,|\band\b/i).map((part) => part.trim()).filter(Boolean);
+      components = (peelList.length ? peelList : [cleanPeelName(finalProductName) || finalProductName]).map((peel) => ({
+        component_name: cleanPeelName(peel) || peel,
         component_type: 'organic',
-        material: peel,
+        material: 'organic',
         condition: 'good',
-        estimated_percentage: Math.round(100 / peelList.length),
+        estimated_percentage: Math.round(100 / Math.max(peelList.length, 1)),
       }));
-    } else if (input_type === 'waste_packaging' && packaging_materials) {
+    } else if (buildPeelComponents(finalProductName)) {
+      components = buildPeelComponents(finalProductName);
+    } else if (effectiveInputType === 'waste_packaging' && packaging_materials) {
       const matList = Array.isArray(packaging_materials) ? packaging_materials : [packaging_materials];
       components = matList.map((mat) => ({
         component_name: `${mat} packaging`,
@@ -146,14 +200,14 @@ const runAnalysisPipeline = async (req, pool) => {
         condition: req.body.packaging_condition || 'good',
         estimated_percentage: Math.round(100 / matList.length),
       }));
-    } else if (input_type === 'electronics' && device_info) {
+    } else if (effectiveInputType === 'electronics' && device_info) {
       components = [
         { component_name: 'device body/frame', component_type: 'electronic', material: device_info.device_category, condition: device_info.condition || 'fair', estimated_percentage: 40 },
         { component_name: 'circuit board', component_type: 'electronic', material: 'PCB', condition: device_info.condition || 'fair', estimated_percentage: 15 },
         { component_name: 'battery', component_type: 'electronic', material: 'lithium-ion', condition: 'fair', estimated_percentage: 10 },
         { component_name: 'screen/display', component_type: 'electronic', material: 'LCD/LED', condition: device_info.condition || 'fair', estimated_percentage: 20 },
       ];
-    } else if (input_type === 'other') {
+    } else if (effectiveInputType === 'other') {
       // Handle "Other" category items using manually entered form data
       const other_info = safeParse(req.body.other_info);
       const otherMaterials = other_info?.materials || req.body.materials || [];
@@ -231,7 +285,11 @@ const runAnalysisPipeline = async (req, pool) => {
       componentIds.push(compResult.insertId);
     }
 
-    const componentsWithIds = components.map((c, i) => ({ ...c, id: componentIds[i] }));
+    const componentsWithIds = components.map((c, i) => ({
+      ...c,
+      id: componentIds[i],
+      item_name: finalProductName,
+    }));
 
     const [userRows] = await pool.query(
       `SELECT u.*, um.conditions, um.medications, um.allergies, um.is_pregnant, um.age_group,

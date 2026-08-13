@@ -65,7 +65,7 @@ export const userApi = {
 
 export const scanApi = {
   analyse: (payload) => requestJson('/scan/analyse', { method: 'POST', body: payload }),
-  vision: (payload) => requestJson('/scan/vision', { method: 'POST', body: payload }),
+  vision: (payload) => requestJson('/scan/vision', { method: 'POST', body: payload, auth: true }),
   recent: (limit = 4) => requestJson(`/scan/recent?limit=${limit}`),
   results: (scanId) => requestJson(`/scan/results/${scanId}`),
   seasonal: () => requestJson('/scan/seasonal'),
@@ -98,7 +98,7 @@ export const voiceApi = {
   generate: (payload) => requestJson('/voice/generate', { method: 'POST', body: payload }),
 };
 
-export const buildScanPayload = (scanType, form, profile = {}, photoFile = null) => {
+export const buildScanPayload = (scanType, form, profile = {}, photoFile = null, visionData = null) => {
   const base = {
     input_type: scanType,
     location_lat: profile.lat || profile.location_lat || 28.6139,
@@ -194,25 +194,36 @@ export const buildScanPayload = (scanType, form, profile = {}, photoFile = null)
         formData.append(key, value);
       }
     });
+    if (visionData && !visionData.vision_failed) {
+      formData.append('vision_data', JSON.stringify(visionData));
+    }
     return formData;
+  }
+
+  if (visionData && !visionData.vision_failed) {
+    return { ...specificPayload, vision_data: JSON.stringify(visionData) };
   }
 
   return specificPayload;
 };
 
-export const buildContextualAnswers = (profile = {}) => {
-  const animals = Array.isArray(profile.animals)
+export const buildContextualAnswers = (profile = {}, form = {}, scanType = '') => ({
+  animals: Array.isArray(profile.animals)
     ? profile.animals.map((animal) => ({
         species: String(animal).toLowerCase(),
         weight: 50,
       }))
-    : [];
-
-  return {
-    animals,
-    healthConcern: profile.allergies || '',
-  };
-};
+    : [],
+  healthConcern: profile.allergies || '',
+  scanType,
+  wasteCategory: scanType,
+  questionnaire: {
+    productForm: form.productForm || '',
+    reuseGoal: form.reuseGoal || '',
+    reuseGoals: Array.isArray(form.reuseGoals) ? form.reuseGoals : [],
+    availableItems: Array.isArray(form.availableItems) ? form.availableItems : [],
+  },
+});
 
 const titleCase = (value = '') =>
   String(value)
@@ -286,6 +297,9 @@ export const normalizeScanResults = (payload) => {
       tagColor: moduleColor(suggestion.module_type),
       component: component.component_name || row.item?.product_name || 'Component',
       credibility: suggestion.source_credibility || 'Community',
+      suggestionSource: suggestion.suggestion_source
+        || (suggestion.title === 'Not found in dataset' ? 'not_found' : null)
+        || (suggestion.source_credibility === 'Dataset Verified' ? 'dataset' : 'ai'),
       sourceName: sourceNameFromUrl(suggestion.source_url),
       sourceUrl: suggestion.source_url || '#',
       rating: Number(row.communityRating?.avg_rating || 0).toFixed(1),
@@ -319,3 +333,47 @@ export const normalizeEwasteResponse = (payload) => ({
   resalePlatforms: payload?.resalePlatforms || [],
   donationPlatforms: payload?.donationPlatforms || [],
 });
+
+export const normalizeEwasteForPage = (payload) => {
+  const assessment = payload?.assessment || payload?.ewasteAssessment || {};
+  const resale = payload?.resalePlatforms || [];
+  const donation = payload?.donationPlatforms || [];
+  const recycling = payload?.recyclingPlatforms || [];
+
+  const platforms = [
+    ...resale.map((platform) => ({
+      name: platform.name,
+      type: 'Resale',
+      note: platform.is_doorstep_pickup ? 'Doorstep pickup available' : 'List online or visit drop-off point',
+      url: platform.url,
+    })),
+    ...donation.map((platform) => ({
+      name: platform.name,
+      type: 'Donation',
+      note: 'Donate working devices to extend their useful life',
+      url: platform.url,
+    })),
+  ];
+
+  const recyclers = recycling.map((platform) => ({
+    name: platform.name,
+    type: platform.type || 'Recycling',
+    pickup: platform.is_doorstep_pickup ? 'Doorstep pickup available' : 'Drop-off / collection centre',
+    url: platform.url,
+  }));
+
+  return {
+    device: assessment.device || assessment.device_name || 'Electronic device',
+    city: assessment.city || 'your area',
+    commonFix: assessment.common_fix || assessment.commonFix || '',
+    repairDifficulty: assessment.repair_difficulty || assessment.repairDifficulty || 'Medium',
+    resaleValue: assessment.estimated_resale_value || assessment.resaleValue || 'Varies by model and condition',
+    platforms,
+    salvage: (assessment.components_to_salvage || assessment.salvage || []).map((item) => ({
+      component: item.component,
+      condition: item.condition,
+      reuse: item.reuse,
+    })),
+    recyclers,
+  };
+};

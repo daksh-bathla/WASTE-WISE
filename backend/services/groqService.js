@@ -89,7 +89,7 @@ const analyzeProductImageFallback = async (imageBase64, mimeType, prompt) => {
     const response = await axios.post(
       GROQ_URL,
       {
-        model: 'llama-3.2-11b-vision-preview',
+        model: process.env.GROQ_VISION_MODEL || 'llama-3.2-90b-vision-preview',
         messages: [
           {
             role: 'user',
@@ -114,8 +114,20 @@ const analyzeProductImageFallback = async (imageBase64, mimeType, prompt) => {
     const text = response.data.choices?.[0]?.message?.content;
     if (!text) return null;
 
-    const cleanedText = text.replace(/```json\s*|\s*```/g, '').trim();
-    return JSON.parse(cleanedText);
+    try {
+      const cleanedText = text.replace(/```json\s*|\s*```/g, '').trim();
+      return JSON.parse(cleanedText);
+    } catch (jsonErr) {
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        try {
+          return JSON.parse(jsonMatch[0]);
+        } catch (matchErr) {
+          console.warn(`[GroqService] Failed parsing extracted JSON: ${matchErr.message}`);
+        }
+      }
+      throw jsonErr;
+    }
   } catch (error) {
     const errMsg = error.response?.data ? JSON.stringify(error.response.data) : error.message;
     console.error('Groq Vision fallback error:', errMsg);

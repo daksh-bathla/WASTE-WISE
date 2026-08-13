@@ -4,7 +4,6 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 let pool;
-let usingFakeDb = false;
 
 const createMysqlPool = () => mysql.createPool({
   host: process.env.DB_HOST || 'localhost',
@@ -20,51 +19,47 @@ const createMysqlPool = () => mysql.createPool({
 const createFakePool = () => {
   const fakeDb = require('./fakeDb');
   return {
-    query: async (sql, params = []) => {
-      const result = fakeDb.query(sql, params);
-      return result;
-    },
+    query: async (sql, params = []) => fakeDb.query(sql, params),
     end: async () => {},
   };
 };
 
 const isConnectionError = (error) => {
   const message = String(error?.message || '').toLowerCase();
-  return ['econnrefused', 'etimedout', 'getaddrinfo', 'host not found', 'access denied', 'unknown database'].some((token) => message.includes(token));
+  return ['econnrefused', 'etimedout', 'getaddrinfo', 'enotfound', 'host not found', 'access denied', 'unknown database'].some((token) => message.includes(token));
 };
 
 const initPool = () => {
   if (pool) return pool;
 
-  const shouldUseFakeDb = process.env.USE_FAKE_DB === 'true' || process.env.NODE_ENV !== 'production';
+  const hasDbConfig = Boolean(process.env.DB_HOST && process.env.DB_USER && process.env.DB_NAME);
+  const shouldUseFakeDb = process.env.USE_FAKE_DB === 'true' || (!hasDbConfig && process.env.NODE_ENV !== 'production');
 
   if (shouldUseFakeDb) {
     console.log('[DB] Using local fake database for this environment');
     pool = createFakePool();
-    usingFakeDb = true;
     return pool;
   }
 
+  console.log(`[DB] Connecting to MySQL at ${process.env.DB_HOST}:${process.env.DB_PORT || 3306}`);
+
   const mysqlPool = createMysqlPool();
-  pool = new Proxy(mysqlPool, {
-    get(target, prop) {
-      if (prop === 'query') {
-        return async (...args) => {
-          try {
-            return await target.query(...args);
-          } catch (error) {
-            if (!usingFakeDb && isConnectionError(error)) {
-              usingFakeDb = true;
-              console.warn('[DB] MySQL unavailable, using local fake database fallback:', error.message);
-              return createFakePool().query(...args);
-            }
-            throw error;
-          }
-        };
+  pool = {
+    query: async (sql, params = []) => {
+      try {
+        return await mysqlPool.query(sql, params);
+      } catch (error) {
+        if (isConnectionError(error)) {
+          console.warn('[DB] MySQL unavailable, switching to local fake database:', error.message);
+          pool = createFakePool();
+          return pool.query(sql, params);
+        }
+        throw error;
       }
-      return Reflect.get(target, prop);
     },
-  });
+    end: async () => mysqlPool.end(),
+  };
+
   return pool;
 };
 

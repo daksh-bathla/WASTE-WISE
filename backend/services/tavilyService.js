@@ -30,12 +30,11 @@ const search = async (query, options = {}) => {
 };
 
 const searchTraditionalRemedy = async (componentName, goal, state, language) => {
-  const baseQuery = `traditional Indian remedy ${componentName} ${goal} nuske ayurvedic`;
-  const regionalQuery = state ? `${baseQuery} ${state} ${language}` : baseQuery;
+  const baseQuery = `traditional Indian remedy ${componentName} ${goal} dadi maa ke nuske ayurvedic home remedies`;
+  const regionalQuery = state ? `${baseQuery} ${state}` : baseQuery;
 
   const results = await search(regionalQuery, {
     search_depth: 'advanced',
-    include_domains: ['niam.gov.in', 'ayush.gov.in', 'nhp.gov.in', 'ncbi.nlm.nih.gov'],
     max_results: 5,
   });
 
@@ -43,7 +42,7 @@ const searchTraditionalRemedy = async (componentName, goal, state, language) => 
 };
 
 const searchModernUses = async (componentName, productCategory, location, weather) => {
-  const query = `creative modern uses for ${componentName} ${productCategory} zero waste repurpose ${location} ${weather.season}`;
+  const query = `repurpose ${componentName} ${productCategory} hack mix combine zero waste ${location || ''}`;
 
   const results = await search(query, {
     search_depth: 'advanced',
@@ -54,14 +53,26 @@ const searchModernUses = async (componentName, productCategory, location, weathe
 };
 
 const searchDIYTutorial = async (product, component) => {
-  const query = `DIY ${product} from ${component} tutorial step by step instructions`;
+  const query = `DIY ${product} ${component} tutorial recipe step by step mix combine`;
 
   const results = await search(query, {
     search_depth: 'basic',
-    max_results: 3,
+    max_results: 5,
   });
 
   return results;
 };
 
-module.exports = { search, searchTraditionalRemedy, searchModernUses, searchDIYTutorial };
+const searchSocialDIYHacks = async (componentName) => {
+  const query = `viral DIY hack ${componentName} repurpose recipe mix with baking soda vinegar honey oil`;
+
+  const results = await search(query, {
+    search_depth: 'advanced',
+    max_results: 5,
+  });
+
+  return results;
+};
+
+module.exports = { search, searchTraditionalRemedy, searchModernUses, searchDIYTutorial, searchSocialDIYHacks };
+

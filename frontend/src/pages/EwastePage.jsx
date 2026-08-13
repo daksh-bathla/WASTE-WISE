@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { AlertTriangle, ExternalLink, Recycle, RefreshCw, Smartphone, Wrench } from 'lucide-react';
 import AppLayout from '../components/AppLayout';
 import { Badge, Card, PageHeader, LoadingSpinner } from '../components/ui';
-import { suggestionsApi } from '../utils/backendApi';
+import { suggestionsApi, normalizeEwasteForPage } from '../utils/backendApi';
 
 export default function EwastePage() {
   const { scanId } = useParams();
@@ -26,7 +26,7 @@ export default function EwastePage() {
         // Using scan results for the e-waste page details since there is no separate endpoint
         const res = await suggestionsApi.ewaste(scanId);
         if (!cancelled) {
-          setData(res.ewasteAssessment);
+          setData(normalizeEwasteForPage(res));
         }
       } catch (err) {
         console.error('Failed to load ewaste results:', err);

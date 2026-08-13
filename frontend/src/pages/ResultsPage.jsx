@@ -4,10 +4,21 @@ import { ArrowUpDown, ExternalLink, Star, WandSparkles } from 'lucide-react';
 import AppLayout from '../components/AppLayout';
 import SustainabilityPanel from '../components/SustainabilityPanel';
 import { Badge, Card, PageHeader, WeatherStrip } from '../components/ui';
-import { scanApi, normalizeScanResults } from '../utils/backendApi';
+import { scanApi, suggestionsApi, normalizeScanResults } from '../utils/backendApi';
 import { useAuthStore } from '../store/authStore';
 
-const filters = ['All', 'Traditional', 'Animal feed', 'DIY', 'Modern', 'Cultural', 'Health'];
+const filters = ['All', 'Traditional', 'DIY', 'Modern', 'Cultural', 'Health'];
+
+const isExcludedSuggestion = (suggestion) => {
+  const text = `${suggestion?.title || ''} ${suggestion?.personalisation || ''} ${suggestion?.personalisationNote || ''}`.toLowerCase();
+  const moduleType = String(suggestion?.moduleType || '').toLowerCase();
+
+  return moduleType.includes('animal') ||
+    moduleType.includes('feed') ||
+    moduleType.includes('disposal') ||
+    /safe disposal plan|could not be confirmed safely|sort .* before disposal/i.test(text) ||
+    /multi-purpose home repurpose|every material has value|repurpose\s+.*mixed scraps|feed\s+.*(?:cow|cattle|goat|buffalo)/i.test(text);
+};
 
 export default function ResultsPage() {
   const [activeFilter, setActiveFilter] = useState('All');
@@ -15,7 +26,6 @@ export default function ResultsPage() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [retryCount, setRetryCount] = useState(0);
   const navigate = useNavigate();
   const { scanId } = useParams();
   const user = useAuthStore((state) => state.user);
@@ -31,14 +41,23 @@ export default function ResultsPage() {
     const fetchResults = async () => {
       try {
         setLoading(true);
-        const raw = await scanApi.results(scanId);
+        let raw = await scanApi.results(scanId);
+        let normalized = normalizeScanResults(raw);
+
+        const hasItems = Array.isArray(raw?.items) && raw.items.length > 0;
+        const missingSuggestions = hasItems && normalized.components.every((component) => component.suggestions.length === 0);
+
+        if (missingSuggestions) {
+          await suggestionsApi.generate({
+            scan_id: Number(scanId),
+            selected_goals: ['all'],
+            contextual_answers: {},
+          });
+          raw = await scanApi.results(scanId);
+          normalized = normalizeScanResults(raw);
+        }
+
         if (!cancelled) {
-          const normalized = normalizeScanResults(raw);
-          const hasUsefulSuggestions = (normalized.components || []).some((component) => component.suggestions?.length);
-          if (!hasUsefulSuggestions && retryCount < 2) {
-            setRetryCount((current) => current + 1);
-            return;
-          }
           setData(normalized);
         }
       } catch (err) {
@@ -52,19 +71,19 @@ export default function ResultsPage() {
           setError(err.message);
         }
       } finally {
-        if (!cancelled && retryCount >= 2) setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
     fetchResults();
     return () => { cancelled = true; };
-  }, [scanId, hasValidScanId, navigate, retryCount]);
+  }, [scanId, hasValidScanId, navigate]);
 
   const filteredComponents = useMemo(() => {
     if (!data?.components) return [];
     return data.components
       .map((component) => ({
         ...component,
-        suggestions: component.suggestions.filter((suggestion) => activeFilter === 'All' || suggestion.moduleType === activeFilter),
+        suggestions: component.suggestions.filter((suggestion) => !isExcludedSuggestion(suggestion) && (activeFilter === 'All' || suggestion.moduleType === activeFilter)),
       }))
       .filter((component) => component.suggestions.length);
   }, [activeFilter, data]);
@@ -115,6 +134,23 @@ export default function ResultsPage() {
           title={`Found ${data.totalSuggestions} suggestion${data.totalSuggestions !== 1 ? 's' : ''} across ${data.components.length} part${data.components.length !== 1 ? 's' : ''} of your ${data.items?.[0]?.product_name || itemName}`}
           subtitle="Every suggestion is grouped by physical component so you can reuse, compost, donate, or dispose of each part safely."
         />
+
+        {data.scan?.input_type === 'electronics' && (
+          <Card className="mb-6 border-primary-green bg-light-green/40">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-sm leading-6">
+                Verified reuse ideas are shown below. For repair quotes, resale value, and certified recycling, open the electronics pathways page.
+              </p>
+              <button
+                type="button"
+                className="btn btn-secondary btn-sm shrink-0"
+                onClick={() => navigate(`/results/${scanId}/ewaste`)}
+              >
+                Repair, resale &amp; recycle
+              </button>
+            </div>
+          </Card>
+        )}
 
         <Card className="mb-6">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
@@ -173,7 +209,7 @@ export default function ResultsPage() {
                           <h3>{suggestion.title}</h3>
                           <Badge color={suggestion.tagColor}>{suggestion.moduleType}</Badge>
                         </div>
-                        <p className="rounded-2xl bg-light-green p-3 text-sm font-medium leading-6 text-text-secondary">
+                        <p className="rounded-2xl bg-white border border-primary-green/40 p-3 text-sm font-medium leading-6 text-text-secondary">
                           {suggestion.personalisation}
                         </p>
                         <div className="mt-4 flex flex-wrap items-center gap-2 text-xs font-bold text-text-muted">
@@ -198,7 +234,15 @@ export default function ResultsPage() {
 
           {filteredComponents.length === 0 && (
             <Card className="p-7 text-center">
-              <p className="font-bold text-text-muted">No suggestions match this filter.</p>
+              {activeFilter === 'All' ? (
+                <>
+                  <p className="font-bold text-text-muted">No suggestions were generated for this item yet.</p>
+                  <p className="mt-2 text-sm text-text-muted">AI services may have been busy. Try scanning again for better results.</p>
+                  <button className="btn btn-primary btn-sm mt-5" onClick={() => navigate('/scan')}>Scan another item</button>
+                </>
+              ) : (
+                <p className="font-bold text-text-muted">No suggestions match this filter. Try switching to <button type="button" className="text-deep-purple underline" onClick={() => setActiveFilter('All')}>All</button>.</p>
+              )}
             </Card>
           )}
         </div>

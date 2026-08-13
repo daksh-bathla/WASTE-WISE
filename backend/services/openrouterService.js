@@ -2,7 +2,7 @@ const axios = require('axios');
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
-const OPENROUTER_MODEL = 'meta-llama/llama-3.3-70b-instruct:free';
+const OPENROUTER_MODEL = process.env.OPENROUTER_MODEL || 'meta-llama/llama-3.3-70b-instruct';
 
 const groqFallback = async (messages, maxTokens, temperature) => {
   try {
@@ -181,4 +181,86 @@ Return ONLY the JSON object.`;
   }
 };
 
-module.exports = { chat, decomposeComponents, safetyAssessment, generateDisclaimer };
+// Vision analysis using OpenRouter free vision models (fallback for Gemini/Groq vision failures)
+const analyzeProductImageVision = async (imageBase64, mimeType, prompt) => {
+  if (!OPENROUTER_API_KEY) {
+    console.warn('OPENROUTER_API_KEY not set for vision fallback');
+    return null;
+  }
+
+  const visionModels = [
+    'google/gemini-2.0-flash-lite-001',
+    'meta-llama/llama-3.2-11b-vision-instruct:free',
+    'qwen/qwen2.5-vl-72b-instruct:free',
+    'google/gemma-3-27b-it:free',
+    'openrouter/auto',
+  ];
+
+  for (const model of visionModels) {
+    try {
+      console.log(`[OpenRouterService] Trying vision model: ${model}`);
+      const response = await axios.post(
+        OPENROUTER_URL,
+        {
+          model,
+          messages: [
+            {
+              role: 'user',
+              content: [
+                { type: 'text', text: prompt },
+                {
+                  type: 'image_url',
+                  image_url: { url: `data:${mimeType};base64,${imageBase64}` },
+                },
+              ],
+            },
+          ],
+          max_tokens: 1024,
+          temperature: 0.1,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${OPENROUTER_API_KEY}`,
+            'HTTP-Referer': 'https://wastewise.app',
+            'X-Title': 'WasteWise',
+            'Content-Type': 'application/json',
+          },
+          timeout: 30000,
+        }
+      );
+
+      const text = response.data.choices?.[0]?.message?.content;
+      if (!text) continue;
+
+      let parsed = null;
+      try {
+        const cleanedText = text.replace(/```json\s*|\s*```/g, '').trim();
+        parsed = JSON.parse(cleanedText);
+      } catch (jsonErr) {
+        const jsonMatch = text.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          try {
+            parsed = JSON.parse(jsonMatch[0]);
+          } catch (matchErr) {
+            console.warn(`[OpenRouterService] Failed parsing extracted JSON: ${matchErr.message}`);
+          }
+        }
+      }
+
+      if (parsed) {
+        console.log(`[OpenRouterService] Vision model ${model} succeeded`);
+        return parsed;
+      }
+      throw new Error('Failed to parse response as JSON');
+    } catch (error) {
+      const errMsg = error.response?.data ? JSON.stringify(error.response.data).slice(0, 200) : error.message;
+      console.error(`[OpenRouterService] Vision model ${model} failed:`, errMsg);
+      // Continue to next model
+    }
+  }
+
+  console.error('[OpenRouterService] All vision models failed');
+  return null;
+};
+
+module.exports = { chat, decomposeComponents, safetyAssessment, generateDisclaimer, analyzeProductImageVision };

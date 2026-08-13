@@ -1,119 +1,159 @@
 const axios = require('axios');
+const { analyzeProductImageMulti } = require('./visionService');
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const GEMINI_VISION_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
-const GEMINI_WEB_SEARCH_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+const GEMINI_MODEL_CANDIDATES = [
+  process.env.GEMINI_VISION_MODEL,
+  process.env.GEMINI_WEB_SEARCH_MODEL,
+  'gemini-2.5-flash-lite',
+  'gemini-2.0-flash-lite',
+  'gemini-1.5-flash-8b',
+  'gemini-1.5-flash',
+].filter(Boolean);
 
-const getLocalVisionFallback = (mimeType) => {
-  const fallback = {
-    product_name: 'Scanned item',
-    brand: null,
-    category: 'unknown',
-    primary_material: 'unknown',
-    packaging_material: 'unknown',
-    ingredients: [],
-    expiry_date: null,
-    expiry_type: 'unknown',
-    quantity: '',
-    risk_indicators: [],
-    key_components: ['main body'],
-    detected_category: 'other',
-    confidence_score: 45,
-    note: 'AI vision unavailable; using local fallback',
-  };
+const uniqueModels = () => [...new Set(GEMINI_MODEL_CANDIDATES)];
 
-  if (mimeType && mimeType.includes('image')) {
-    return fallback;
+const geminiHeaders = () => ({
+  'Content-Type': 'application/json',
+  'x-goog-api-key': GEMINI_API_KEY,
+});
+
+const generateGeminiContent = async (body, { timeout = 30000, preferredModel = null } = {}) => {
+  const models = preferredModel ? [preferredModel, ...uniqueModels().filter((m) => m !== preferredModel)] : uniqueModels();
+  let lastError = null;
+
+  for (const model of models) {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+    try {
+      const response = await axios.post(url, body, {
+        headers: geminiHeaders(),
+        timeout,
+        params: { key: GEMINI_API_KEY },
+      });
+      console.log(`[GeminiService] Model ${model} succeeded`);
+      return { response: response.data, model };
+    } catch (error) {
+      const status = error.response?.status;
+      const providerMessage = error.response?.data?.error?.message || error.message;
+      lastError = error;
+      console.warn(`[GeminiService] Model ${model} failed${status ? ` (${status})` : ''}: ${providerMessage}`);
+    }
   }
 
-  return fallback;
+  throw lastError || new Error('All Gemini models failed');
+};
+
+const inferDetectedCategory = (data = {}) => {
+  const category = String(data.category || '').toLowerCase();
+  const packaging = String(data.packaging_material || '').toLowerCase();
+  const productName = String(data.product_name || '').toLowerCase();
+
+  if (category.includes('electronic') || /phone|laptop|charger|cable|tablet|monitor/.test(productName)) {
+    return 'electronics';
+  }
+  if (category.includes('peel') || category.includes('scrap') || /peel|rind|shell|scrap/.test(productName)) {
+    return 'food_peels';
+  }
+  if (category.includes('packaging') || ['glass', 'plastic', 'cardboard', 'metal', 'paper', 'fabric'].includes(packaging)) {
+    return 'waste_packaging';
+  }
+  if (['dairy', 'oils', 'grains', 'spices', 'cosmetics', 'beverages', 'packaged_food', 'household'].some((key) => category.includes(key))) {
+    return 'expired_product';
+  }
+  return 'other';
+};
+
+const normalizeVisionResult = (raw, mimeType) => {
+  if (!raw || typeof raw !== 'object') return getLocalVisionFallback(mimeType);
+
+  const confidence = Number(raw.confidence_score);
+  const productName = String(raw.product_name || raw.item_name || '').trim();
+  const normalized = {
+    ...raw,
+    product_name: productName || null,
+    brand: raw.brand || null,
+    category: raw.category || 'unknown',
+    primary_material: raw.primary_material || 'unknown',
+    packaging_material: raw.packaging_material || 'unknown',
+    ingredients: Array.isArray(raw.ingredients) ? raw.ingredients : [],
+    expiry_date: raw.expiry_date || null,
+    expiry_type: raw.expiry_type || 'unknown',
+    quantity: raw.quantity || '',
+    risk_indicators: Array.isArray(raw.risk_indicators) ? raw.risk_indicators : [],
+    key_components: Array.isArray(raw.key_components) ? raw.key_components : [],
+    detected_category: raw.detected_category || inferDetectedCategory(raw),
+    confidence_score: Number.isFinite(confidence) ? Math.min(100, Math.max(0, confidence)) : 70,
+    requires_manual_review: raw.requires_manual_review === true || raw.requires_manual_review === 'true',
+    vision_failed: false,
+  };
+
+  const unusableName = !normalized.product_name
+    || ['scanned item', 'unknown', 'item'].includes(String(normalized.product_name).toLowerCase());
+
+  if (unusableName) {
+    normalized.requires_manual_review = true;
+    normalized.confidence_score = Math.min(normalized.confidence_score, 55);
+  } else if (normalized.confidence_score >= 55) {
+    normalized.requires_manual_review = false;
+  }
+
+  return normalized;
+};
+
+const getLocalVisionFallback = (mimeType) => ({
+  product_name: null,
+  brand: null,
+  category: 'unknown',
+  primary_material: 'unknown',
+  packaging_material: 'unknown',
+  ingredients: [],
+  expiry_date: null,
+  expiry_type: 'unknown',
+  quantity: '',
+  risk_indicators: [],
+  key_components: [],
+  detected_category: 'other',
+  confidence_score: 0,
+  requires_manual_review: true,
+  vision_failed: true,
+  note: 'AI vision unavailable — enter details manually or retry with a clearer photo',
+});
+
+const parseGeminiJson = (text, mimeType, normalizer) => {
+  if (!text) throw new Error('No text returned from Gemini');
+
+  try {
+    const cleanedText = text.replace(/```json\s*|\s*```/g, '').trim();
+    return normalizer(JSON.parse(cleanedText));
+  } catch (jsonErr) {
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      try {
+        return normalizer(JSON.parse(jsonMatch[0]));
+      } catch (matchErr) {
+        console.warn(`[GeminiService] Failed parsing extracted JSON: ${matchErr.message}`);
+      }
+    }
+    throw jsonErr;
+  }
 };
 
 const analyzeProductImage = async (imageBase64, mimeType) => {
-  if (!GEMINI_API_KEY) {
-    console.warn('GEMINI_API_KEY not set — returning local fallback');
+  if (!GEMINI_API_KEY && !process.env.OPENROUTER_API_KEY && !process.env.GROQ_API_KEY) {
+    console.warn('No vision API keys set — returning local fallback');
     return getLocalVisionFallback(mimeType);
   }
 
-  const prompt = `You are an expert computer vision model. Analyse this product image in high detail and extract the following information. Be as precise as possible. Read all visible text.
-
-CRITICAL CLASSIFICATION RULES — follow these strictly:
-- If the image shows an EXPIRED or CONSUMABLE product (food, dairy, cosmetics, medicine, oil, spice, beverage) inside packaging → category is about the PRODUCT, not the packaging. detected_category = "expired_product".
-- If the image shows an EMPTY container/bottle/carton/wrapper with NO product inside → detected_category = "waste_packaging".
-- If the image shows fruit/vegetable peels, scraps, cores, rinds, or food leftovers → detected_category = "food_peels".
-- If the image shows an electronic device (phone, laptop, cable, appliance, charger, tablet, monitor) → detected_category = "electronics".
-- If the image shows something that does NOT fit any of the above (stationery, pen, toy, clothing, furniture, tools, books, bags, shoes) → detected_category = "other".
-
-IMPORTANT — Product vs Packaging separation:
-- "item_name" must be the PRIMARY PRODUCT (e.g. "moisturiser", "coconut oil", "curd"), NOT the packaging.
-- "primary_material" is the material of the product itself (e.g. "cream", "liquid oil", "dairy").
-- "packaging_material" is the material of the container/wrapper (e.g. "plastic bottle", "glass jar", "cardboard box").
-- For items in the "other" category, "primary_material" is the main material of the item (e.g. "plastic", "wood", "metal").
-
-Return a JSON object strictly matching this schema:
-{
-  "product_name": "Exact name of the primary product or item (NOT the packaging)",
-  "brand": "Brand name if visible, else null",
-  "category": "Choose the best fit: dairy/oils/grains/fruits_veg/spices/cosmetics/beverages/packaged_food/household/electronics/packaging/peels/stationery/clothing/furniture/toys/unknown",
-  "primary_material": "Material of the product itself (e.g. cream, liquid, grain, plastic, wood, metal, fabric)",
-  "packaging_material": "Material of the packaging/container: glass/plastic/cardboard/metal/fabric/mixed/none",
-  "ingredients": ["list", "of", "ingredients", "exactly", "as", "written", "on", "label"],
-  "expiry_date": "Identify any dates. Return the expiry date in YYYY-MM-DD format, or null if not found.",
-  "expiry_type": "Classify the date as: best_before, use_by, expiry_date, or unknown",
-  "quantity": "Extract net weight, volume, or count (e.g. '500g', '1L', '2 pieces')",
-  "risk_indicators": ["List any visible mould", "discolouration", "damage", "spoilage", "rust"],
-  "key_components": ["List the distinct physical components of the item, e.g. for a pen: cap, barrel, ink cartridge, tip"],
-  "detected_category": "One of: expired_product, food_peels, waste_packaging, electronics, other",
-  "confidence_score": "Integer 0-100 indicating how confident you are in the detected_category classification"
-}
-
-Return ONLY the JSON object. No markdown, no explanation. Ensure it is valid JSON.`;
-
   try {
-    const response = await axios.post(
-      `${GEMINI_VISION_URL}?key=${GEMINI_API_KEY}`,
-      {
-        contents: [
-          {
-            parts: [
-              { text: prompt },
-              {
-                inline_data: {
-                  mime_type: mimeType,
-                  data: imageBase64,
-                },
-              },
-            ],
-          },
-        ],
-        generationConfig: { response_mime_type: 'application/json' },
-      },
-      { timeout: 30000 }
-    );
-
-    const text = response.data.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (!text) throw new Error('No text returned from Gemini');
-
-    const cleanedText = text.replace(/```json\s*|\s*```/g, '').trim();
-    return JSON.parse(cleanedText);
-  } catch (error) {
-    const status = error.response?.status;
-    console.error(`Gemini Vision analysis error${status ? ` (Status ${status})` : ''}:`, error.message);
-    
-    console.log('[GeminiService] Falling back to Groq Vision API...');
-    try {
-      const { analyzeProductImageFallback } = require('./groqService');
-      const fallbackResult = await analyzeProductImageFallback(imageBase64, mimeType, prompt);
-      if (fallbackResult) {
-        console.log('[GeminiService] Groq Vision fallback succeeded');
-        return fallbackResult;
-      }
-      throw new Error('Groq fallback returned null');
-    } catch (fallbackError) {
-      console.error('[GeminiService] Groq Vision fallback failed:', fallbackError.message);
-      return getLocalVisionFallback(mimeType);
+    const raw = await analyzeProductImageMulti(imageBase64, mimeType);
+    if (raw) {
+      return normalizeVisionResult(raw, mimeType);
     }
+  } catch (error) {
+    console.error('[GeminiService] Multi-provider vision error:', error.message);
   }
+
+  return getLocalVisionFallback(mimeType);
 };
 
 const webSearch = async (query, maxResults = 5) => {
@@ -123,23 +163,18 @@ const webSearch = async (query, maxResults = 5) => {
   }
 
   try {
-    const response = await axios.post(
-      `${GEMINI_WEB_SEARCH_URL}?key=${GEMINI_API_KEY}`,
-      {
-        contents: [{ parts: [{ text: `Search and summarize: ${query}. Return results with source URLs.` }] }],
-        tools: [{ google_search: {} }],
-      },
-      { timeout: 30000 }
-    );
+    const { response } = await generateGeminiContent({
+      contents: [{ parts: [{ text: `Search and summarize: ${query}. Return results with source URLs.` }] }],
+      tools: [{ google_search: {} }],
+    });
 
-    const text = response.data.candidates?.[0]?.content?.parts?.[0]?.text;
-    const groundingMetadata = response.data.candidates?.[0]?.groundingMetadata;
+    const text = response.candidates?.[0]?.content?.parts?.[0]?.text;
+    const groundingMetadata = response.candidates?.[0]?.groundingMetadata;
 
     return { text, groundingMetadata };
   } catch (error) {
-    const status = error.response?.status;
     const providerMessage = error.response?.data?.error?.message || error.message;
-    console.error(`Gemini web search error${status ? ` ${status}` : ''}: ${providerMessage}`);
+    console.error(`Gemini web search error: ${providerMessage}`);
 
     try {
       const { search } = require('./tavilyService');
@@ -170,4 +205,4 @@ const extractYouTubeUrl = async (query) => {
   }
 };
 
-module.exports = { analyzeProductImage, webSearch, extractYouTubeUrl };
+module.exports = { analyzeProductImage, webSearch, extractYouTubeUrl, generateGeminiContent };
