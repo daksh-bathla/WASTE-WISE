@@ -20,12 +20,23 @@ export default function SignupPage() {
   const setUser = useAuthStore((state) => state.setUser);
   const setToken = useAuthStore((state) => state.setToken);
 
+  const isValidEmail = (val) => {
+    const email = val.trim();
+    const parts = email.split('@');
+    if (parts.length !== 2) return false;
+    const [local, domain] = parts;
+    if (!local || !domain) return false;
+    const domainParts = domain.split('.');
+    if (domainParts.length < 2) return false;
+    return domainParts.every(part => part.length > 0);
+  };
+
   const validateForm = () => {
     const nextErrors = {};
     const email = formData.email.trim();
     if (!formData.name.trim()) nextErrors.name = 'Full name is required';
     if (!email) nextErrors.email = 'Email is required';
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) nextErrors.email = 'Enter a valid email address';
+    else if (!isValidEmail(email)) nextErrors.email = 'Enter a valid email address';
     if (!formData.password) nextErrors.password = 'Password is required';
     else if (formData.password.length < 8) nextErrors.password = 'Use at least 8 characters';
     if (!formData.confirmPassword) nextErrors.confirmPassword = 'Confirm your password';

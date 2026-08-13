@@ -14,7 +14,9 @@ const signup = async (req, res) => {
       return res.status(400).json({ error: 'Password must be at least 8 characters' });
     }
 
-    const [existing] = await pool.query('SELECT id FROM users WHERE email = ?', [email]);
+    const normalizedEmail = String(email).trim().toLowerCase();
+
+    const [existing] = await pool.query('SELECT id FROM users WHERE email = ?', [normalizedEmail]);
     if (existing.length > 0) {
       return res.status(409).json({ error: 'An account with this email already exists' });
     }
@@ -23,16 +25,16 @@ const signup = async (req, res) => {
 
     const [result] = await pool.query(
       'INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)',
-      [name, email, hashedPassword]
+      [name, normalizedEmail, hashedPassword]
     );
 
     const userId = result.insertId;
 
-    const token = jwt.sign({ id: userId, email }, process.env.JWT_SECRET, { expiresIn: '30d' });
+    const token = jwt.sign({ id: userId, email: normalizedEmail }, process.env.JWT_SECRET, { expiresIn: '30d' });
 
     res.status(201).json({
       token,
-      user: { id: userId, name, email },
+      user: { id: userId, name, email: normalizedEmail },
     });
   } catch (error) {
     console.error('Signup error:', error.message);
@@ -48,7 +50,9 @@ const login = async (req, res) => {
       return res.status(400).json({ error: 'Email and password are required' });
     }
 
-    const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+    const normalizedEmail = String(email).trim().toLowerCase();
+
+    const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [normalizedEmail]);
     if (rows.length === 0) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
@@ -83,7 +87,9 @@ const forgotPassword = async (req, res) => {
       return res.status(400).json({ error: 'Email is required' });
     }
 
-    const [rows] = await pool.query('SELECT id FROM users WHERE email = ?', [email]);
+    const normalizedEmail = String(email).trim().toLowerCase();
+
+    const [rows] = await pool.query('SELECT id FROM users WHERE email = ?', [normalizedEmail]);
     if (rows.length === 0) {
       return res.status(404).json({ error: 'No account found with this email' });
     }
