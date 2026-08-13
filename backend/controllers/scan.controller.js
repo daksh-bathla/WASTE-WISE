@@ -31,7 +31,15 @@ const startScan = async (req, res) => {
     const elapsed = Date.now() - startTime;
     console.error(`[ScanController] Error after ${elapsed}ms:`, error.message);
     console.error('[ScanController] Stack trace:', error.stack);
-    res.status(500).json({ error: 'Failed to analyse your item', details: error.message });
+
+    // The analysis pipeline has its own fallback, so if we get here,
+    // something truly fundamental failed (DB down, request malformed, etc.)
+    // Still try to return a parseable response so the frontend doesn't crash.
+    res.status(500).json({
+      error: 'Failed to analyse your item',
+      details: error.message,
+      scanId: null, // Frontend uses this to decide if it can navigate to results
+    });
   }
 };
 

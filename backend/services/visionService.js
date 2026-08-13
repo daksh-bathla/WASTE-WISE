@@ -7,12 +7,13 @@ const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
 const STATIC_GEMINI_MODELS = [
   process.env.GEMINI_VISION_MODEL,
-  'gemini-flash-latest',
   'gemini-2.5-flash-lite',
   'gemini-2.0-flash-lite',
   'gemini-1.5-flash-8b',
   'gemini-1.5-flash',
 ].filter(Boolean);
+
+const PROVIDER_TIMEOUT = 8000; // 8s per provider — pipeline allows ~15s total
 
 const OPENROUTER_VISION_MODELS = [
   'google/gemini-2.5-flash',
@@ -165,7 +166,7 @@ const callGeminiVision = async (model, imageBase64, mimeType, prompt) => {
   }, {
     headers: { 'Content-Type': 'application/json', 'x-goog-api-key': GEMINI_API_KEY },
     params: { key: GEMINI_API_KEY },
-    timeout: 45000,
+    timeout: PROVIDER_TIMEOUT,
   });
 
   return response.data?.candidates?.[0]?.content?.parts?.[0]?.text;
@@ -174,7 +175,8 @@ const callGeminiVision = async (model, imageBase64, mimeType, prompt) => {
 const tryGeminiVision = async (imageBase64, mimeType, prompt) => {
   if (!GEMINI_API_KEY) return null;
 
-  const models = await listGeminiVisionModels();
+  // Try only the first 2 models to stay within the time budget
+  const models = (await listGeminiVisionModels()).slice(0, 2);
   for (const model of models) {
     try {
       const text = await callGeminiVision(model, imageBase64, mimeType, prompt);
@@ -214,7 +216,7 @@ const tryOpenRouterVision = async (imageBase64, mimeType, prompt) => {
           'X-Title': 'WasteWise',
           'Content-Type': 'application/json',
         },
-        timeout: 45000,
+        timeout: PROVIDER_TIMEOUT,
       });
 
       const accepted = acceptVisionResult(parseVisionJson(response.data?.choices?.[0]?.message?.content));
@@ -251,7 +253,7 @@ const tryGroqVision = async (imageBase64, mimeType, prompt) => {
           Authorization: `Bearer ${GROQ_API_KEY}`,
           'Content-Type': 'application/json',
         },
-        timeout: 45000,
+        timeout: PROVIDER_TIMEOUT,
       });
 
       const accepted = acceptVisionResult(parseVisionJson(response.data?.choices?.[0]?.message?.content));
@@ -270,17 +272,32 @@ const tryGroqVision = async (imageBase64, mimeType, prompt) => {
 const analyzeProductImageMulti = async (imageBase64, mimeType) => {
   const prompt = VISION_PROMPT;
 
-  // Direct Gemini first — most reliable when key is configured.
-  const geminiResult = await tryGeminiVision(imageBase64, mimeType, prompt);
-  if (geminiResult) return geminiResult;
+  // Run ALL providers in parallel — take whichever responds first with a valid result.
+  // This prevents the sequential 3×8s = 24s worst case from exceeding the pipeline timeout.
+  const providers = [
+    tryGeminiVision(imageBase64, mimeType, prompt),
+    tryOpenRouterVision(imageBase64, mimeType, prompt),
+    tryGroqVision(imageBase64, mimeType, prompt),
+  ];
 
-  const openRouterResult = await tryOpenRouterVision(imageBase64, mimeType, prompt);
-  if (openRouterResult) return openRouterResult;
+  // Promise.any resolves with the first non-null result
+  const wrappedProviders = providers.map((p) =>
+    p.then((result) => {
+      if (result) return result;
+      throw new Error('No result from this provider');
+    }).catch(() => {
+      throw new Error('Provider failed');
+    })
+  );
 
-  const groqResult = await tryGroqVision(imageBase64, mimeType, prompt);
-  if (groqResult) return groqResult;
-
-  return null;
+  try {
+    const result = await Promise.any(wrappedProviders);
+    return result;
+  } catch {
+    // All providers failed or returned null
+    console.warn('[VisionService] All vision providers failed or returned null');
+    return null;
+  }
 };
 
 module.exports = {

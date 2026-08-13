@@ -33,6 +33,7 @@ export default function ProcessingPage() {
     let isMounted = true;
 
     const runPipeline = async () => {
+      let scanId = null; // Hoisted so catch block can use it for recovery
       try {
         // Step 1 — Build payload and call scan API
         setCurrentStep(0);
@@ -42,7 +43,7 @@ export default function ProcessingPage() {
         const visionData = location.state?.visionData || null;
         const payload = buildScanPayload(scanType, form, profile || {}, photoFile, visionData);
         const scanResult = await scanApi.analyse(payload);
-        const scanId = scanResult.scanId;
+        scanId = scanResult.scanId;
 
         setCurrentStep(1);
         setProgress(40);
@@ -72,8 +73,24 @@ export default function ProcessingPage() {
       } catch (err) {
         console.error('Processing pipeline error:', err);
         if (isMounted) {
+          // If we managed to get a scanId from the scan step, navigate to results anyway —
+          // the suggestions controller will have written dataset/heuristic fallback suggestions.
+          // The error likely happened during suggestion generation (AI timeout, rate limit),
+          // not during the scan itself.
+          const recoveredScanId = scanId || err?.payload?.scanId || location.state?.scanId;
+          if (recoveredScanId) {
+            console.log(`[ProcessingPage] Recovered scanId ${recoveredScanId}, navigating to results`);
+            toast('Using verified dataset suggestions — AI was temporarily unavailable', {
+              icon: '📋',
+              duration: 4000,
+            });
+            navigate(`/results/${recoveredScanId}`, { replace: true, state: { ...location.state, scanId: recoveredScanId } });
+            return;
+          }
+
+          // Truly unrecoverable — no scanId at all (network down, DB unreachable)
           setError(err.payload?.details || err.message || 'Something went wrong during analysis');
-          toast.error('Analysis failed — you can retry');
+          toast.error('Could not reach the server — please check your connection and retry');
         }
       }
     };

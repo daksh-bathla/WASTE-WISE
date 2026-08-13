@@ -1,4 +1,4 @@
-﻿const { searchTraditionalRemedy, searchModernUses, searchDIYTutorial, search } = require('./tavilyService');
+const { searchTraditionalRemedy, searchModernUses, searchDIYTutorial, search } = require('./tavilyService');
 const { webSearch, extractYouTubeUrl } = require('./geminiService');
 const { animalFeedAnalysis } = require('./groqService');
 const { chat } = require('./openrouterService');
@@ -733,22 +733,84 @@ const hasQuestionnaireContext = (context = {}) => Boolean(
 
 const runSupplementalAiModules = async () => [];
 
-const buildNotFoundSuggestion = (component, userProfile = {}) => ({
-  item_component_id: component.id,
-  module_type: 'diy',
-  title: 'Not found in dataset',
-  steps: [
-    `"${component.component_name}" is not in the WasteWise verified reuse dataset.`,
-    'AI reuse analysis is unavailable or could not confirm a safe reuse route for this item.',
-    'Try again later, pick a closer item type, or enter details manually on the scan form.',
-  ],
-  source_url: null,
-  source_credibility: 'WasteWise',
-  suggestion_source: 'not_found',
-  region_tag: userProfile.state || userProfile.city || 'India',
-  personalisation_note: `No verified dataset match and no AI reuse ideas for ${component.component_name}.`,
-  video_url: null,
-});
+const buildNotFoundSuggestion = (component, userProfile = {}) => {
+  // Instead of a dead-end "not found" card, generate useful heuristic suggestions
+  // based on the component type using fastSuggestionGenerator.
+  const heuristicSuggestions = fastSuggestionGenerator(component, userProfile, {}, {
+    wasteCategory: component.component_type || 'other',
+    skipDataset: true,
+    pipelineMode: true,
+  });
+
+  if (heuristicSuggestions && heuristicSuggestions.length > 0) {
+    // Return the first heuristic suggestion as the "not found" replacement
+    return heuristicSuggestions.map((s) => ({
+      ...s,
+      item_component_id: component.id,
+      suggestion_source: 'heuristic',
+      region_tag: s.region_tag || userProfile.state || userProfile.city || 'India',
+    }));
+  }
+
+  // Ultimate fallback — generic but useful tips based on material type
+  const materialLower = (component.material || component.component_type || '').toLowerCase();
+  let fallbackTitle, fallbackSteps;
+
+  if (/organic|food|peel|fruit|vegetable/.test(materialLower)) {
+    fallbackTitle = `Compost ${component.component_name} for Garden Use`;
+    fallbackSteps = [
+      'Chop into small pieces (2–3 cm) and add to a compost bin or pit.',
+      'Mix with dry leaves or shredded newspaper in a 1:1 ratio to balance carbon and nitrogen.',
+      'Turn the pile every 5–7 days. In 4–6 weeks you will have rich compost for potted plants.',
+      'Alternatively, bury 15 cm deep directly in a flower bed as slow-release fertiliser.',
+    ];
+  } else if (/plastic|bottle|container|packaging/.test(materialLower)) {
+    fallbackTitle = `Repurpose ${component.component_name} for Storage`;
+    fallbackSteps = [
+      'Clean thoroughly with warm soapy water and let it dry completely.',
+      'Use as a small storage container for nails, screws, seeds, or craft supplies.',
+      'Cut the top section to create a mini planter — poke 3–4 drainage holes in the bottom.',
+      'If not reusable, clean and place in the dry waste / recyclable bin for your area.',
+    ];
+  } else if (/electronic|battery|circuit|pcb|metal/.test(materialLower)) {
+    fallbackTitle = `Safe E-waste Disposal for ${component.component_name}`;
+    fallbackSteps = [
+      'Do NOT open, burn, or attempt to disassemble any electronic component at home.',
+      'Locate the nearest authorised e-waste collection centre (search "e-waste collection" + your city).',
+      'Many electronics retailers like Croma and Reliance Digital accept old devices for recycling.',
+      'For working devices, consider donating to NGOs or listing on OLX/Cashify for resale.',
+    ];
+  } else if (/glass|ceramic/.test(materialLower)) {
+    fallbackTitle = `Reuse ${component.component_name} at Home`;
+    fallbackSteps = [
+      'Clean and sterilise with boiling water for 5 minutes.',
+      'Use as a storage jar for spices, pulses, or dried herbs in the kitchen.',
+      'Fill with fairy lights or pebbles for decorative use.',
+      'If broken, wrap carefully in newspaper before placing in dry waste bin.',
+    ];
+  } else {
+    fallbackTitle = `Smart Reuse Ideas for ${component.component_name}`;
+    fallbackSteps = [
+      'Assess the item condition — clean, intact items have the most reuse potential.',
+      'Search YouTube for DIY projects using this specific material type.',
+      'Check local community groups or Freecycle to see if someone can use this item.',
+      'If no reuse route exists, sort into the correct waste stream (dry/wet/hazardous) for your municipality.',
+    ];
+  }
+
+  return [{
+    item_component_id: component.id,
+    module_type: 'diy',
+    title: fallbackTitle,
+    steps: fallbackSteps,
+    source_url: null,
+    source_credibility: 'WasteWise Heuristic',
+    suggestion_source: 'heuristic',
+    region_tag: userProfile.state || userProfile.city || 'India',
+    personalisation_note: `Smart suggestions for ${component.component_name} based on material type.`,
+    video_url: null,
+  }];
+};
 
 const saveSuggestionToDb = async (suggestion, userProfile, pool) => {
   const [sugResult] = await pool.query(
@@ -959,29 +1021,31 @@ const generateAllSuggestions = async (analysisResult, goals, contextualAnswers, 
     }
   }
 
-  // Simple rule: no dataset + no AI → show "Not found in dataset"
+  // Simple rule: no dataset + no AI → generate heuristic suggestions instead of dead-end card
   for (let index = 0; index < safeComponents.length; index += 1) {
     const component = safeComponents[index];
     const alreadySaved = allSuggestions.some((s) => s.item_component_id === component.id);
-    const scanHasReuse = allSuggestions.some((s) => s.suggestion_source !== 'not_found');
+    const scanHasReuse = allSuggestions.some((s) => s.suggestion_source !== 'not_found' && s.suggestion_source !== 'heuristic');
     if (alreadySaved || (wasteCategory === 'electronics' && scanHasReuse)) continue;
 
-    console.log(`[Suggestions] Not found — no saved reuse ideas for ${component.component_name}`);
-    const notFound = buildNotFoundSuggestion(component, userProfile);
-    const saved = await saveSuggestionToDb(notFound, userProfile, pool);
-    allSuggestions.push(saved);
+    console.log(`[Suggestions] Generating heuristic suggestions for ${component.component_name}`);
+    const heuristicResults = buildNotFoundSuggestion(component, userProfile);
+    for (const suggestion of (Array.isArray(heuristicResults) ? heuristicResults : [heuristicResults])) {
+      const saved = await saveSuggestionToDb(suggestion, userProfile, pool);
+      allSuggestions.push(saved);
+    }
   }
 
   const datasetCount = allSuggestions.filter((s) => s.suggestion_source === 'dataset').length;
   const aiCount = allSuggestions.filter((s) => s.suggestion_source === 'ai' || s.suggestion_source === 'contextual').length;
-  const notFoundCount = allSuggestions.filter((s) => s.suggestion_source === 'not_found').length;
+  const heuristicCount = allSuggestions.filter((s) => s.suggestion_source === 'heuristic' || s.suggestion_source === 'not_found').length;
 
   return {
     scanId,
     suggestions_count: allSuggestions.length,
     dataset_count: datasetCount,
     ai_count: aiCount,
-    not_found_count: notFoundCount,
+    heuristic_count: heuristicCount,
     suggestions: allSuggestions,
     redirect: `/results/${scanId}`,
   };

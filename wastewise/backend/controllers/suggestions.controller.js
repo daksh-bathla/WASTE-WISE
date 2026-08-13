@@ -82,7 +82,83 @@ const generateSuggestions = async (req, res) => {
     res.json(result);
   } catch (error) {
     console.error('Generate suggestions error:', error.message);
-    // Return success anyway — fast-track suggestions may have been written to DB already
+
+    // Try to return whatever suggestions were already written to DB during partial execution
+    try {
+      const { scan_id } = req.body;
+      if (scan_id) {
+        const [items] = await pool.query('SELECT * FROM items WHERE scan_id = ?', [scan_id]);
+        let dbSuggestions = [];
+
+        for (const item of items) {
+          const [compRows] = await pool.query('SELECT * FROM item_components WHERE item_id = ?', [item.id]);
+          for (const comp of compRows) {
+            const [sugRows] = await pool.query('SELECT * FROM suggestions WHERE item_component_id = ?', [comp.id]);
+            for (const sug of sugRows) {
+              dbSuggestions.push({
+                ...sug,
+                steps: typeof sug.steps === 'string' ? JSON.parse(sug.steps) : sug.steps,
+              });
+            }
+          }
+        }
+
+        if (dbSuggestions.length > 0) {
+          console.log(`[SuggestionsController] Recovered ${dbSuggestions.length} suggestions from DB after error`);
+          return res.json({
+            scanId: scan_id,
+            suggestions_count: dbSuggestions.length,
+            suggestions: dbSuggestions,
+            redirect: `/results/${scan_id}`,
+            recovered: true,
+          });
+        }
+
+        // No DB suggestions — generate dataset-only suggestions as last resort
+        const { getDatasetSuggestions, normalizeWasteCategory } = require('../services/datasetPatternService');
+        const [scanRows] = await pool.query('SELECT * FROM scans WHERE id = ?', [scan_id]);
+        const scan = scanRows[0];
+
+        if (scan && items.length > 0) {
+          const inlineSuggestions = [];
+          for (const item of items) {
+            const [compRows] = await pool.query('SELECT * FROM item_components WHERE item_id = ?', [item.id]);
+            for (const comp of compRows) {
+              const category = normalizeWasteCategory(scan.input_type);
+              const dsResults = getDatasetSuggestions(
+                { ...comp, item_name: item.product_name },
+                category,
+                {}
+              );
+              for (const sug of dsResults) {
+                sug.item_component_id = comp.id;
+                const [sugResult] = await pool.query(
+                  `INSERT INTO suggestions (item_component_id, module_type, title, steps, source_url, source_credibility, region_tag, personalisation_note, video_url)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                  [sug.item_component_id, sug.module_type, sug.title, JSON.stringify(sug.steps), sug.source_url, sug.source_credibility, sug.region_tag, sug.personalisation_note, sug.video_url]
+                );
+                inlineSuggestions.push({ id: sugResult.insertId, ...sug });
+              }
+            }
+          }
+
+          if (inlineSuggestions.length > 0) {
+            console.log(`[SuggestionsController] Generated ${inlineSuggestions.length} dataset-only fallback suggestions`);
+            return res.json({
+              scanId: scan_id,
+              suggestions_count: inlineSuggestions.length,
+              suggestions: inlineSuggestions,
+              redirect: `/results/${scan_id}`,
+              dataset_fallback: true,
+            });
+          }
+        }
+      }
+    } catch (recoveryError) {
+      console.error('[SuggestionsController] Recovery also failed:', recoveryError.message);
+    }
+
+    // Return success anyway with empty suggestions — frontend will show results page
     res.json({ suggestions_count: 0, suggestions: [], message: error.message });
   }
 };

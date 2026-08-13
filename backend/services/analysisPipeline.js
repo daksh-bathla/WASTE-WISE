@@ -91,7 +91,7 @@ const runAnalysisPipeline = async (req, pool) => {
             setTimeout(() => {
               console.log('[AnalysisPipeline] Vision analysis timeout');
               resolve(null);
-            }, 12000);
+            }, 15000);
           });
           visionData = await Promise.race([
             analyzeProductImage(photo_data, photo_mime),
@@ -347,7 +347,73 @@ const runAnalysisPipeline = async (req, pool) => {
     clearTimeout(timeoutTimer);
     const elapsed = Date.now() - pipelineStartTime;
     console.error(`[AnalysisPipeline] Error after ${elapsed}ms:`, error.message);
-    throw error;
+
+    // --- NEVER-FAIL FALLBACK ---
+    // Instead of throwing, return a minimal result so the user always sees something.
+    try {
+      const fallbackName = req.body.product_name || req.body.raw_input || 'Unknown Item';
+      const fallbackCategory = req.body.category || req.body.input_type || 'other';
+      const fallbackComponents = fastDecompose(fallbackName, fallbackCategory);
+
+      // Attempt to insert a minimal scan record
+      const [scanResult] = await pool.query(
+        `INSERT INTO scans (user_id, input_type, location_lat, location_lng, season)
+         VALUES (?, ?, ?, ?, ?)`,
+        [
+          (req.user?.id && req.user.id !== 'guest') ? req.user.id : null,
+          fallbackCategory,
+          req.body.location_lat || 28.6139,
+          req.body.location_lng || 77.209,
+          getSeason(new Date().getMonth() + 1),
+        ]
+      );
+      const scanId = scanResult.insertId;
+
+      const [itemResult] = await pool.query(
+        `INSERT INTO items (scan_id, product_name, category_id, expiry_type, risk_level, raw_input)
+         VALUES (?, ?, NULL, 'none', 'safe', ?)`,
+        [scanId, fallbackName, req.body.raw_input || JSON.stringify(req.body)]
+      );
+      const itemId = itemResult.insertId;
+
+      const componentIds = [];
+      for (const comp of fallbackComponents) {
+        const [compResult] = await pool.query(
+          `INSERT INTO item_components (item_id, component_name, component_type, material, condition_status, estimated_quantity, unit, is_safe_to_repurpose)
+           VALUES (?, ?, ?, ?, ?, ?, 'percent', TRUE)`,
+          [itemId, comp.component_name, comp.component_type, comp.material, comp.condition, comp.estimated_percentage]
+        );
+        componentIds.push(compResult.insertId);
+      }
+
+      const componentsWithIds = fallbackComponents.map((c, i) => ({
+        ...c,
+        id: componentIds[i],
+        item_name: fallbackName,
+      }));
+
+      console.log(`[AnalysisPipeline] Fallback scan ${scanId} created for "${fallbackName}"`);
+
+      return {
+        scanId,
+        itemId,
+        productName: fallbackName,
+        category: fallbackCategory,
+        components: componentsWithIds,
+        safetyResults: componentsWithIds.map((c) => ({
+          component_id: c.id,
+          is_safe: true,
+          safety_level: 'safe',
+        })),
+        disposition: { overall: 'safe', summary: 'Fallback analysis — AI was unavailable.' },
+        weather: { temp: 30, humidity: 60, uv: 5, season: getSeason(new Date().getMonth() + 1) },
+        userProfile: {},
+        fallback: true,
+      };
+    } catch (fallbackError) {
+      console.error(`[AnalysisPipeline] Fallback also failed:`, fallbackError.message);
+      throw error; // Only throw if even the fallback fails (e.g. DB is down)
+    }
   }
 };
 
