@@ -39,7 +39,11 @@ export default function Input({
           value={value}
           onChange={onChange}
           disabled={disabled}
-          className={`input-field ${leftIcon ? 'pl-10' : ''} ${isPassword ? 'pr-12' : ''} ${error ? 'error' : ''} ${inputClassName}`}
+          className={`input-field ${error ? 'error' : ''} ${inputClassName}`}
+          style={{
+            ...(leftIcon ? { paddingLeft: '2.5rem' } : {}),
+            ...(isPassword ? { paddingRight: '3rem' } : {}),
+          }}
           aria-invalid={Boolean(error)}
           {...props}
         />

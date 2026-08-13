@@ -277,7 +277,10 @@ p {
   border-radius: 10px;
   color: var(--text-primary);
   min-height: 46px;
-  padding: 12px 14px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-right: 14px;
+  padding-left: 14px;
   transition: border-color 160ms ease, box-shadow 160ms ease;
   width: 100%;
 }
