@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import { Instrument_Serif, Inter } from "next/font/google";
 import "./globals.css";
 
@@ -19,7 +20,7 @@ export const metadata: Metadata = {
     "Photograph anything you're about to throw away and get three safe, specific, cited actions — Reuse, Pass On, Dispose — with real Delhi NCR options.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"

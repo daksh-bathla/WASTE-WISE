@@ -19,6 +19,7 @@ jobs:
           cache: npm
           cache-dependency-path: v2/package-lock.json
       - run: npm ci
+      - run: npx next typegen
       - run: npm run typecheck
       - run: npm run lint
       - name: Safety regression suite (traps must all pass, zero leaks)
