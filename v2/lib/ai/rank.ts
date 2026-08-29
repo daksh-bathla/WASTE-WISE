@@ -135,18 +135,18 @@ export function heuristicActions(input: {
   if (disposalOnly) return [dispose];
 
   const allowed = new Set(safety.flatMap((s) => s.allowed));
+  const reuseKnowledge = knowledge.filter((k) => allowed.has(k.surface)).slice(0, 1);
+  const reuseSteps = reuseKnowledge.length
+    ? reuseKnowledge.map((k) => ({ text: k.body }))
+    : [{ text: `Clean ${id.item} thoroughly and repurpose it for dry storage or a craft project.` }];
   const reuse: Action = {
     kind: "reuse",
-    title: knowledge.find((k) => allowed.has(k.surface))?.title ?? `Reuse ${id.item} at home`,
+    title: reuseKnowledge[0]?.title ?? `Reuse ${id.item} at home`,
     why: "Keeps a usable material in service and out of the waste stream.",
-    steps:
-      knowledge
-        .filter((k) => allowed.has(k.surface))
-        .slice(0, 1)
-        .map((k) => ({ text: k.body })) || [{ text: `Clean ${id.item} thoroughly and repurpose for storage or crafts.` }],
+    steps: reuseSteps,
     effort: "low",
     safety_note: `Only for the allowed uses: ${[...allowed].join(", ") || "handle with care"}.`,
-    sources: knowledge.slice(0, 1).map((k) => k.source),
+    sources: reuseKnowledge[0] ? reuseKnowledge.map((k) => k.source) : [src],
     local: [],
   };
 
