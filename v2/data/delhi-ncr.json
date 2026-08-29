@@ -1,0 +1,138 @@
+{
+  "region": "Delhi NCR",
+  "note": "Curated demo dataset. Organisations are real; verify pickup areas and phone numbers before relying on them.",
+  "facilities": [
+    {
+      "name": "Cashify",
+      "type": "electronics-buyback",
+      "area": "Gurugram (doorstep pickup across NCR)",
+      "coords": [28.4595, 77.0266],
+      "accepts": ["phone", "laptop", "tablet", "smartwatch"],
+      "contact": "",
+      "url": "https://www.cashify.in/sell-old-mobile-phone",
+      "doorstep": true,
+      "pays_user": true
+    },
+    {
+      "name": "Namo eWaste Management",
+      "type": "ewaste-recycler",
+      "area": "Faridabad / Bahadurgarh (NCR pickup)",
+      "coords": [28.4089, 77.3178],
+      "accepts": ["electronics", "appliances", "cables", "circuit boards", "batteries"],
+      "contact": "",
+      "url": "https://www.namoewaste.com/",
+      "doorstep": true,
+      "pays_user": false
+    },
+    {
+      "name": "Karo Sambhav",
+      "type": "ewaste-collection",
+      "area": "Gurugram (producer take-back network)",
+      "coords": [28.4421, 77.0662],
+      "accepts": ["electronics", "e-waste", "packaging"],
+      "contact": "",
+      "url": "https://karosambhav.com/",
+      "doorstep": true,
+      "pays_user": false
+    },
+    {
+      "name": "Attero Recycling",
+      "type": "ewaste-recycler",
+      "area": "Noida (corporate + bulk)",
+      "coords": [28.5709, 77.321],
+      "accepts": ["electronics", "batteries", "lithium-ion", "circuit boards"],
+      "contact": "",
+      "url": "https://attero.in/",
+      "doorstep": true,
+      "pays_user": false
+    },
+    {
+      "name": "Goonj",
+      "type": "donation-ngo",
+      "area": "Sarita Vihar, New Delhi",
+      "coords": [28.5312, 77.2876],
+      "accepts": ["clothes", "textiles", "utensils", "books", "furniture", "school supplies"],
+      "contact": "",
+      "url": "https://goonj.org/donate-material/",
+      "doorstep": false,
+      "pays_user": false
+    },
+    {
+      "name": "Shri Krishna Gaushala",
+      "type": "gaushala",
+      "area": "Bakoli, North Delhi",
+      "coords": [28.8189, 77.1478],
+      "accepts": ["vegetable peels", "roti", "stale rice", "green fodder"],
+      "contact": "",
+      "url": "",
+      "doorstep": false,
+      "pays_user": false
+    },
+    {
+      "name": "Sanjay Gandhi Animal Care Centre (SGACC)",
+      "type": "gaushala",
+      "area": "Raja Garden, West Delhi",
+      "coords": [28.6597, 77.1223],
+      "accepts": ["vegetable peels", "roti", "fruit scraps"],
+      "contact": "",
+      "url": "https://www.sgacc.in/",
+      "doorstep": false,
+      "pays_user": false
+    },
+    {
+      "name": "Daily Dump home composter",
+      "type": "compost-supplier",
+      "area": "Ships across NCR",
+      "coords": [28.6139, 77.209],
+      "accepts": ["kitchen wet waste", "fruit peels", "vegetable scraps"],
+      "contact": "",
+      "url": "https://dailydump.org/",
+      "doorstep": true,
+      "pays_user": false
+    },
+    {
+      "name": "Safai Bank of India (kabadi pickup)",
+      "type": "scrap-dealer",
+      "area": "Doorstep pickup — South & Central Delhi",
+      "coords": [28.5672, 77.21],
+      "accepts": ["paper", "cardboard", "plastic", "metal", "glass bottles", "newspaper"],
+      "contact": "",
+      "url": "",
+      "doorstep": true,
+      "pays_user": true
+    },
+    {
+      "name": "The Kabadiwala / local scrap dealer",
+      "type": "scrap-dealer",
+      "area": "Every neighbourhood — ask your RWA",
+      "coords": [28.6139, 77.209],
+      "accepts": ["newspaper", "cardboard", "PET bottles", "metal", "old appliances"],
+      "contact": "",
+      "url": "",
+      "doorstep": true,
+      "pays_user": true
+    },
+    {
+      "name": "MCD Household Hazardous Waste collection",
+      "type": "hazardous-waste",
+      "area": "Ward-level collection days — check your MCD ward office",
+      "coords": [28.6139, 77.209],
+      "accepts": ["chemicals", "paint", "solvents", "CFL tubes", "expired medicines", "pesticides"],
+      "contact": "",
+      "url": "https://mcdonline.nic.in/",
+      "doorstep": false,
+      "pays_user": false
+    },
+    {
+      "name": "3R (Recycle) e-waste kiosks",
+      "type": "ewaste-collection",
+      "area": "Select Delhi metro stations & malls",
+      "coords": [28.6304, 77.2177],
+      "accepts": ["small electronics", "batteries", "cables", "chargers"],
+      "contact": "",
+      "url": "",
+      "doorstep": false,
+      "pays_user": false
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+:root {
+  --background: #faf8fd;
+  --foreground: #1c1428;
+  --card: #ffffff;
+  --border: #e7e1f0;
+  --purple: #6d3bd4;
+  --purple-soft: #efe9fb;
+  --green: #1f9d63;
+  --green-soft: #e4f5ec;
+  --danger: #c8385a;
+  --danger-soft: #fdecf0;
+  --muted: #6b6480;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-border: var(--border);
+  --color-purple: var(--purple);
+  --color-purple-soft: var(--purple-soft);
+  --color-green: var(--green);
+  --color-green-soft: var(--green-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-muted: var(--muted);
+  --font-sans: var(--font-geist-sans);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #120e1b;
+    --foreground: #ede9f6;
+    --card: #1c1629;
+    --border: #2f2740;
+    --purple: #a986f5;
+    --purple-soft: #241a3a;
+    --green: #4ecb8c;
+    --green-soft: #17301f;
+    --danger: #f2789a;
+    --danger-soft: #331722;
+    --muted: #9b93b0;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+}

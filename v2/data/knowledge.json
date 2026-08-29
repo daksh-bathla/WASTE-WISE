@@ -1,0 +1,98 @@
+[
+  {
+    "id": "banana-peel-compost",
+    "keywords": ["banana peel", "banana skin", "fruit peel", "food scrap"],
+    "surface": "plant",
+    "title": "Compost banana peels",
+    "body": "Chop peels into 2-3 cm pieces so they break down in 3-4 weeks. Bury under 5 cm of soil or add to a compost bin with dry leaves at a 1:2 wet:dry ratio to avoid odour and flies.",
+    "source": { "label": "Composting basics (US EPA)", "url": "https://www.epa.gov/recycle/composting-home" }
+  },
+  {
+    "id": "citrus-peel-cleaner",
+    "keywords": ["citrus peel", "orange peel", "lemon peel", "lime peel"],
+    "surface": "craft",
+    "title": "Citrus-vinegar surface cleaner",
+    "body": "Pack peels into a jar, cover with white vinegar, seal 2 weeks, strain. Dilute 1:1 with water for a degreasing spray. Do not use on natural stone (etches marble/granite).",
+    "source": { "label": "Home cleaning guidance", "url": "" }
+  },
+  {
+    "id": "glass-jar-storage",
+    "keywords": ["glass jar", "jam jar", "pickle jar", "glass bottle"],
+    "surface": "food",
+    "title": "Reuse glass jars for dry storage",
+    "body": "Soak off labels in warm soapy water, sterilise by boiling 10 minutes or oven-drying at 120C for 15 minutes. Use for pulses, spices, or leftovers. Discard jars with chips or cracks.",
+    "source": { "label": "Food-safe container reuse", "url": "" }
+  },
+  {
+    "id": "pet-bottle-drip-irrigation",
+    "keywords": ["plastic bottle", "pet bottle", "water bottle", "soft drink bottle"],
+    "surface": "plant",
+    "title": "Self-watering plant spike",
+    "body": "Pierce 3-4 small holes in the cap, fill the bottle with water, invert into the pot's soil. One 1L bottle waters a medium pot for 3-5 days. Use only bottles that held food or water.",
+    "source": { "label": "Low-cost drip irrigation", "url": "" }
+  },
+  {
+    "id": "cardboard-mulch",
+    "keywords": ["cardboard", "carton", "paper box", "packaging box"],
+    "surface": "plant",
+    "title": "Sheet-mulch weed barrier",
+    "body": "Remove tape and staples, lay flat over weeds, wet thoroughly, cover with 5 cm compost or leaves. Suppresses weeds for a season and breaks down into the soil.",
+    "source": { "label": "Sheet mulching", "url": "" }
+  },
+  {
+    "id": "old-phone-repurpose",
+    "keywords": ["old phone", "smartphone", "mobile phone", "used phone"],
+    "surface": "craft",
+    "title": "Repurpose a working phone",
+    "body": "Factory-reset and remove the SIM/SD. A working phone can serve as a dashcam, a security camera (Alfred/IP Webcam), a music player, or an e-reader. If the battery is swollen, stop and route to e-waste.",
+    "source": { "label": "Device reuse", "url": "" }
+  },
+  {
+    "id": "ewaste-india-rules",
+    "keywords": ["electronics", "e-waste", "charger", "cable", "appliance", "circuit board"],
+    "surface": "none",
+    "title": "E-waste must go to authorised recyclers",
+    "body": "Under India's E-Waste (Management) Rules, electronics should be handed to a registered recycler or the brand's take-back. Never break boards open at home; the solder and coatings contain lead and brominated flame retardants.",
+    "source": { "label": "E-Waste (Management) Rules, India", "url": "https://cpcb.nic.in/e-waste/" }
+  },
+  {
+    "id": "battery-collection",
+    "keywords": ["battery", "aa battery", "aaa battery", "button cell", "power bank"],
+    "surface": "none",
+    "title": "Batteries are hazardous waste",
+    "body": "Tape the terminals of loose batteries and drop them at a retailer or municipal battery-collection point. A swollen or leaking cell should be placed in a non-flammable container (sand/ceramic) and taken in promptly.",
+    "source": { "label": "Battery disposal", "url": "" }
+  },
+  {
+    "id": "textile-reuse",
+    "keywords": ["clothes", "textile", "fabric", "old shirt", "torn clothes", "bedsheet"],
+    "surface": "craft",
+    "title": "Cut worn cotton into cleaning cloths",
+    "body": "Cotton and linen make good lint-free rags: cut into 30 cm squares, hem or pink the edges to slow fraying. Synthetic blends shed microfibres and are better donated or sent to textile recycling.",
+    "source": { "label": "Textile reuse", "url": "" }
+  },
+  {
+    "id": "cooking-oil-disposal",
+    "keywords": ["used cooking oil", "frying oil", "vegetable oil", "oil"],
+    "surface": "none",
+    "title": "Never pour oil down the drain",
+    "body": "Cooled used oil clogs pipes and sewers. Collect it in a sealable bottle; many Indian cities and RWACs run used-cooking-oil (UCO) collection for biodiesel. Small amounts can be soaked into paper and binned.",
+    "source": { "label": "FSSAI RUCO programme", "url": "https://fssai.gov.in/ruco/" }
+  },
+  {
+    "id": "gaushala-feed-safety",
+    "keywords": ["vegetable peel", "roti", "leftover food", "cattle feed", "cow", "gaushala"],
+    "surface": "animal",
+    "title": "Safe kitchen scraps for cattle",
+    "body": "Plain rotis, vegetable peels (potato, cucumber, gourd, carrot), and stale rice in small amounts are accepted by many gaushalas. Never give onion, garlic, avocado, chocolate, spoiled/mouldy food, or anything oily/spiced.",
+    "source": { "label": "Gaushala feeding guidance", "url": "" }
+  },
+  {
+    "id": "hazardous-waste-facility",
+    "keywords": ["chemical", "paint", "solvent", "pesticide", "bleach", "cleaner"],
+    "surface": "none",
+    "title": "Household hazardous waste",
+    "body": "Keep chemicals in their original labelled container. Do not mix products. Delhi residents can use MCD hazardous-waste collection days or authorised TSDF drop-off; check with your municipal ward office for the current schedule.",
+    "source": { "label": "CPCB hazardous waste guidance", "url": "https://cpcb.nic.in/hazardous-waste-management/" }
+  }
+]
