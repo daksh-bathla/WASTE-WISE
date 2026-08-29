@@ -121,7 +121,7 @@ export function heuristicActions(input: {
     title: disposalOnly ? `Take ${id.item} to the right facility` : `Dispose of what can't be reused`,
     why: safety.flatMap((s) => s.reasons)[0] ?? "Route the remainder through the correct waste stream.",
     steps: [
-      { text: `Keep ${id.item} in its original container; do not mix with other waste.` },
+      { text: `Set ${id.item} aside on its own — do not mix it into household waste.` },
       local[0]
         ? { text: `Hand it to ${local[0].name} (${local[0].area}).` }
         : { text: `Use your municipal hazardous / e-waste collection point.` },

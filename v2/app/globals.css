@@ -1,52 +1,92 @@
 @import "tailwindcss";
 
-:root {
-  --background: #faf8fd;
-  --foreground: #1c1428;
-  --card: #ffffff;
-  --border: #e7e1f0;
-  --purple: #6d3bd4;
-  --purple-soft: #efe9fb;
-  --green: #1f9d63;
-  --green-soft: #e4f5ec;
-  --danger: #c8385a;
-  --danger-soft: #fdecf0;
-  --muted: #6b6480;
-}
+/* ── Palette ───────────────────────────────────────────────────────────────
+   Warm paper + ink. Colour is semantic only: oxblood = blocked/hazard,
+   forest = safe. No decorative gradients, no purple.                        */
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-border: var(--border);
-  --color-purple: var(--purple);
-  --color-purple-soft: var(--purple-soft);
-  --color-green: var(--green);
-  --color-green-soft: var(--green-soft);
-  --color-danger: var(--danger);
-  --color-danger-soft: var(--danger-soft);
-  --color-muted: var(--muted);
-  --font-sans: var(--font-geist-sans);
+:root {
+  --paper: #f6f4ef;
+  --surface: #fffdf9;
+  --ink: #16140f;
+  --ink-2: #4f4a3f;
+  --ink-3: #837c6d;
+  --rule: #ddd7ca;
+  --rule-strong: #c3bbaa;
+
+  --hazard: #7f2b26;
+  --hazard-bg: #f6eae6;
+  --safe: #2c5638;
+  --safe-bg: #e8eee7;
+  --brass: #8a6d2f;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #120e1b;
-    --foreground: #ede9f6;
-    --card: #1c1629;
-    --border: #2f2740;
-    --purple: #a986f5;
-    --purple-soft: #241a3a;
-    --green: #4ecb8c;
-    --green-soft: #17301f;
-    --danger: #f2789a;
-    --danger-soft: #331722;
-    --muted: #9b93b0;
+    --paper: #12110d;
+    --surface: #1a1814;
+    --ink: #f2eee4;
+    --ink-2: #b6afa0;
+    --ink-3: #8b8474;
+    --rule: #2c2822;
+    --rule-strong: #423c33;
+
+    --hazard: #e09384;
+    --hazard-bg: #241715;
+    --safe: #93bd9d;
+    --safe-bg: #161e17;
+    --brass: #c6a765;
   }
 }
 
+@theme inline {
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-rule: var(--rule);
+  --color-rule-strong: var(--rule-strong);
+  --color-hazard: var(--hazard);
+  --color-hazard-bg: var(--hazard-bg);
+  --color-safe: var(--safe);
+  --color-safe-bg: var(--safe-bg);
+  --color-brass: var(--brass);
+
+  --font-display: var(--font-instrument-serif);
+  --font-sans: var(--font-inter);
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), system-ui, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "ss01", "cv05";
+}
+
+/* ── Type ──────────────────────────────────────────────────────────────── */
+
+.display {
+  font-family: var(--font-instrument-serif), Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  line-height: 1.05;
+}
+
+/* Editorial micro-label: the small caps that sit above a block. */
+.eyebrow {
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.rule {
+  border-color: var(--rule);
+}
+
+/* Tabular figures for anything numeric. */
+.tnum {
+  font-variant-numeric: tabular-nums;
 }

@@ -1,153 +1,202 @@
 import type { AnalysisResult, Action } from "@/schemas/analysis";
 
-const KIND_META: Record<Action["kind"], { label: string; tone: string }> = {
-  reuse: { label: "Reuse", tone: "bg-green-soft text-green" },
-  pass_on: { label: "Pass On", tone: "bg-purple-soft text-purple" },
-  dispose: { label: "Dispose", tone: "bg-danger-soft text-danger" },
+const KIND_LABEL: Record<Action["kind"], string> = {
+  reuse: "Reuse",
+  pass_on: "Pass on",
+  dispose: "Dispose",
 };
 
 export function ResultView({ result }: { result: AnalysisResult }) {
   const { identification: id, safety, actions, impact } = result;
   const disposalOnly = safety.length > 0 && safety.every((s) => s.disposal_only);
-  const allBlocked = [...new Set(safety.flatMap((s) => s.blocked_actions))];
+  const blocked = [...new Set(safety.flatMap((s) => s.blocked_actions))];
+  const reasons = [...new Set(safety.flatMap((s) => s.reasons))];
+  const allowed = [...new Set(safety.flatMap((s) => s.allowed))];
+
+  const sentence = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+  const meta = [
+    sentence(id.category.replace(/_/g, " ")),
+    id.condition === "unknown" ? null : sentence(id.condition),
+    `${Math.round(id.confidence * 100)}% confidence`,
+  ].filter(Boolean);
 
   return (
-    <div className="flex flex-col gap-5">
-      {/* identification */}
-      <section className="rounded-3xl border border-border bg-card p-5">
-        <p className="text-xs font-bold uppercase tracking-widest text-muted">Identified</p>
-        <h2 className="mt-1 text-2xl font-extrabold capitalize">{id.item}</h2>
-        <div className="mt-2 flex flex-wrap gap-2 text-xs font-semibold">
-          <span className="rounded-full bg-purple-soft px-2.5 py-1 text-purple capitalize">{id.category.replace(/_/g, " ")}</span>
-          <span className="rounded-full bg-purple-soft px-2.5 py-1 text-purple capitalize">{id.condition}</span>
-          <span className="rounded-full bg-purple-soft px-2.5 py-1 text-purple">{Math.round(id.confidence * 100)}% sure</span>
-          {id.hazards.map((h) => (
-            <span key={h} className="rounded-full bg-danger-soft px-2.5 py-1 text-danger capitalize">⚠ {h}</span>
-          ))}
-        </div>
-      </section>
-
-      {/* safety gate */}
-      <section className={`rounded-3xl border p-5 ${disposalOnly ? "border-danger/40 bg-danger-soft/40" : "border-border bg-card"}`}>
-        <div className="flex items-center gap-2">
-          <span aria-hidden>🛡️</span>
-          <h3 className="text-sm font-extrabold uppercase tracking-wide">
-            Safety gate {disposalOnly && <span className="text-danger">— disposal only</span>}
-          </h3>
-        </div>
-        <ul className="mt-2 space-y-1.5 text-sm text-muted">
-          {safety.flatMap((s) => s.reasons).slice(0, 3).map((r, i) => (
-            <li key={i}>• {r}</li>
-          ))}
-          {safety.every((s) => s.reasons.length === 0) && <li>• No hazards detected — normal reuse options apply.</li>}
-        </ul>
-        {allBlocked.length > 0 && (
-          <p className="mt-3 text-xs font-semibold text-danger">
-            Never: {allBlocked.slice(0, 6).join(" · ")}
+    <div>
+      {/* ── Identification ─────────────────────────────────────────── */}
+      <header className="border-b border-rule pb-7">
+        <p className="eyebrow">Identified</p>
+        <h2 className="display mt-2 text-[2.75rem] capitalize sm:text-5xl">{id.item}</h2>
+        <p className="mt-3 text-[0.8125rem] text-ink-2">{meta.join("  ·  ")}</p>
+        {id.hazards.length > 0 && (
+          <p className="mt-2 text-[0.8125rem] font-medium text-hazard">
+            Hazards — {id.hazards.join(", ")}
           </p>
+        )}
+      </header>
+
+      {/* ── Safety gate ────────────────────────────────────────────── */}
+      <section className="border-b border-rule py-7">
+        <div className="flex items-baseline justify-between gap-4">
+          <p className="eyebrow">Safety gate</p>
+          <p
+            className={`text-[0.6875rem] font-semibold uppercase tracking-[0.14em] ${
+              disposalOnly ? "text-hazard" : "text-safe"
+            }`}
+          >
+            {disposalOnly ? "Disposal only" : allowed.length ? `${allowed.length} uses cleared` : "Reviewed"}
+          </p>
+        </div>
+
+        {reasons.length > 0 ? (
+          <ul className="mt-4 space-y-2.5">
+            {reasons.slice(0, 3).map((r, i) => (
+              <li key={i} className="border-l-2 border-hazard/40 pl-3 text-[0.9375rem] leading-relaxed text-ink-2">
+                {r}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-4 text-[0.9375rem] leading-relaxed text-ink-2">
+            No hazard rule triggered. Ordinary reuse routes are available.
+          </p>
+        )}
+
+        {blocked.length > 0 && (
+          <div className="mt-5 bg-hazard-bg px-4 py-3.5">
+            <p className="eyebrow text-hazard">Never</p>
+            <p className="mt-1.5 text-[0.875rem] leading-relaxed text-hazard">{blocked.join(" · ")}</p>
+          </div>
         )}
       </section>
 
-      {/* actions */}
-      <section className="flex flex-col gap-3">
+      {/* ── Actions ────────────────────────────────────────────────── */}
+      <section>
         {actions.map((a, i) => (
-          <ActionCard key={i} action={a} />
+          <ActionRow key={i} action={a} index={i} />
         ))}
         {actions.length === 0 && (
-          <p className="rounded-3xl border border-border bg-card p-5 text-sm text-muted">
-            No safe recommendation could be produced for this item. When in doubt, use your municipal
-            hazardous-waste collection.
+          <p className="border-b border-rule py-7 text-[0.9375rem] leading-relaxed text-ink-2">
+            No safe recommendation could be produced for this item. When in doubt, use your
+            municipal hazardous-waste collection.
           </p>
         )}
       </section>
 
-      {/* impact */}
+      {/* ── Impact ─────────────────────────────────────────────────── */}
       {impact && (
-        <section className="rounded-3xl border border-green/30 bg-green-soft/50 p-5">
-          <p className="text-xs font-bold uppercase tracking-widest text-green">If you follow the top action</p>
-          <p className="mt-1 text-lg font-extrabold">
-            {impact.kg_diverted} kg diverted · {(impact.co2e_grams_avoided / 1000).toFixed(2)} kg CO₂e avoided
+        <section className="border-b border-rule py-7">
+          <p className="eyebrow">If you follow the first action</p>
+          <p className="display tnum mt-3 text-[2rem]">
+            {impact.kg_diverted} kg diverted
+            <span className="text-ink-3"> · </span>
+            {(impact.co2e_grams_avoided / 1000).toFixed(2)} kg CO₂e avoided
           </p>
-          <p className="text-sm text-muted">{impact.equivalent}</p>
+          <p className="mt-1.5 text-[0.8125rem] text-ink-3">{impact.equivalent}</p>
         </section>
       )}
 
       {result.degraded.length > 0 && (
-        <p className="text-center text-xs text-muted">
-          Showing {result.degraded.includes("ai_ranking") ? "rule-based" : "partial"} guidance
-          {result.degraded.includes("local_options") ? " — local options unavailable" : ""}.
+        <p className="pt-5 text-[0.75rem] leading-relaxed text-ink-3">
+          {result.degraded.includes("fixture_identification")
+            ? "Preview: identification came from a labelled test fixture, not a photo. "
+            : ""}
+          {result.degraded.includes("ai_ranking") ? "Actions generated by the rule engine. " : ""}
+          {result.degraded.includes("local_options") ? "Local options unavailable." : ""}
         </p>
       )}
     </div>
   );
 }
 
-function ActionCard({ action }: { action: Action }) {
-  const meta = KIND_META[action.kind];
+function ActionRow({ action, index }: { action: Action; index: number }) {
   return (
-    <article className="rounded-3xl border border-border bg-card p-5">
-      <div className="flex items-start justify-between gap-3">
-        <h3 className="text-lg font-extrabold">{action.title}</h3>
-        <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-bold ${meta.tone}`}>{meta.label}</span>
+    <article className="border-b border-rule py-7">
+      <div className="flex items-baseline gap-4">
+        <span className="display tnum shrink-0 text-[1.75rem] text-rule-strong">
+          {String(index + 1).padStart(2, "0")}
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="eyebrow">{KIND_LABEL[action.kind]}</p>
+          <h3 className="display mt-1.5 text-[1.625rem] leading-tight">{action.title}</h3>
+          <p className="mt-2.5 text-[0.9375rem] leading-relaxed text-ink-2">{action.why}</p>
+        </div>
       </div>
-      <p className="mt-1 text-sm text-muted">{action.why}</p>
 
-      {action.steps.length > 0 && (
-        <ol className="mt-3 space-y-1.5 text-sm">
-          {action.steps.map((s, i) => (
-            <li key={i} className="flex gap-2">
-              <span className="font-bold text-purple">{i + 1}.</span>
-              <span>
-                {s.text}
-                {s.quantity && <span className="text-muted"> ({s.quantity})</span>}
-              </span>
-            </li>
-          ))}
-        </ol>
-      )}
-
-      {action.local.length > 0 && (
-        <div className="mt-3 rounded-2xl bg-purple-soft/60 p-3 text-sm">
-          <p className="text-xs font-bold uppercase tracking-wide text-purple">Near you (Delhi NCR)</p>
-          <ul className="mt-1 space-y-1">
-            {action.local.slice(0, 3).map((l, i) => (
-              <li key={i}>
-                <span className="font-semibold">{l.name}</span>
-                {l.distance_km != null && <span className="text-muted"> · {l.distance_km} km</span>}
-                <span className="text-muted"> — {l.area}</span>
-                {l.url && (
-                  <>
-                    {" "}
-                    <a href={l.url} target="_blank" rel="noreferrer" className="text-purple underline">
-                      link
-                    </a>
-                  </>
-                )}
+      <div className="mt-5 sm:pl-[3.5rem]">
+        {action.steps.length > 0 && (
+          <ol className="space-y-3">
+            {action.steps.map((s, i) => (
+              <li key={i} className="flex gap-3.5 text-[0.9375rem] leading-relaxed">
+                <span className="tnum shrink-0 pt-px text-[0.75rem] font-semibold text-ink-3">
+                  {i + 1}
+                </span>
+                <span>
+                  {s.text}
+                  {s.quantity && <span className="text-ink-3"> — {s.quantity}</span>}
+                </span>
               </li>
             ))}
-          </ul>
+          </ol>
+        )}
+
+        {action.local.length > 0 && (
+          <div className="mt-5 border-t border-rule pt-4">
+            <p className="eyebrow">Near you · Delhi NCR</p>
+            <ul className="mt-2.5 space-y-2">
+              {action.local.slice(0, 3).map((l, i) => (
+                <li key={i} className="text-[0.875rem] leading-relaxed">
+                  <span className="font-semibold">{l.name}</span>
+                  {l.distance_km != null && (
+                    <span className="tnum text-ink-3"> · {l.distance_km} km</span>
+                  )}
+                  <span className="text-ink-3"> — {l.area}</span>
+                  {l.url && (
+                    <>
+                      {" "}
+                      <a
+                        href={l.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="underline decoration-rule-strong underline-offset-2 hover:decoration-ink"
+                      >
+                        open
+                      </a>
+                    </>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <div className="mt-5 flex flex-wrap items-baseline gap-x-6 gap-y-1.5 text-[0.75rem] leading-relaxed">
+          <p className="text-hazard">
+            <span className="font-semibold">Safety</span> — {action.safety_note}
+          </p>
+          {action.sources.length > 0 && (
+            <p className="text-ink-3">
+              <span className="font-semibold">Source</span>{" "}
+              {action.sources.map((s, i) => (
+                <span key={i}>
+                  {i > 0 && ", "}
+                  {s.url ? (
+                    <a
+                      href={s.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="underline decoration-rule-strong underline-offset-2 hover:decoration-ink"
+                    >
+                      {s.label}
+                    </a>
+                  ) : (
+                    s.label
+                  )}
+                </span>
+              ))}
+            </p>
+          )}
         </div>
-      )}
-
-      <p className="mt-3 text-xs font-semibold text-danger">Safety: {action.safety_note}</p>
-
-      {action.sources.length > 0 && (
-        <p className="mt-2 text-xs text-muted">
-          Source:{" "}
-          {action.sources.map((s, i) => (
-            <span key={i}>
-              {i > 0 && ", "}
-              {s.url ? (
-                <a href={s.url} target="_blank" rel="noreferrer" className="underline">
-                  {s.label}
-                </a>
-              ) : (
-                s.label
-              )}
-            </span>
-          ))}
-        </p>
-      )}
+      </div>
     </article>
   );
 }
