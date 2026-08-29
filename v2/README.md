@@ -24,7 +24,7 @@ suite all run offline — that's how CI runs.
 ## Verify
 
 ```bash
-npm test         # unit tests + safety regression suite (30 cases, 10 traps)
+npm test         # 86 unit tests + safety regression suite (20 eval cases, 10 traps)
 npm run eval     # human-readable eval report + latency/citation metrics
 npm run typecheck
 npm run build
