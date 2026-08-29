@@ -41,5 +41,8 @@ app/api/analyze  →  lib/pipeline/run.ts
 
 - `lib/safety/` — deterministic rules + gate + negation-aware leak detector. Unit-tested.
 - `eval/cases.ts` — 20 labelled cases (10 traps). `eval/run.ts` scores them.
+- `eval/cases/photos/` — real photos (18/20 slots, all 10 traps). With `GEMINI_API_KEY`
+  set, those cases run through the **real vision stage**; CI stays fixture-only and
+  deterministic. Refill via `npx tsx eval/fetch-photos.mts`.
 - `schemas/analysis.ts` — Zod contracts shared client/server; LLM output validated against them.
 - `data/knowledge.json` — retrieval corpus. `data/delhi-ncr.json` — curated facilities.
