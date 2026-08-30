@@ -1,7 +1,11 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
-const PHOTO_DIR = join(import.meta.dirname, "cases", "photos");
+// `import.meta.dirname` is set under the tsx CLI but undefined once a bundler
+// (Next/Turbopack) evaluates this module. Fall back to a cwd-relative path —
+// the app and the eval CLI both run from the v2/ root.
+const HERE = import.meta.dirname ?? join(process.cwd(), "eval");
+const PHOTO_DIR = join(HERE, "cases", "photos");
 
 const MIME: Record<string, string> = {
   ".jpg": "image/jpeg",
