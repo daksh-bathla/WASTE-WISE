@@ -34,40 +34,55 @@ export function ResultView({ result }: { result: AnalysisResult }) {
         )}
       </header>
 
-      {/* ── Safety gate ────────────────────────────────────────────── */}
-      <section className="border-b border-rule py-7">
-        <div className="flex items-baseline justify-between gap-4">
-          <p className="eyebrow">Safety gate</p>
-          <p
-            className={`text-[0.6875rem] font-semibold uppercase tracking-[0.14em] ${
-              disposalOnly ? "text-hazard" : "text-safe"
+      {/* ── Safety gate — the load-bearing section ─────────────────── */}
+      {(() => {
+        const flagged = disposalOnly || blocked.length > 0;
+        const verdict = disposalOnly
+          ? "Disposal only"
+          : blocked.length > 0
+            ? "Some uses blocked"
+            : "Cleared for reuse";
+        return (
+          <section
+            className={`border-b border-rule py-8 ${
+              flagged ? "border-l-2 border-l-hazard pl-5 sm:-ml-5" : ""
             }`}
           >
-            {disposalOnly ? "Disposal only" : allowed.length ? `${allowed.length} uses cleared` : "Reviewed"}
-          </p>
-        </div>
+            <p className={`eyebrow ${flagged ? "text-hazard" : "text-safe"}`}>Safety gate</p>
+            <p
+              className={`display mt-1.5 text-[1.75rem] leading-none ${
+                flagged ? "text-hazard" : ""
+              }`}
+            >
+              {verdict}
+            </p>
 
-        {reasons.length > 0 ? (
-          <ul className="mt-4 space-y-2.5">
-            {reasons.slice(0, 3).map((r, i) => (
-              <li key={i} className="border-l-2 border-hazard/40 pl-3 text-[0.9375rem] leading-relaxed text-ink-2">
-                {r}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="mt-4 text-[0.9375rem] leading-relaxed text-ink-2">
-            No hazard rule triggered. Ordinary reuse routes are available.
-          </p>
-        )}
+            {reasons.length > 0 ? (
+              <ul className="mt-5 space-y-2">
+                {reasons.slice(0, 3).map((r, i) => (
+                  <li key={i} className="text-[0.9375rem] leading-relaxed text-ink-2">
+                    {r}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="mt-4 text-[0.9375rem] leading-relaxed text-ink-2">
+                Ordinary reuse routes are open. The suggestions below are still scoped to the
+                surfaces this item is safe for.
+              </p>
+            )}
 
-        {blocked.length > 0 && (
-          <div className="mt-5 bg-hazard-bg px-4 py-3.5">
-            <p className="eyebrow text-hazard">Never</p>
-            <p className="mt-1.5 text-[0.875rem] leading-relaxed text-hazard">{blocked.join(" · ")}</p>
-          </div>
-        )}
-      </section>
+            {blocked.length > 0 && (
+              <div className="mt-6 border border-hazard/30 bg-hazard-bg px-4 py-4">
+                <p className="eyebrow text-hazard">Never</p>
+                <p className="mt-2 text-[0.9375rem] font-medium leading-relaxed text-hazard">
+                  {blocked.join(" · ")}
+                </p>
+              </div>
+            )}
+          </section>
+        );
+      })()}
 
       {/* ── Actions ────────────────────────────────────────────────── */}
       <section>
