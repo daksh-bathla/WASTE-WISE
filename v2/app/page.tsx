@@ -17,10 +17,10 @@ export default async function Landing() {
       <main className="flex-1">
         {/* hero */}
         <section className="border-b border-rule py-14 sm:py-20">
-          <p className="display max-w-xl text-[2rem] leading-tight sm:text-[2.75rem]">
+          <h1 className="display max-w-xl text-[2rem] leading-tight sm:text-[2.75rem]">
             &ldquo;Which bin?&rdquo; is the easy question. Nobody checks whether the answer
             is safe.
-          </p>
+          </h1>
           <p className="mt-6 max-w-md text-[0.9375rem] leading-relaxed text-ink-2">
             Photograph anything you are about to throw away. WasteWise returns three
             specific, cited actions &mdash; reuse, pass on, dispose &mdash; each one run past
