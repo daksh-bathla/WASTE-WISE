@@ -19,7 +19,7 @@ const CO2E_PER_KG: Record<Category, number> = {
   other: 1000,
 };
 
-const TYPICAL_KG: Record<Category, number> = {
+export const TYPICAL_KG: Record<Category, number> = {
   food_scraps: 0.2,
   expired_food: 0.3,
   packaging: 0.05,

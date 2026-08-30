@@ -7,7 +7,7 @@ const KIND_LABEL: Record<Action["kind"], string> = {
 };
 
 export function ResultView({ result }: { result: AnalysisResult }) {
-  const { identification: id, safety, actions, impact } = result;
+  const { identification: id, safety, actions, impact, resale } = result;
   const disposalOnly = safety.length > 0 && safety.every((s) => s.disposal_only);
   const blocked = [...new Set(safety.flatMap((s) => s.blocked_actions))];
   const reasons = [...new Set(safety.flatMap((s) => s.reasons))];
@@ -95,6 +95,33 @@ export function ResultView({ result }: { result: AnalysisResult }) {
           </p>
         )}
       </section>
+
+      {/* ── What's it worth ───────────────────────────────────────── */}
+      {resale && (
+        <section className="border-b border-rule py-7">
+          <p className="eyebrow">Worth to you</p>
+          {resale.inr_low != null && resale.inr_high != null ? (
+            <p className="display tnum mt-3 text-[2rem]">
+              {resale.inr_low === resale.inr_high
+                ? `≈ ₹${resale.inr_high}`
+                : `≈ ₹${resale.inr_low}–${resale.inr_high}`}
+            </p>
+          ) : (
+            <p className="display mt-3 text-[1.5rem] leading-tight">Has resale value</p>
+          )}
+          <p className="mt-2 max-w-md text-[0.8125rem] leading-relaxed text-ink-3">{resale.basis}</p>
+          {resale.channel_url && resale.channel_label && (
+            <a
+              href={resale.channel_url}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-3 inline-block text-[0.8125rem] font-semibold underline decoration-rule-strong underline-offset-4 hover:decoration-ink"
+            >
+              {resale.channel_label} &rarr;
+            </a>
+          )}
+        </section>
+      )}
 
       {/* ── Impact ─────────────────────────────────────────────────── */}
       {impact && (

@@ -106,6 +106,19 @@ export const ImpactSchema = z.object({
 });
 export type Impact = z.infer<typeof ImpactSchema>;
 
+export const RESALE_CHANNELS = ["kabadiwala", "cashify", "donation"] as const;
+
+/** What the item is worth to the user if they pass it on rather than bin it. */
+export const ResaleValueSchema = z.object({
+  inr_low: z.number().optional().describe("Low end of a scrap-rate estimate, INR"),
+  inr_high: z.number().optional().describe("High end, INR"),
+  basis: z.string().describe("Plain-English explanation of the number or why there isn't one"),
+  channel: z.enum(RESALE_CHANNELS).optional(),
+  channel_label: z.string().optional(),
+  channel_url: z.string().optional(),
+});
+export type ResaleValue = z.infer<typeof ResaleValueSchema>;
+
 /** Final response streamed to the client. */
 export const AnalysisResultSchema = z.object({
   id: z.string(),
@@ -115,6 +128,7 @@ export const AnalysisResultSchema = z.object({
   safety: z.array(SafetyVerdictSchema),
   actions: z.array(ActionSchema),
   impact: ImpactSchema.optional(),
+  resale: ResaleValueSchema.optional(),
   degraded: z.array(z.string()).default([]).describe("Which enrichments were unavailable"),
 });
 export type AnalysisResult = z.infer<typeof AnalysisResultSchema>;

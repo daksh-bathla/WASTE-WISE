@@ -7,6 +7,7 @@ import { retrieveKnowledge } from "@/lib/knowledge/retrieve";
 import { findLocalOptions } from "@/lib/local/lookup";
 import { rankActions } from "@/lib/ai/rank";
 import { estimateImpact } from "@/lib/impact/coefficients";
+import { estimateResale } from "@/lib/value/estimate";
 
 export type PipelineInput = {
   image?: { mimeType: string; data: string };
@@ -81,6 +82,12 @@ export async function runPipeline(input: PipelineInput): Promise<AnalysisResult>
 
   const impact = estimateImpact(identification.category);
 
+  // "What's it worth" if passed on rather than binned. estimateResale already
+  // suppresses hazards, food waste, mouldy/contaminated items and low-value
+  // scraps; a working phone keeps its resale route even though its components
+  // are disposal-only for DIY-reuse purposes.
+  const resale = estimateResale(identification) ?? undefined;
+
   return {
     id: randomUUID(),
     identification,
@@ -89,6 +96,7 @@ export async function runPipeline(input: PipelineInput): Promise<AnalysisResult>
     safety,
     actions,
     impact,
+    resale,
     degraded,
   };
 }

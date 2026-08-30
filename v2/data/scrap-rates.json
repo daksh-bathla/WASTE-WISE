@@ -1,0 +1,34 @@
+{
+  "region": "Delhi NCR",
+  "as_of": "2026-08",
+  "currency": "INR",
+  "disclaimer": "Indicative household kabadiwala rates. Real payouts vary by dealer, quantity, and how clean and sorted the material is. Treat as a rough floor, not a quote.",
+  "unit": "per_kg",
+  "materials": [
+    { "match": ["newspaper", "news paper", "raddi"], "label": "Newspaper", "low": 12, "high": 16 },
+    { "match": ["cardboard", "carton", "corrugated", "box"], "label": "Cardboard", "low": 7, "high": 10 },
+    { "match": ["book", "magazine", "mixed paper", "paper"], "label": "Mixed paper / books", "low": 9, "high": 13 },
+    { "match": ["pet", "pet bottle", "plastic bottle", "water bottle"], "label": "PET bottles", "low": 8, "high": 12 },
+    { "match": ["hdpe", "hard plastic", "plastic container", "plastic"], "label": "Hard plastic", "low": 5, "high": 9 },
+    { "match": ["iron", "steel", "tin", "mild steel"], "label": "Iron / steel", "low": 24, "high": 30 },
+    { "match": ["aluminium", "aluminum", "can", "foil"], "label": "Aluminium", "low": 95, "high": 125 },
+    { "match": ["copper", "copper wire"], "label": "Copper", "low": 520, "high": 640 },
+    { "match": ["brass"], "label": "Brass", "low": 340, "high": 420 },
+    { "match": ["glass", "bottle", "jar"], "label": "Glass", "low": 1, "high": 2 },
+    { "match": ["cotton", "clothes", "clothing", "textile", "fabric", "t-shirt", "shirt"], "label": "Cloth", "low": 5, "high": 10 }
+  ],
+  "channels": {
+    "kabadiwala": {
+      "label": "book a kabadiwala pickup",
+      "url": "https://www.thekabadiwala.com/"
+    },
+    "cashify": {
+      "label": "get a Cashify quote",
+      "url": "https://www.cashify.in/sell-old-mobile-phone"
+    },
+    "donation": {
+      "label": "donate through Goonj",
+      "url": "https://goonj.org/"
+    }
+  }
+}
