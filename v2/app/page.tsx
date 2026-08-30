@@ -1,80 +1,11 @@
-"use client";
+import Link from "next/link";
+import { getSafetyStats } from "@/lib/safety-stats";
+import { PipelineDiagram } from "@/components/PipelineDiagram";
 
-import { useEffect, useRef, useState } from "react";
-import type { AnalysisResult } from "@/schemas/analysis";
-import { ResultView } from "@/components/ResultView";
+export const dynamic = "force-dynamic";
 
-type Phase = "idle" | "loading" | "done" | "error";
-type DemoCase = { id: string; label: string; trap: boolean };
-
-const STAGES = ["Identifying", "Safety gate", "Ranking actions", "Delhi NCR options"];
-
-export default function Home() {
-  const [phase, setPhase] = useState<Phase>("idle");
-  const [stage, setStage] = useState(0);
-  const [result, setResult] = useState<AnalysisResult | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
-  const [demoCases, setDemoCases] = useState<DemoCase[]>([]);
-  const [demoOpen, setDemoOpen] = useState(false);
-  const fileRef = useRef<HTMLInputElement>(null);
-
-  // Dev-only: the fixture preview endpoint 404s in production.
-  useEffect(() => {
-    fetch("/api/analyze")
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => d?.cases && setDemoCases(d.cases))
-      .catch(() => {});
-  }, []);
-
-  function begin() {
-    setPhase("loading");
-    setStage(0);
-    setResult(null);
-    setError(null);
-  }
-
-  async function analyze(file: File) {
-    begin();
-    setPreview(URL.createObjectURL(file));
-    const ticker = setInterval(() => setStage((s) => Math.min(s + 1, STAGES.length - 1)), 1400);
-    try {
-      const body = new FormData();
-      body.append("image", file);
-      const res = await fetch("/api/analyze", { method: "POST", body });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Analysis failed");
-      setResult(data as AnalysisResult);
-      setPhase("done");
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Something went wrong");
-      setPhase("error");
-    } finally {
-      clearInterval(ticker);
-    }
-  }
-
-  async function runDemo(id: string) {
-    begin();
-    setPreview(null);
-    try {
-      const res = await fetch(`/api/analyze?demo=${id}`);
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Preview failed");
-      setResult(data as AnalysisResult);
-      setPhase("done");
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Something went wrong");
-      setPhase("error");
-    }
-  }
-
-  function reset() {
-    setPhase("idle");
-    setResult(null);
-    setError(null);
-    setPreview(null);
-  }
+export default async function Landing() {
+  const { headline, ruleCount } = await getSafetyStats();
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-6 sm:px-10">
@@ -83,154 +14,94 @@ export default function Home() {
         <span className="eyebrow">Delhi NCR</span>
       </header>
 
-      <main className="flex-1 py-10">
-        {phase === "idle" && (
-          <>
-            <h1 className="display max-w-lg text-[2.75rem] sm:text-[3.5rem]">
-              Before you throw it away, check what it&apos;s still worth.
-            </h1>
-            <p className="mt-5 max-w-md text-[0.9375rem] leading-relaxed text-ink-2">
-              Photograph the item. You get three actions — reuse, pass on, dispose — each
-              specific, sourced, and checked against a safety rulebook the model cannot
-              overrule.
-            </p>
+      <main className="flex-1">
+        {/* hero */}
+        <section className="border-b border-rule py-14 sm:py-20">
+          <p className="display max-w-xl text-[2rem] leading-tight sm:text-[2.75rem]">
+            &ldquo;Which bin?&rdquo; is the easy question. Nobody checks whether the answer
+            is safe.
+          </p>
+          <p className="mt-6 max-w-md text-[0.9375rem] leading-relaxed text-ink-2">
+            Photograph anything you are about to throw away. WasteWise returns three
+            specific, cited actions &mdash; reuse, pass on, dispose &mdash; each one run past
+            a hazard rulebook the model is not allowed to overrule.
+          </p>
+          <Link
+            href="/scan"
+            className="mt-9 inline-block bg-ink px-8 py-4 text-[0.875rem] font-semibold tracking-wide text-paper transition-opacity hover:opacity-85"
+          >
+            Scan an item
+          </Link>
+        </section>
 
-            <button
-              onClick={() => fileRef.current?.click()}
-              className="mt-9 bg-ink px-8 py-4 text-[0.875rem] font-semibold tracking-wide text-paper transition-opacity hover:opacity-85"
-            >
-              Photograph an item
-            </button>
-            <input
-              ref={fileRef}
-              type="file"
-              accept="image/*"
-              capture="environment"
-              className="hidden"
-              onChange={(e) => e.target.files?.[0] && analyze(e.target.files[0])}
-            />
+        {/* the problem */}
+        <section className="border-b border-rule py-12">
+          <p className="eyebrow">The problem</p>
+          <p className="mt-4 max-w-lg text-[1.0625rem] leading-relaxed">
+            Expired medicine goes in the compost. A swollen lithium cell goes in the kitchen
+            bin. Avocado skin gets fed to the chickens. The wrong call is common, and a few of
+            the wrong calls start fires or poison animals. An AI that answers fast and
+            confidently makes this worse, not better &mdash; unless something is checking it.
+          </p>
+        </section>
 
-            <dl className="mt-16 grid grid-cols-3 gap-6 border-t border-rule pt-7">
-              {[
-                ["10", "hazard rules"],
-                ["20", "tested cases"],
-                ["0", "safety leaks"],
-              ].map(([n, label]) => (
-                <div key={label}>
-                  <dt className="display tnum text-[2rem] leading-none">{n}</dt>
-                  <dd className="eyebrow mt-2">{label}</dd>
-                </div>
-              ))}
-            </dl>
-
-            {demoCases.length > 0 && (
-              <section className="mt-10 border-t border-rule pt-6">
-                <button
-                  onClick={() => setDemoOpen((o) => !o)}
-                  className="flex w-full items-baseline justify-between text-left"
-                >
-                  <span className="eyebrow">Dev preview — run without a photo</span>
-                  <span className="text-[0.75rem] text-ink-3">{demoOpen ? "hide" : "show"}</span>
-                </button>
-                {demoOpen && (
-                  <>
-                    <p className="mt-3 text-[0.8125rem] leading-relaxed text-ink-3">
-                      Runs the real pipeline from a labelled test fixture. Safety gate, ranking,
-                      local options and impact are live — only identification is skipped.
-                    </p>
-                    <ul className="mt-4">
-                      {demoCases.map((c) => (
-                        <li key={c.id} className="border-b border-rule last:border-0">
-                          <button
-                            onClick={() => runDemo(c.id)}
-                            className="flex w-full items-baseline justify-between gap-4 py-2.5 text-left text-[0.875rem] transition-opacity hover:opacity-60"
-                          >
-                            <span>{c.label}</span>
-                            {c.trap && (
-                              <span className="eyebrow shrink-0 text-hazard">Hazard</span>
-                            )}
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  </>
-                )}
-              </section>
-            )}
-          </>
-        )}
-
-        {phase === "loading" && (
-          <div className="flex flex-col items-start gap-8">
-            {preview && (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img src={preview} alt="" className="h-44 w-44 object-cover grayscale" />
-            )}
-            <ol className="w-full">
-              {STAGES.map((label, i) => (
-                <li
-                  key={label}
-                  className={`flex items-baseline justify-between border-b border-rule py-3.5 text-[0.9375rem] ${
-                    i <= stage ? "text-ink" : "text-ink-3"
-                  }`}
-                >
-                  <span>{label}</span>
-                  <span className="eyebrow">
-                    {i < stage ? "done" : i === stage ? "running" : ""}
-                  </span>
-                </li>
-              ))}
-            </ol>
+        {/* the pipeline */}
+        <section className="border-b border-rule py-12">
+          <p className="eyebrow">What runs on your photo</p>
+          <div className="mt-6">
+            <PipelineDiagram />
           </div>
-        )}
+        </section>
 
-        {phase === "error" && (
-          <div>
-            <p className="eyebrow text-hazard">Could not analyse</p>
-            <p className="display mt-2 text-[1.75rem]">{error}</p>
-            <button
-              onClick={reset}
-              className="mt-7 bg-ink px-7 py-3.5 text-[0.875rem] font-semibold tracking-wide text-paper transition-opacity hover:opacity-85"
-            >
-              Try again
-            </button>
-          </div>
-        )}
-
-        {phase === "done" && result && (
-          <>
-            {result.needs_clarification ? (
-              <div>
-                <p className="eyebrow">Not confident enough to answer</p>
-                <p className="display mt-3 text-[1.75rem] leading-snug">
-                  {result.identification.clarifying_question ||
-                    "Retake the photo with better light."}
-                </p>
-                <p className="mt-4 max-w-md text-[0.9375rem] leading-relaxed text-ink-2">
-                  Guessing here risks an unsafe answer, so it asks instead.
-                </p>
-                <button
-                  onClick={reset}
-                  className="mt-7 bg-ink px-7 py-3.5 text-[0.875rem] font-semibold tracking-wide text-paper transition-opacity hover:opacity-85"
-                >
-                  Retake photo
-                </button>
-              </div>
-            ) : (
-              <ResultView result={result} />
-            )}
-            <button
-              onClick={reset}
-              className="mt-8 border border-rule-strong px-7 py-3.5 text-[0.875rem] font-semibold tracking-wide transition-colors hover:bg-surface"
-            >
-              Scan another item
-            </button>
-          </>
-        )}
+        {/* the proof */}
+        <section className="border-b border-rule py-12">
+          <p className="eyebrow">The proof</p>
+          <p className="mt-4 max-w-lg text-[0.9375rem] leading-relaxed text-ink-2">
+            {ruleCount} deterministic rules, and a suite that runs the whole pipeline against
+            known-correct answers on every change. Weaken a rule and the build turns red.
+          </p>
+          <dl className="mt-8 grid grid-cols-3 gap-6">
+            <div>
+              <dt className="display tnum text-[2.5rem] leading-none">{headline.cases}</dt>
+              <dd className="eyebrow mt-2">tested cases</dd>
+            </div>
+            <div>
+              <dt className="display tnum text-[2.5rem] leading-none">{headline.traps}</dt>
+              <dd className="eyebrow mt-2">hazard traps</dd>
+            </div>
+            <div>
+              <dt
+                className={`display tnum text-[2.5rem] leading-none ${headline.leaks > 0 ? "text-hazard" : ""}`}
+              >
+                {headline.leaks}
+              </dt>
+              <dd className={`eyebrow mt-2 ${headline.leaks > 0 ? "text-hazard" : ""}`}>
+                safety leaks
+              </dd>
+            </div>
+          </dl>
+          <Link
+            href="/safety"
+            className="mt-7 inline-block text-[0.875rem] font-semibold underline decoration-rule-strong underline-offset-4 hover:decoration-ink"
+          >
+            See the full suite &rarr;
+          </Link>
+        </section>
       </main>
 
-      <footer className="border-t border-rule py-6 text-[0.75rem] leading-relaxed text-ink-3">
-        Delhi NCR facility data is curated for this demo — verify before relying on it.
+      <footer className="flex flex-wrap items-baseline gap-x-6 gap-y-2 border-t border-rule py-6 text-[0.75rem] leading-relaxed text-ink-3">
+        <Link href="/safety" className="underline decoration-rule-strong underline-offset-2 hover:decoration-ink">
+          Safety suite
+        </Link>
+        <a
+          href="https://github.com/tarangkhandelwal622-cpu/WASTE-WISE/pull/1"
+          target="_blank"
+          rel="noreferrer"
+          className="underline decoration-rule-strong underline-offset-2 hover:decoration-ink"
+        >
+          Source
+        </a>
+        <span>Delhi NCR facility data is curated for this demo &mdash; verify before relying on it.</span>
       </footer>
     </div>
   );
