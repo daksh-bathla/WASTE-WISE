@@ -78,4 +78,21 @@ describe("POST /api/analyze — request validation", () => {
     expect(res.status).toBe(500);
     expect(await res.json()).toHaveProperty("error");
   });
+
+  it("degrades to a clarifying question, not a 500, when vision is unavailable", async () => {
+    // No GEMINI_API_KEY in the test env, so identifyImage throws inside the
+    // pipeline. That must surface as a graceful "ask the user" result.
+    const form = new FormData();
+    const img = new Blob([new Uint8Array([0xff, 0xd8, 0xff, 0xe0, 1, 2, 3, 4])], { type: "image/jpeg" });
+    form.append("image", img, "photo.jpg");
+
+    const res = await POST(formRequest(form));
+    expect(res.status).toBe(200);
+
+    const body = await res.json();
+    expect(body.needs_clarification).toBe(true);
+    expect(body.degraded).toContain("vision_failed");
+    expect(body.identification.clarifying_question).toMatch(/photo|light|tell me/i);
+    expect(body.actions).toEqual([]);
+  });
 });

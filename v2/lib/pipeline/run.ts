@@ -29,9 +29,29 @@ export async function runPipeline(input: PipelineInput): Promise<AnalysisResult>
   if (input.identification) {
     identification = input.identification;
   } else if (input.image) {
-    const res = await identifyImage(input.image);
-    identification = res.identification;
-    needsClarification = res.needsClarification;
+    try {
+      const res = await identifyImage(input.image);
+      identification = res.identification;
+      needsClarification = res.needsClarification;
+    } catch (err) {
+      // The vision model errored, was rate-limited, or returned something that
+      // could not be validated (a safety block returns empty text). Never 500
+      // the request over this — degrade to "ask the user" with a safe stub.
+      console.warn("[pipeline] identify failed, asking for clarification:", (err as Error).message);
+      identification = {
+        category: "other",
+        item: "your item",
+        materials: [],
+        condition: "unknown",
+        expiry_signals: [],
+        hazards: [],
+        confidence: 0,
+        clarifying_question:
+          "The photo could not be read clearly. Retake it in better light, or tell me what the item is.",
+      };
+      needsClarification = true;
+      degraded.push("vision_failed");
+    }
   } else {
     throw new Error("runPipeline requires an image or an identification");
   }
