@@ -11,7 +11,6 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   const disposalOnly = safety.length > 0 && safety.every((s) => s.disposal_only);
   const blocked = [...new Set(safety.flatMap((s) => s.blocked_actions))];
   const reasons = [...new Set(safety.flatMap((s) => s.reasons))];
-  const allowed = [...new Set(safety.flatMap((s) => s.allowed))];
 
   const sentence = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
   const meta = [

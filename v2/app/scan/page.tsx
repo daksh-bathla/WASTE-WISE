@@ -89,18 +89,15 @@ export default function ScanPage() {
       <main className="flex-1 py-10">
         {phase === "idle" && (
           <>
-            <h1 className="display max-w-lg text-[2.75rem] sm:text-[3.5rem]">
-              Before you throw it away, check what it&apos;s still worth.
-            </h1>
-            <p className="mt-5 max-w-md text-[0.9375rem] leading-relaxed text-ink-2">
-              Photograph the item. You get three actions — reuse, pass on, dispose — each
-              specific, sourced, and checked against a safety rulebook the model cannot
-              overrule.
+            <h1 className="display text-[2.25rem] sm:text-[2.75rem]">Scan an item</h1>
+            <p className="mt-3 max-w-md text-[0.9375rem] leading-relaxed text-ink-2">
+              Photograph what you are about to throw away. Three actions come back, each
+              scoped to what the item is safe for.
             </p>
 
             <button
               onClick={() => fileRef.current?.click()}
-              className="mt-9 bg-ink px-8 py-4 text-[0.875rem] font-semibold tracking-wide text-paper transition-opacity hover:opacity-85"
+              className="mt-8 bg-ink px-8 py-4 text-[0.875rem] font-semibold tracking-wide text-paper transition-opacity hover:opacity-85"
             >
               Photograph an item
             </button>
@@ -113,21 +110,8 @@ export default function ScanPage() {
               onChange={(e) => e.target.files?.[0] && analyze(e.target.files[0])}
             />
 
-            <dl className="mt-16 grid grid-cols-3 gap-6 border-t border-rule pt-7">
-              {[
-                ["10", "hazard rules"],
-                ["20", "tested cases"],
-                ["0", "safety leaks"],
-              ].map(([n, label]) => (
-                <div key={label}>
-                  <dt className="display tnum text-[2rem] leading-none">{n}</dt>
-                  <dd className="eyebrow mt-2">{label}</dd>
-                </div>
-              ))}
-            </dl>
-
             {demoCases.length > 0 && (
-              <section className="mt-10 border-t border-rule pt-6">
+              <section className="mt-14 border-t border-rule pt-6">
                 <button
                   onClick={() => setDemoOpen((o) => !o)}
                   className="flex w-full items-baseline justify-between text-left"
